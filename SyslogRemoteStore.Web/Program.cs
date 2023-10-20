@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using SyslogRemoteStore.Web.Data;
+using SyslogRemoteStore.Web.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddScoped<IWeatherViewModel, WeatherViewModel>();
 
 var app = builder.Build();
 
