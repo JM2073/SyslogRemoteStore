@@ -1,3 +1,5 @@
+using SyslogRemoteStore.Web.Models;
+
 namespace SyslogRemoteStore.Web.Data
 {
     public class WeatherForecastService

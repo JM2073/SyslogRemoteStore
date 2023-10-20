@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using SyslogRemoteStore.Web.Data;
+using SyslogRemoteStore.Web.Models;
 
 namespace SyslogRemoteStore.Web.ViewModels;
 

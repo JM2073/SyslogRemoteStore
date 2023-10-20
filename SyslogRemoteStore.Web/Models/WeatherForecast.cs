@@ -1,4 +1,4 @@
-namespace SyslogRemoteStore.Web.Data
+namespace SyslogRemoteStore.Web.Models
 {
     public class WeatherForecast
     {
