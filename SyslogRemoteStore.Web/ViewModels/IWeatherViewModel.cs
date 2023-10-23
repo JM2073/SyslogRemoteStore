@@ -1,4 +1,4 @@
-﻿using SyslogRemoteStore.Web.Data;
+﻿using SyslogRemoteStore.Web.Models;
 using System.ComponentModel;
 
 namespace SyslogRemoteStore.Web.ViewModels;

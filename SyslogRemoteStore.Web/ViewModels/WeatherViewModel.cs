@@ -1,16 +1,22 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using SyslogRemoteStore.Web.Data;
+using SyslogRemoteStore.Web.Models;
+using SyslogRemoteStore.Web.Stores;
 
 namespace SyslogRemoteStore.Web.ViewModels;
 
 public class WeatherViewModel : BaseViewModel, IWeatherViewModel
 {
     private readonly WeatherForecastService _weatherService;
+    private ConfigurationStore _configurationStore;
+    private CollectionStore _collectionStore;
 
-    public WeatherViewModel(WeatherForecastService weatherService)
+    public WeatherViewModel(WeatherForecastService weatherService, ConfigurationStore configurationStore, CollectionStore collectionStore)
     {
         _weatherService = weatherService;
+        _configurationStore = configurationStore;
+        _collectionStore = collectionStore;
         InitializeViewModel();
     }
 
