@@ -6,7 +6,7 @@ public class GlobalVariables
     public int DefaultPort { get; set; }
     public string WarningHex { get; set; }
     public string ErrorHex { get; set; }
-    public int DebugHex { get; set; }
-    public int InfoHex { get; set; }
+    public string DebugHex { get; set; }
+    public string InfoHex { get; set; }
 
 }
