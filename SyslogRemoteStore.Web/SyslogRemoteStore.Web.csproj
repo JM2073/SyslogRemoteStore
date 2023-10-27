@@ -13,4 +13,12 @@
     <None Remove="NewFolder\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="Layout\SurveyPrompt.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Layout\menu.png" />
+  </ItemGroup>
+
 </Project>
