@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<RadioService>();
 builder.Services.AddScoped<IWeatherViewModel, WeatherViewModel>();
 
 // Add singletons to the container
@@ -34,4 +35,10 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
+RadioService _radioService = new RadioService(new ConfigurationStore(),new CollectionStore());
+_radioService.BeginListening();
+
 app.Run();
+
+
+
