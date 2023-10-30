@@ -5,6 +5,7 @@ using System.Text;
 using SyslogRemoteStore.Web.Enums;
 using SyslogRemoteStore.Web.Models;
 using SyslogRemoteStore.Web.Stores;
+using ProtocolType = System.Net.Sockets.ProtocolType;
 
 namespace SyslogRemoteStore.Web.Data;
 
@@ -22,17 +23,18 @@ public class RadioService
     }
 
 
-    public void BeginListening()
+    public async void BeginListening()
     {
-        
-        ListenTcp(_configStore.Ip,_configStore.Port);
-        ListenUdp(_configStore.Ip,_configStore.Port);
+         //await ListenUdp(_configStore.Ip,_configStore.Port);
+         await ListenTcp(_configStore.Ip,_configStore.Port);
     }
 
-    public void ListenUdp(string ip, int port)
+    public async Task ListenUdp(string ip, int port)
     {
         _asyncSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
+        
+        _asyncSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+        
         _asyncSocket.Bind(new IPEndPoint(IPAddress.Parse(ip), port));
         
         byte[] buffer = new byte[250];
@@ -66,7 +68,7 @@ public class RadioService
         }
     }
 
-    public void ListenTcp(string ip,int port)
+    public async Task ListenTcp(string ip,int port)
     {
         _asyncSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -86,7 +88,6 @@ public class RadioService
         Socket clientSocket = _asyncSocket.EndAccept(_async);
 
         T6S3 t6S3 = new T6S3(clientSocket);
-        
         _collectionStore.Radios.Add(t6S3);
 
         byte[] rxBuffer = new byte[250];
@@ -103,18 +104,7 @@ public class RadioService
         string request = Encoding.ASCII.GetString(rxBuffer, 0, bytesRead);
 
         t6S3.Logs.Add(new Log { Message = request, SeverityLevel = SeverityLevel.Info });
-
-        string message = string.Empty;
-        message += "---------------Socket----------";
-        foreach (Log log in t6S3.Logs)
-        {
-            message += log.Message;
-        }
-        message += "------------END-------------";
-        Console.WriteLine(message);
         
         t6S3.Socket.BeginReceive(rxBuffer, 0, rxBuffer.Length, 0, new AsyncCallback(async => DequeueRequests(async,t6S3)), rxBuffer);
     }
-    
-    
 }

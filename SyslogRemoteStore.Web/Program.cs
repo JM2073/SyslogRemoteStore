@@ -35,7 +35,8 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
-RadioService _radioService = new RadioService(new ConfigurationStore(),new CollectionStore());
+
+RadioService _radioService = app.Services.GetRequiredService<RadioService>();
 _radioService.BeginListening();
 
 app.Run();

@@ -6,7 +6,7 @@ namespace SyslogRemoteStore.Web.ViewModels;
 public interface IWeatherViewModel
 {
     bool IsLoading { get; }
-    WeatherForecast[] Forecasts { get; }
+    List<T6S3> Radios { get; set; }
     void InitializeViewModel();
     Task LoadDataAsync();
 

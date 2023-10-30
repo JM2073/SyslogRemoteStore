@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Net.Sockets;
 
 namespace SyslogRemoteStore.Web.Models;
@@ -8,7 +9,7 @@ public interface IT6S3
     int Port { get; }
     
     Socket Socket { get; }
-    List<Log> Logs { get; }
+    ObservableCollection<Log> Logs { get; }
 
     /// <summary>
     /// can be used to connect or reconnect with the socket.
