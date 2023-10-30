@@ -10,7 +10,7 @@ public class WeatherViewModel : BaseViewModel, IWeatherViewModel
 {
     private readonly WeatherForecastService _weatherService;
     private ConfigurationStore _configurationStore;
-    private CollectionStore _collectionStore;
+    private readonly CollectionStore _collectionStore;
 
     public WeatherViewModel(WeatherForecastService weatherService, ConfigurationStore configurationStore, CollectionStore collectionStore)
     {
@@ -18,10 +18,10 @@ public class WeatherViewModel : BaseViewModel, IWeatherViewModel
         _configurationStore = configurationStore;
         _collectionStore = collectionStore;
         InitializeViewModel();
+        
     }
 
-
-    public WeatherForecast[] Forecasts { get; set; } = Array.Empty<WeatherForecast>();
+    public List<T6S3> Radios { get; set; } = new List<T6S3>();
 
     public async void InitializeViewModel()
     {
@@ -34,9 +34,7 @@ public class WeatherViewModel : BaseViewModel, IWeatherViewModel
 
         try
         {
-            await Task.Delay(TimeSpan.FromSeconds(2)); // simulate loading
-
-            Forecasts = await _weatherService.GetForecastAsync(DateTime.Now);
+            Radios = _collectionStore.Radios;
         }
         finally
         {

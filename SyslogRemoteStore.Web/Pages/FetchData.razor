@@ -19,20 +19,18 @@ else
     <table class="table">
         <thead>
         <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
         </tr>
         </thead>
         <tbody>
-        @foreach (var forecast in vm.Forecasts)
+        @foreach (var log in vm.Radios.SelectMany(x => x.Logs))
         {
             <tr>
-                <td>@forecast.Date.ToShortDateString()</td>
-                <td>@forecast.TemperatureC</td>
-                <td>@forecast.TemperatureF</td>
-                <td>@forecast.Summary</td>
+                <td></td>
+                <td>@log.Message</td>
+                <td>@log.SeverityLevel</td>
             </tr>
         }
         </tbody>
@@ -42,27 +40,17 @@ else
 @code {
     protected override async Task OnInitializedAsync()
     {
-        vm.PropertyChanged += async (sender, e) =>
+        foreach (var _radio in vm.Radios)
         {
-            await InvokeAsync(() =>
+            _radio.PropertyChanged += async (sender, e) =>
             {
-                StateHasChanged();
-            });
-        };
+                await InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            };
+        }
 
         await base.OnInitializedAsync();
-    }
-
-    async void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
-    {
-        await InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
-    }
-
-    public void Dispose()
-    {
-        vm.PropertyChanged -= OnPropertyChangedHandler;
     }
 }
