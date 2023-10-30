@@ -1,0 +1,87 @@
+﻿   <style>
+
+    #tog {
+        appearance: none;
+        width: 0px;
+        height: 0px;
+    }
+
+        #tog:checked {
+            background-color: black;
+        }
+
+        #tog + nav#ham {
+            display: block;
+            position: fixed;
+            top: 50px;
+            bottom: 0;
+            left: -300px;
+            width: 300px;
+            transition-duration: 100ms;
+        }
+
+        #tog:checked + nav#ham {
+            left: 0;
+        }
+
+    nav#ham > ul > li {
+        border-bottom: 1px solid gray;
+    }
+
+    nav#ham details li {
+        margin-left: 2ch;
+    }
+
+</style>
+
+<header class="masthead mb-auto row">
+    <div class="col-md-1">
+        <label class="inline-block p-1 border m-2 cursor-pointer z-50" for="tog">
+            <img src="menu.png" alt="" style="height:40px; width:40px;">
+        </label>
+        <input type="checkbox" id="tog" checked>
+        <nav id="ham" class="z-0 p-4 bg-slate-50">
+            <ul>
+                <li>
+                    <details>
+                        <summary>tab 1</summary>
+                        <ul>
+                            <li>
+                                <a href="#">child 1</a>
+                            </li>
+                            <li>
+                                <a href="#">child 2</a>
+                            </li>
+                            <li>
+                                <a href="#">child 3</a>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>tab 2</summary>
+                        <ul>
+                            <li>
+                                <a href="#">child 1</a>
+                            </li>
+                            <li>
+                                <a href="#">child 2</a>
+                            </li>
+                            <li>
+                                <a href="#">child 3</a>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="col-md-11">
+             <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link active" href="">Home</a>
+                <a class="nav-link" href="LogView">Log View</a>
+              <a class="nav-link" href="SettingsPage">Settings</a>
+        </nav>
+        </div>
+      </header>
