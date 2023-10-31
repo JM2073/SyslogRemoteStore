@@ -14,6 +14,9 @@
     <Compile Update="ViewModels\ILogsViewModel.cs">
       <DependentUpon>LogsViewModel.cs</DependentUpon>
     </Compile>
+    <Compile Update="ViewModels\IWeatherViewModel.cs">
+      <DependentUpon>WeatherViewModel.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
