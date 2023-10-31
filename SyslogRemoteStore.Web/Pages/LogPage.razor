@@ -73,14 +73,13 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        HandleSubscription();
-    
-        await base.OnInitializedAsync();
-    }
-
-    void HandleSubscription()
-    {
         vm.Radios.CollectionChanged += RadiosOnCollectionChanged;
+        foreach (var _radio in vm.Radios)
+        {
+            _radio.PropertyChanged += HandlePropertyChanged();
+        }
+        
+        await base.OnInitializedAsync();
     }
 
     private void RadiosOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
