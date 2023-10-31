@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using SyslogRemoteStore.Web.Data;
 using SyslogRemoteStore.Web.Models;
@@ -21,7 +22,7 @@ public class WeatherViewModel : BaseViewModel, IWeatherViewModel
         
     }
 
-    public List<T6S3> Radios { get; set; } = new List<T6S3>();
+    public ObservableCollection<T6S3> Radios { get; set; } = new ObservableCollection<T6S3>();
 
     public async void InitializeViewModel()
     {

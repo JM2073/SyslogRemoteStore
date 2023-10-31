@@ -5,6 +5,11 @@ namespace SyslogRemoteStore.Web.Models;
 
 public class Log
 {
+    public Log(string message, string sourceIp)
+    {
+        SourceIp = sourceIp;
+        ParseMessage(message);
+    }
     public string Message { get; set; }
     public bool Received { get; set; }
     public string SourceIp { get; set; }
@@ -14,13 +19,11 @@ public class Log
     public string TimeStamp { get; set; }
     public string Tag { get; set; }
 
-    public void ParseMessage()
+    public void ParseMessage(string message)
     {
-        string input = this.Message;
-
         // Split the input string using regular expressions to capture the components
         string pattern = @"<(\d+|\S*)>(\d+)\s(\S+)\s([^,]+),([^.]+). ([^<]+)(?: - - - - )?\s(\S+)";
-        Match match = Regex.Match(input, pattern);
+        Match match = Regex.Match(message, pattern);
 
         if (match.Success)
         {

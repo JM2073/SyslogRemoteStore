@@ -1,4 +1,5 @@
 ﻿@page "/LogView"
+@using System.Collections.Specialized
 @inject ILogsViewModel vm
 
 <style>
@@ -72,17 +73,39 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        foreach (var _radio in vm.Radios)
-        {
-            _radio.PropertyChanged += async (sender, e) =>
-            {
-                await InvokeAsync(() =>
-                {
-                    StateHasChanged();
-                });
-            };
-        }
-
+        HandleSubscription();
+    
         await base.OnInitializedAsync();
     }
+
+    void HandleSubscription()
+    {
+        vm.Radios.CollectionChanged += RadiosOnCollectionChanged;
+    }
+
+    private void RadiosOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.OldItems)
+                item.PropertyChanged -= HandlePropertyChanged();
+        }
+        if (e.NewItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.NewItems)
+                item.PropertyChanged += HandlePropertyChanged();
+        }
+    }
+
+    private PropertyChangedEventHandler? HandlePropertyChanged()
+    {
+        return async (sender, e) =>
+        {
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        };
+    }
+
 }
