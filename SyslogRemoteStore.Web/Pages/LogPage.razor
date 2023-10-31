@@ -1,5 +1,5 @@
 ﻿@page "/LogView"
-
+@inject ILogsViewModel vm
 
 <style>
     table {
@@ -27,16 +27,10 @@
     }
 </style>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>SystemLogTable</title>
-    <title>ScrollBar</title>
-</head>
-<body>
+<div>
     <div class="buttons">
-        <button onclick="export()">Export</button>
-        <button onclick="delete()">Delete</button>
+        <button onclick="@vm.Export">Export</button>
+        <button onclick="@vm.Delete">Delete</button>
     </div>
 
     <form action="/search" method="get">
@@ -55,26 +49,40 @@
             <th>Tag</th>
             <th>Message</th>
         </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+        @foreach (var log in vm.Radios.SelectMany(x=>x.Logs).OrderBy(x=>x.TimeStamp))
+        {
+          
+                <tr>
+                    <td>@log.Received</td>
+                    <td>@log.SourceIp</td>
+                    <td>@log.SourceItem</td>
+                    <td>@log.Facilty</td>
+                    <td>@log.Severity</td>
+                    <td>@log.TimeStamp</td>
+                    <td>@log.Tag</td>
+                    <td>@log.Message</td>
+                </tr>
+          
+    
+        }
     </table>
-</body>
-</html>
+</div>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        foreach (var _radio in vm.Radios)
+        {
+            _radio.PropertyChanged += async (sender, e) =>
+            {
+                await InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            };
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

@@ -62,10 +62,11 @@ public class RadioService
             int bytesRead = _asyncSocketudp.EndReceiveFrom(ar, ref _remoteEndPoint);
             byte[] buffer = (byte[])ar.AsyncState;
             string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-
-            _t6S3.Logs.Add(new Log { Message = message, SeverityLevel = SeverityLevel.Info });
-
-            Console.WriteLine(message);
+            
+            Log log = new Log { Message = message , SourceIp = $"{senderIpAddress}:{senderPort}"};
+            log.ParseMessage();
+            _t6S3.Logs.Add(log);
+            
             // Start the next asynchronous receive operation
             buffer = new byte[1024];
             _asyncSocketudp.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _remoteEndPoint,
@@ -117,7 +118,7 @@ public class RadioService
             byte[] rxBuffer = (byte[])_async.AsyncState;
             string request = Encoding.ASCII.GetString(rxBuffer, 0, bytesRead);
 
-            t6S3.Logs.Add(new Log { Message = request, SeverityLevel = SeverityLevel.Info });
+            t6S3.Logs.Add(new Log { Message = request });
 
             t6S3.Socket.BeginReceive(rxBuffer, 0, rxBuffer.Length, 0, async => DequeueRequests(async, t6S3), rxBuffer);
         }
@@ -130,4 +131,5 @@ public class RadioService
             Console.WriteLine("Receive error: " + ex.Message);
         }
     }
+
 }
