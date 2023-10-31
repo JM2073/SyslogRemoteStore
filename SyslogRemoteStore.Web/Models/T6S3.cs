@@ -19,6 +19,7 @@ public class T6S3 : IT6S3, INotifyPropertyChanged
         Socket = socket;
         Ip = ip;
         Port = port;
+        TcpConnected = socket.ProtocolType == ProtocolType.Tcp;
         _logs.CollectionChanged += Logs_CollectionChanged;
 
         // Initialize and configure the timer
@@ -28,7 +29,13 @@ public class T6S3 : IT6S3, INotifyPropertyChanged
         logTimer.AutoReset = false; 
     }
 
-    public bool TcpConnected { get; set; }
+    private bool _tcpConnected;
+
+    public bool TcpConnected
+    {
+        get => _tcpConnected;
+        set => SetField(ref _tcpConnected, value);
+    }
 
     private bool _alertFlag;
     

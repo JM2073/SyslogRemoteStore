@@ -1,4 +1,6 @@
-﻿@inject CollectionStore cs
+﻿@using SyslogRemoteStore.Web.Models
+@using System.Net.Sockets
+@inject CollectionStore cs
    
 <style>
 
@@ -34,6 +36,12 @@
         margin-left: 2ch;
     }
 
+   .connected {
+   color: green;
+   }
+   .disconnected{
+   color: red;
+   }
 </style>
 
 <header class="masthead mb-auto row">
@@ -44,16 +52,16 @@
         <input type="checkbox" id="tog" checked>
         <nav id="ham" class="z-0 p-4 bg-slate-50">
             <ul>
-                @foreach (var radioOpGroups in cs.Radios.GroupBy(x=>x.Ip))
+                @foreach (var radioIpGroups in cs.Radios.GroupBy(x=>x.Ip))
                 {
                     <li>
                         <details>
-                            <summary>@radioOpGroups.Key</summary>
+                            <summary>@radioIpGroups.Key</summary>
                             <ul>
-                                @foreach (var radioPortGroups in radioOpGroups)
+                                @foreach (var radio in radioIpGroups)
                                 {
-                                    <li>
-                                        <a href="#">@radioPortGroups.Port</a>
+                                    <li class="@ConnectionStatus(radio)">
+                                        <a href="#">@radio.Port</a>
                                     </li>
                                 }
                             </ul>
@@ -76,6 +84,51 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        cs.Radios.CollectionChanged += async (sender, e) => await InvokeAsync(StateHasChanged);
+        cs.Radios.CollectionChanged += RadiosOnCollectionChanged;
     }
+    
+    private void RadiosOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.OldItems)
+                item.PropertyChanged -= HandlePropertyChanged();
+        }
+        if (e.NewItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.NewItems)
+                item.PropertyChanged += HandlePropertyChanged();
+        }
+    }
+
+    private PropertyChangedEventHandler? HandlePropertyChanged()
+    {
+        return async (sender, e) =>
+        {
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        };
+    }
+
+    private string ConnectionStatus(T6S3 radio)
+    {
+        string result = string.Empty;
+        switch (radio.Socket.ProtocolType)
+        {
+            case ProtocolType.Udp:
+                result = radio.AlertFlag ? "disconnected" : "connected";
+                break;
+            case ProtocolType.Tcp:
+                result = radio.TcpConnected ? "connected" : "disconnected";
+                break;
+            default:
+                throw new Exception("strange Protocol Type");
+        }
+        
+        return result;
+    }
+    
+
 }
