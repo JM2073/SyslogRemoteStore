@@ -17,6 +17,12 @@
     <Compile Update="ViewModels\ILogsViewModel.cs">
       <DependentUpon>LogsViewModel.cs</DependentUpon>
     </Compile>
+    <Compile Update="Models\IT6S3.cs">
+      <DependentUpon>T6S3.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ViewModels\IRadioViewModel.cs">
+      <DependentUpon>RadioViewModel.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

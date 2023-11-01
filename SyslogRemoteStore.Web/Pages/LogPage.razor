@@ -1,15 +1,17 @@
 ﻿@page "/LogView"
 @using System.Collections.Specialized
+@using SyslogRemoteStore.Web.Models
 @inject ILogsViewModel vm
 
 <style>
     table {
         width: 100%;
         border-collapse: collapse;
+    border: 0;
     }
 
     th, td {
-        border: 1px solid #000;
+        border: 0px solid #000;
         padding: 8px;
         text-align: left;
     }
@@ -26,59 +28,67 @@
         display: inline-block;
         margin: 5px;
     }
+    .nowrap{
+    white-space: nowrap;
+    }
+    .mustwrap{
+    word-break: break-word;
+    }
 </style>
+<div class="col-md-12" style="display: flex">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 justify-content-end">
+        <div class="buttons">
+            <button onclick="@vm.Export">Export</button>
+            <button onclick="@vm.Delete">Delete</button>
+        </div>
 
-<div>
-    <div class="buttons">
-        <button onclick="@vm.Export">Export</button>
-        <button onclick="@vm.Delete">Delete</button>
-    </div>
 
-    <form action="/search" method="get">
-        <input type="text" name="q" placeholder="Search..." />
-        <input type="submit" value="Search" />
-    </form> 
+        <form action="/search" method="get">
+            <input type="text" name="q" placeholder="Search..."/>
+            <input type="submit" value="Search"/>
+        </form>
 
-    <table id="LogTable">
-        <tr>
-            <th>Received</th>
-            <th>Source IP</th>
-            <th>Source Item</th>
-            <th>Facilty</th>
-            <th>Severity</th>
-            <th>TimeStamp</th>
-            <th>Tag</th>
-            <th>Message</th>
-        </tr>
-        @foreach (var log in vm.Radios.SelectMany(x=>x.Logs).OrderBy(x=>x.TimeStamp))
-        {
-          
+        <table id="LogTable">
+            <tr>
+                <th>Received</th>
+                <th>Source IP</th>
+                <th>Source Item</th>
+                <th>Facilty</th>
+                <th>Severity</th>
+                <th>TimeStamp</th>
+                <th>Tag</th>
+                <th>Message</th>
+            </tr>
+            @foreach (Log log in vm.Radios.SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp))
+            {
                 <tr>
                     <td>@log.Received</td>
                     <td>@log.SourceIp</td>
                     <td>@log.SourceItem</td>
-                    <td>@log.Facilty</td>
+                    <td class="nowrap">@log.Facilty</td>
                     <td>@log.Severity</td>
-                    <td>@log.TimeStamp</td>
+                    <td class="nowrap">@log.TimeStamp</td>
                     <td>@log.Tag</td>
-                    <td>@log.Message</td>
+                    <td class="mustwrap">@log.Message</td>
                 </tr>
-          
-    
-        }
-    </table>
+            }
+        </table>
+    </div>
+    <div class="col-md-2"></div>
 </div>
 
 
 @code {
+
     protected override async Task OnInitializedAsync()
     {
         vm.Radios.CollectionChanged += RadiosOnCollectionChanged;
-        foreach (var _radio in vm.Radios)
+        foreach (T6S3 _radio in vm.Radios)
         {
             _radio.PropertyChanged += HandlePropertyChanged();
         }
-        
+
         await base.OnInitializedAsync();
     }
 
@@ -98,13 +108,7 @@
 
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
-        return async (sender, e) =>
-        {
-            await InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
-        };
+        return async (sender, e) => { await InvokeAsync(() => { StateHasChanged(); }); };
     }
 
 }
