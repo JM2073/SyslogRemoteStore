@@ -9,7 +9,6 @@ namespace SyslogRemoteStore.Web.ViewModels;
 
 public class LogsViewModel : BaseViewModel, ILogsViewModel 
 {
-    private readonly ConfigurationStore _configurationStore;
     private readonly CollectionStore _collectionStore;
 
     public LogsViewModel(ConfigurationStore configurationStore, CollectionStore collectionStore)
@@ -17,8 +16,10 @@ public class LogsViewModel : BaseViewModel, ILogsViewModel
         _configurationStore = configurationStore;
         _collectionStore = collectionStore;
         Radios = _collectionStore.Radios;
+        
     }
-
+    public ConfigurationStore _configurationStore { get; }
+    
     public ObservableCollection<IT6S3> Radios { get; set; }
     
     public void Export()

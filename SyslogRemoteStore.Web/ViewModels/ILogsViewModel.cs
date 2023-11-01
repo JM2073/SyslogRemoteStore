@@ -1,11 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using SyslogRemoteStore.Web.Models;
+using SyslogRemoteStore.Web.Stores;
 
 namespace SyslogRemoteStore.Web.ViewModels;
 
 public interface ILogsViewModel
 {
-    ObservableCollection<IT6S3> Radios { get; set; }
+    ConfigurationStore _configurationStore { get; }
+    ObservableCollection<IT6S3> Radios { get; }
     void Export();
     void Delete();
 }

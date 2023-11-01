@@ -4,6 +4,7 @@ namespace SyslogRemoteStore.Web.ViewModels;
 
 public interface ISettingsViewModel
 {
+    List<string> AvailableIpAddress { get; }
     string IpAddress { get; set; }
     int Port { get; set; }
     ProtocolType ListeningProtocolType { get; set; }
@@ -11,8 +12,5 @@ public interface ISettingsViewModel
     string ErrorHex { get; set; }
     string DebugHex { get; set; }
     string InfoHex { get; set; }
-
-    List<string> AvailableIpAddress { get; } 
-    
     void Submit();
 }

@@ -1,8 +1,7 @@
 ﻿@page "/SettingsPage"
-
-<html>
-
-        <style>
+@using SyslogRemoteStore.Web.Enums
+@inject ISettingsViewModel vm
+<style>
      
           label {
            font-weight: bold;
@@ -73,46 +72,68 @@
         }
     </style>
 
-    <body>
-
+<div>
+    <EditForm model="@vm" OnSubmit=@FormSubmitted>
         <div>
-            <label for= "Header">Change Syslog Message Severity Colours</label>
-            <label for="Debug">Debug:</label> <input type="color" id="head" name="head" value="#0000"/>
-            <label for="Info">Info:</label> <input type="color" id="head" name="head" value="#0000">
-            <label for="Warning">Warning:</label> <input type="color" id="head" name="head" value="#0000">
-            <label for="Error">Error:</label> <input type="color" id="head" name="head" value="#0000">
+            <label for="Header">Change Syslog Message Severity Colours</label>
+
+            <label for="Debug">Debug:</label>
+            <input type="color" id="head" name="head" @bind="@vm.DebugHex"/>
+
+            <label for="Info">Info:</label>
+            <input type="color" id="head" name="head" @bind="@vm.InfoHex">
+
+            <label for="Warning">Warning:</label>
+            <input type="color" id="head" name="head" @bind="@vm.WarningHex">
+
+            <label for="Error">Error:</label>
+            <input type="color" id="head" name="head" @bind="@vm.ErrorHex">
         </div>
 
         <div>
-            <label for="DropdownMenu">Change Listening Proticals:</label>
-            <select id="menu">
-                <option value="UdpOption">UDP</option>
-                <option value="TcpOption">TCP</option>
-                <option value="BothOption">Both</option>
+            <label for="ProtocolTypeDropdown">Change Listening Proticals:</label>
+            <select id="ProtocolTypeDropdown" @bind="vm.ListeningProtocolType">
+                @foreach (object? option in Enum.GetValues(typeof(ProtocolType)))
+                {
+                    <option value="@((ProtocolType)option)">@((ProtocolType)option)</option>
+                }
             </select>
         </div>
 
         <div>
-            <label for="DropdownMenu">IP Addresses :</label>
-            <select id="menu">
-                <option value="IP Address"></option>
-                <option value="IP Address"></option>
-                <option value="IP Address"></option>
+            <label for="AvailableIpAddressDropdown">IP Addresses :</label>
+            <select id="AvailableIpAddressDropdown" @bind="vm.IpAddress">
+                @foreach (string ip in vm.AvailableIpAddress)
+                {
+                    <option value="@ip">@ip</option>
+                }
             </select>
         </div>
 
         <div>
-            <label for="ChangingPort">Change Listen Port:</label>
-            <input type="number" id="integerInput" name="integerInput">
+            <label for="integerInput">Change Listen Port:</label>
+            <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
         </div>
 
-        <div>
-            <form action="/submit" method="post">
-                <input type="submit" value="Submit">
-            </form>
-        </div>
 
-    </body>
+        <input type="submit" value="Submit">
+    </EditForm>
+</div>
 
-</html>
-
+@code {
+    string LastSubmitResult;
+    
+    void FormSubmitted(EditContext editContext)
+    {
+        bool formIsValid = editContext.Validate();
+        LastSubmitResult =
+            formIsValid
+                ? "Success - form was valid"
+                : "Failure - form was invalid";
+        if (formIsValid is true)
+        {
+            vm.Submit();
+        }
+    }
+    
+}
