@@ -1,11 +1,13 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace SyslogRemoteStore.Web.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel : INotifyPropertyChanged, INotifyCollectionChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
         private bool isLoading = false;
         public bool IsLoading
@@ -29,5 +31,6 @@ namespace SyslogRemoteStore.Web.ViewModels
             OnPropertyChanged(propertyName);
             return true;
         }
+
     }
 }
