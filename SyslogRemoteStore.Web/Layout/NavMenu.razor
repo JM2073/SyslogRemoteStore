@@ -1,8 +1,10 @@
+
 ﻿@using SyslogRemoteStore.Web.Models
 @using System.Net.Sockets
 @inject CollectionStore cs
    
 <style>
+
 
     #tog {
         appearance: none;
@@ -22,6 +24,8 @@
             left: -300px;
             width: 300px;
             transition-duration: 100ms;
+              overflow:scroll;
+                -webkit-overflow-scrolling: touch;
         }
 
         #tog:checked + nav#ham {
@@ -73,10 +77,12 @@
         </nav>
     </div>
     <div class="col-md-11">
-        <nav class="nav nav-masthead justify-content-center">
-            <a class="nav-link active" href="">Home</a>
-            <a class="nav-link" href="LogView">Log View</a>
-            <a class="nav-link" href="SettingsPage">Settings</a>
+
+             <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link active" href="RadioPage">Home</a>
+                <a class="nav-link" href="LogView">Log View</a>
+              <a class="nav-link" href="SettingsPage">Settings</a>
+
         </nav>
     </div>
 </header>
