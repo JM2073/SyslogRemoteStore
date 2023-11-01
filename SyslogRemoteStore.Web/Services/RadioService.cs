@@ -22,7 +22,6 @@ public class RadioService
         _collectionStore = collectionStore;
     }
 
-
     public void BeginListening()
     {
         ListenUdp(_configStore.Ip, _configStore.Port);
@@ -31,9 +30,10 @@ public class RadioService
 
     public async Task ListenUdp(string ip, int port)
     {
-        _asyncSocketudp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        _asyncSocketudp = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp);
 
         _asyncSocketudp.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+        _asyncSocketudp.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
 
         _asyncSocketudp.Bind(new IPEndPoint(IPAddress.Parse(ip), port));
 
@@ -46,10 +46,12 @@ public class RadioService
     {
         try
         {
+            int bytesRead = _asyncSocketudp.EndReceiveFrom(ar, ref _remoteEndPoint);
+
             string senderIpAddress = (_remoteEndPoint as IPEndPoint)?.Address.ToString() ?? string.Empty;
             int senderPort = (_remoteEndPoint as IPEndPoint)?.Port ?? 0;
 
-            T6S3? _t6S3 = _collectionStore.Radios.SingleOrDefault(x => x.Ip == senderIpAddress && x.Port == senderPort);
+            IT6S3? _t6S3 = _collectionStore.Radios.SingleOrDefault(x => x.Ip == senderIpAddress && x.Port == senderPort);
 
             if (_t6S3 is null)
             {
@@ -57,7 +59,6 @@ public class RadioService
                 _collectionStore.Radios.Add(_t6S3);
             }
 
-            int bytesRead = _asyncSocketudp.EndReceiveFrom(ar, ref _remoteEndPoint);
             byte[] buffer = (byte[])ar.AsyncState;
             string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
@@ -80,10 +81,11 @@ public class RadioService
 
     public async Task ListenTcp(string ip, int port)
     {
-        _asyncSockettcp = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        _asyncSockettcp = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
 
         _asyncSockettcp.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
         _asyncSockettcp.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+        _asyncSockettcp.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
 
         _asyncSockettcp.Bind(new IPEndPoint(IPAddress.Parse(ip), port));
 
