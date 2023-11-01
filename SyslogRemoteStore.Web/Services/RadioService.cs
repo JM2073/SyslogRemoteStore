@@ -98,7 +98,6 @@ public class RadioService
         IPEndPoint remoteEndPoint = (IPEndPoint)clientSocket.RemoteEndPoint;
 
         T6S3 t6S3 = new T6S3(clientSocket, remoteEndPoint.Address.ToString(), remoteEndPoint.Port);
-        t6S3.TcpConnected = true;
         _collectionStore.Radios.Add(t6S3);
         
         byte[] rxBuffer = new byte[250];

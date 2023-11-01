@@ -1,4 +1,10 @@
-﻿<style>
+
+﻿@using SyslogRemoteStore.Web.Models
+@using System.Net.Sockets
+@inject CollectionStore cs
+   
+<style>
+
 
     #tog {
         appearance: none;
@@ -34,6 +40,12 @@
         margin-left: 2ch;
     }
 
+   .connected {
+   color: green;
+   }
+   .disconnected{
+   color: red;
+   }
 </style>
 
 <header class="masthead mb-auto row">
@@ -44,46 +56,85 @@
         <input type="checkbox" id="tog" checked>
         <nav id="ham" class="z-0 p-4 bg-slate-50">
             <ul>
-                <li>
-                    <details>
-                        <summary>tab 1</summary>
-                        <ul>
-                            <li>
-                                <a href="#">child 1</a>
-                            </li>
-                            <li>
-                                <a href="#">child 2</a>
-                            </li>
-                            <li>
-                                <a href="#">child 3</a>
-                            </li>
-                        </ul>
-                    </details>
-                </li>
-                <li>
-                    <details>
-                        <summary>tab 2</summary>
-                        <ul>
-                            <li>
-                                <a href="#">child 1</a>
-                            </li>
-                            <li>
-                                <a href="#">child 2</a>
-                            </li>
-                            <li>
-                                <a href="#">child 3</a>
-                            </li>
-                        </ul>
-                    </details>
-                </li>
+                @foreach (var radioIpGroups in cs.Radios.GroupBy(x=>x.Ip))
+                {
+                    <li>
+                        <details>
+                            <summary>@radioIpGroups.Key</summary>
+                            <ul>
+                                @foreach (var radio in radioIpGroups)
+                                {
+                                    <li class="@ConnectionStatus(radio)">
+                                        <a href="#">@radio.Port</a>
+                                    </li>
+                                }
+                            </ul>
+                        </details>
+                    </li>
+                    
+                }
             </ul>
         </nav>
     </div>
     <div class="col-md-11">
+
              <nav class="nav nav-masthead justify-content-center">
             <a class="nav-link active" href="RadioPage">Home</a>
                 <a class="nav-link" href="LogView">Log View</a>
               <a class="nav-link" href="SettingsPage">Settings</a>
+
         </nav>
-        </div>
-      </header>
+    </div>
+</header>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        cs.Radios.CollectionChanged += RadiosOnCollectionChanged;
+    }
+    
+    private void RadiosOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.OldItems)
+                item.PropertyChanged -= HandlePropertyChanged();
+        }
+        if (e.NewItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.NewItems)
+                item.PropertyChanged += HandlePropertyChanged();
+        }
+    }
+
+    private PropertyChangedEventHandler? HandlePropertyChanged()
+    {
+        return async (sender, e) =>
+        {
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        };
+    }
+
+    private string ConnectionStatus(T6S3 radio)
+    {
+        string result = string.Empty;
+        switch (radio.Socket.ProtocolType)
+        {
+            case ProtocolType.Udp:
+                result = radio.AlertFlag ? "disconnected" : "connected";
+                break;
+            case ProtocolType.Tcp:
+                result = radio.TcpConnected ? "connected" : "disconnected";
+                break;
+            default:
+                throw new Exception("strange Protocol Type");
+        }
+        
+        return result;
+    }
+    
+
+}
