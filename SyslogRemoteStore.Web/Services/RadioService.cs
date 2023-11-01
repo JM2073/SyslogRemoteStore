@@ -46,16 +46,14 @@ public class RadioService
     {
         try
         {
-            string senderIpAddress = (_remoteEndPoint as IPEndPoint)?.Address.ToString();
+            string senderIpAddress = (_remoteEndPoint as IPEndPoint)?.Address.ToString() ?? string.Empty;
             int senderPort = (_remoteEndPoint as IPEndPoint)?.Port ?? 0;
 
             T6S3? _t6S3 = _collectionStore.Radios.SingleOrDefault(x => x.Ip == senderIpAddress && x.Port == senderPort);
 
             if (_t6S3 is null)
             {
-                _t6S3 = new T6S3(asyncSocket);
-                _t6S3.Ip = senderIpAddress;
-                _t6S3.Port = senderPort;
+                _t6S3 = new T6S3(asyncSocket,senderIpAddress,senderPort);
                 _collectionStore.Radios.Add(_t6S3);
             }
 
@@ -63,9 +61,8 @@ public class RadioService
             byte[] buffer = (byte[])ar.AsyncState;
             string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-            _t6S3.Logs.Add(new Log { Message = message, SeverityLevel = SeverityLevel.Info });
-
-            Console.WriteLine(message);
+            _t6S3.Logs.Add(new Log(message, $"{senderIpAddress}:{senderPort}"));
+            
             // Start the next asynchronous receive operation
             buffer = new byte[1024];
             _asyncSocketudp.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _remoteEndPoint,
@@ -98,10 +95,12 @@ public class RadioService
     private void OnClientConnect(IAsyncResult _async)
     {
         Socket clientSocket = _asyncSockettcp.EndAccept(_async);
+        IPEndPoint remoteEndPoint = (IPEndPoint)clientSocket.RemoteEndPoint;
 
-        T6S3 t6S3 = new(clientSocket);
+        T6S3 t6S3 = new T6S3(clientSocket, remoteEndPoint.Address.ToString(), remoteEndPoint.Port);
+        t6S3.TcpConnected = true;
         _collectionStore.Radios.Add(t6S3);
-
+        
         byte[] rxBuffer = new byte[250];
         t6S3.Socket.BeginReceive(rxBuffer, 0, rxBuffer.Length, 0, ar => DequeueRequests(ar, t6S3), rxBuffer);
 
@@ -113,21 +112,22 @@ public class RadioService
         try
         {
             int bytesRead = t6S3.Socket.EndReceive(_async);
-
             byte[] rxBuffer = (byte[])_async.AsyncState;
             string request = Encoding.ASCII.GetString(rxBuffer, 0, bytesRead);
 
-            t6S3.Logs.Add(new Log { Message = request, SeverityLevel = SeverityLevel.Info });
+            t6S3.Logs.Add(new Log(request,$"{t6S3.Ip}:{t6S3.Port}"));
 
             t6S3.Socket.BeginReceive(rxBuffer, 0, rxBuffer.Length, 0, async => DequeueRequests(async, t6S3), rxBuffer);
         }
         catch (SocketException se)
         {
             Console.WriteLine("Socket error: " + se.Message);
+            t6S3.TcpConnected = false;
         }
         catch (Exception ex)
         {
             Console.WriteLine("Receive error: " + ex.Message);
         }
     }
+
 }
