@@ -1,5 +1,5 @@
-﻿@page "/RadioPage"
-
+﻿@page "/RadioPage/{RadioId}"
+@inject IRadioViewModel vm
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,59 +105,83 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="table-container">
-            <table class="defaulttable" style="border: 0;">
-                <thead>
-                    <tr>
-                        <th>Radio IP Address</th>
-                    </tr>
-                    <tr>
-                        <th>Transport Protocol</th>
-                    </tr>
-                    <tr>
-                        <th>IP Version</th>
-                    </tr>
-                    <tr>
-                        <th>Socket Status</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        <div class="image-container">
-            <img src="T6S3.jpg" alt="Your Image" style="height: auto; max-width: 100%;">
-        </div>
-    </div>
-    <form action="/search" method="get">
-        <div style="display: inline-block;">
-            <input type="text" name="q" placeholder="Search..." />
-        </div>
-        <div style="display: inline-block;">
-            <input type="submit" value="Search" />
-        </div>
-    </form>
-    <div>
-        <table class="defaulttable" style="width: 100%; border: 0; overflow-y: scroll">
+<div class="container">
+    <div class="table-container">
+        <table class="defaulttable" style="border: 0;">
+            <thead>
             <tr>
-                <th>Received</th>
-                <th>Source IP</th>
-                <th>Source Item</th>
-                <th>Facility</th>
-                <th>Severity</th>
-                <th>TimeStamp</th>
-                <th>Tag</th>
-                <th>Message</th>
+                <th>Radio IP Address: @vm.Radio.GetFormatedIp()</th>
             </tr>
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <th>Transport Protocol: @vm.Radio.Socket.ProtocolType.ToString()</th>
             </tr>
+            <tr>
+                <th>IP Version: @vm.Radio.GetIpvType()</th>
+            </tr>
+            <tr>
+                <th>Socket Status: @vm.Radio.GetSocketStatus()</th>
+            </tr>
+            </thead>
         </table>
     </div>
+    <div class="image-container">
+        <img src="T6S3.jpg" alt="Your Image" style="height: auto; max-width: 100%;">
+    </div>
+</div>
+<form action="/search" method="get">
+    <div style="display: inline-block;">
+        <input type="text" name="q" placeholder="Search..." />
+    </div>
+    <div style="display: inline-block;">
+        <input type="submit" value="Search" />
+    </div>
+</form>
+<div>
+    <table class="defaulttable" style="width: 100%; border: 0; overflow-y: scroll">
+        <tr>
+            <th>Received</th>
+            <th>Source IP</th>
+            <th>Source Item</th>
+            <th>Facility</th>
+            <th>Severity</th>
+            <th>TimeStamp</th>
+            <th>Tag</th>
+            <th>Message</th>
+        </tr>
+         @foreach (Log log in vm.Radio.Logs)
+                   {
+                       <tr>
+                           <td>@log.Received</td>
+                           <td>@log.SourceIp</td>
+                           <td>@log.SourceItem</td>
+                           <td class="nowrap">@log.Facilty</td>
+                           <td>@log.Severity</td>
+                           <td class="nowrap">@log.TimeStamp</td>
+                           <td>@log.Tag</td>
+                           <td class="mustwrap">@log.Message</td>
+                       </tr>
+                   }
+    </table>
+</div>
 </body>
+@code
+{
+    [Parameter]
+    public string RadioId { get; set; }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        vm.RadioId = RadioId;
+        
+        vm.Radio.PropertyChanged += HandlePropertyChanged();
+    }
+    
+    private PropertyChangedEventHandler? HandlePropertyChanged()
+    {
+        return async (sender, e) => { await InvokeAsync(() => { StateHasChanged(); }); };
+    }
+
+   
+
+
+}
