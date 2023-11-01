@@ -11,6 +11,9 @@
     <Content Remove="NewFolder\**" />
     <EmbeddedResource Remove="NewFolder\**" />
     <None Remove="NewFolder\**" />
+    <Compile Update="ViewModels\ISettingsViewModel.cs">
+      <DependentUpon>SettingsViewModel.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
