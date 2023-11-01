@@ -10,6 +10,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<RadioService>();
 builder.Services.AddScoped<IWeatherViewModel, WeatherViewModel>();
+builder.Services.AddScoped<ILogsViewModel, LogsViewModel>();
 
 // Add singletons to the container
 
