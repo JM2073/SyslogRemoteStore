@@ -61,7 +61,7 @@
                 <th>Tag</th>
                 <th>Message</th>
             </tr>
-            @foreach (Log log in logs)
+            @foreach (Log log in displayedLogs)
             {
                 <tr>
                     <td>@log.Received</td>
@@ -113,20 +113,29 @@
 
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
-        return async (sender, e) => { await InvokeAsync(() => { StateHasChanged(); }); };
+        return async (sender, e) => { await InvokeAsync(() => 
+        {
+            StateHasChanged(); 
+            logs = vm.Radios.SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp).ToList();
+            filter();
+        }); 
+
+        };
     }
 
     public void filter()
     {
 
-        if (logs!= null && string.IsNullOrWhiteSpace(fs.SourceIp))
+        if (logs!= null && string.IsNullOrWhiteSpace(fs.SourceIp) == false)
         {
             displayedLogs = fs.FilterLog(logs);
+
         }
         else
         {
             displayedLogs = logs;
         }
+        StateHasChanged();
 
     }
 

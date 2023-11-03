@@ -35,7 +35,7 @@ public class RadioService
         _asyncSocketudp.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
         _asyncSocketudp.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
 
-        _asyncSocketudp.Bind(new IPEndPoint(IPAddress.Parse(ip), port));
+        _asyncSocketudp.Bind(new IPEndPoint(IPAddress.Any, port));
 
         byte[] buffer = new byte[250];
         _asyncSocketudp.BeginReceiveFrom(buffer, 0, buffer.Length, 0, ref _remoteEndPoint,
