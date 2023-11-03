@@ -19,22 +19,22 @@ namespace SyslogRemoteStore.Web.Services
         public string Severity { get; set; }
 
 
-        public ObservableCollection<Log> FilterLog(ObservableCollection<Log> logs)
+        public List<Log> FilterLog(List<Log> logs)
         {
-            
-                ObservableCollection<Log> filteredLogs = logs;
 
-                if (!string.IsNullOrEmpty(this.SourceIp))
-                {
-                    filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
-                }
+            List<Log> filteredLogs = logs;
 
-                if (!string.IsNullOrEmpty(this.Severity))
-                {
-                    filteredLogs = filteredLogs.Where(l => l.Severity.Contains(this.Severity)).ToList();
-                }
+            if (!string.IsNullOrEmpty(this.SourceIp))
+            {
+                filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
+            }
 
-                return filteredLogs;
+            if (!string.IsNullOrEmpty(this.Severity))
+            {
+                filteredLogs = filteredLogs.Where(l => l.Severity.Contains(this.Severity)).ToList();
+            }
+
+            return filteredLogs;
             
         }
     }
