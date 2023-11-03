@@ -1,11 +1,12 @@
 ﻿using SyslogRemoteStore.Web.Models;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
 namespace SyslogRemoteStore.Web.Services
 {
-    public class FilterService : INotifyPropertyChanged
+    public class LogFilterService : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -18,36 +19,27 @@ namespace SyslogRemoteStore.Web.Services
         public string Severity { get; set; }
 
 
-        private void Filter()
+        public ObservableCollection<Log> FilterLog(ObservableCollection<Log> logs)
         {
-            List<Log> FilterLog(List<Log> logs, FilterService filter)
-            {
-                var filteredLogs = logs;
+            
+                ObservableCollection<Log> filteredLogs = logs;
 
-                if (!string.IsNullOrEmpty(filter.SourceIp))
+                if (!string.IsNullOrEmpty(this.SourceIp))
                 {
-                    filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(filter.SourceIp)).ToList();
+                    filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
                 }
 
-                if (!string.IsNullOrEmpty(filter.Severity))
+                if (!string.IsNullOrEmpty(this.Severity))
                 {
-                    filteredLogs = filteredLogs.Where(l => l.Severity.Contains(filter.Severity)).ToList();
+                    filteredLogs = filteredLogs.Where(l => l.Severity.Contains(this.Severity)).ToList();
                 }
 
                 return filteredLogs;
-            }
+            
         }
     }
 }
 
-  /*   public class FilterService : INotifyPropertyChanged
-  {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }*/
 
  
 

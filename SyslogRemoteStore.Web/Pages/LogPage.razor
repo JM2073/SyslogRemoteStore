@@ -2,6 +2,8 @@
 @using System.Collections.Specialized
 @using SyslogRemoteStore.Web.Models
 @inject ILogsViewModel vm
+@inject LogFilterService fs
+@using SyslogRemoteStore.Web.Services
 
 <style>
     table {
@@ -59,7 +61,7 @@
                 <th>Tag</th>
                 <th>Message</th>
             </tr>
-            @foreach (Log log in vm.Radios.SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp))
+            @foreach (Log log in fs.FilterLog( vm.Radios.SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp)))
             {
                 <tr>
                     <td>@log.Received</td>
