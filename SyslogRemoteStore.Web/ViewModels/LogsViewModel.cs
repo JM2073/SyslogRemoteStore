@@ -19,7 +19,7 @@ public class LogsViewModel : BaseViewModel, ILogsViewModel
         Radios = _collectionStore.Radios;
     }
 
-    public ObservableCollection<T6S3> Radios { get; set; }
+    public ObservableCollection<IT6S3> Radios { get; set; }
     
     public void Export()
     {

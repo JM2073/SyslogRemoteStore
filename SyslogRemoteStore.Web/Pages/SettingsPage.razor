@@ -1,3 +1,118 @@
 ﻿@page "/SettingsPage"
 
+<html>
+
+        <style>
+     
+          label {
+           font-weight: bold;
+           display: block;
+           margin-bottom: 5px;
+          }
+
+
+        input[type="text"] {
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Style for the label */
+        label {
+        display: block; /* Place the label on a new line */
+        font-weight: bold;
+        }
+
+        /* Style for the dropdown menu */
+        select {
+        width: 200px; /* Adjust the width as needed */
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        }
+
+        /* Style for the label */
+        label {
+        display: block; /* Place the label on a new line */
+        font-weight: bold;
+        margin-bottom: 5px; /* Add some spacing below the label */
+        }
+
+        /* Style for the input box */
+        input[type="number"] {
+        width: 200px; /* Adjust the width as needed */
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        }
+
+        ol {
+        padding-left: 20px; /* Add left padding for indentation */
+        }
+
+        li {
+        margin: 5px 0; /* Add margin between list items */
+        }
+
+        /* Style for the submit button */
+        input[type="submit"] {
+        background-color: #4CAF50; /* Background color */
+        color: white; /* Text color */
+        padding: 10px 20px; /* Padding around text */
+        border: none; /* Remove border */
+        border-radius: 5px; /* Add rounded corners */
+        cursor: pointer; /* Change cursor to pointer on hover */
+        }
+
+        /* Change button style on hover */
+        input[type="submit"]:hover {
+        background-color: #dimgrey; /* Darker background color on hover */
+        }
+    </style>
+
+    <body>
+
+        <div>
+            <label for= "Header">Change Syslog Message Severity Colours</label>
+            <label for="Debug">Debug:</label> <input type="color" id="head" name="head" value="#0000"/>
+            <label for="Info">Info:</label> <input type="color" id="head" name="head" value="#0000">
+            <label for="Warning">Warning:</label> <input type="color" id="head" name="head" value="#0000">
+            <label for="Error">Error:</label> <input type="color" id="head" name="head" value="#0000">
+        </div>
+
+        <div>
+            <label for="DropdownMenu">Change Listening Proticals:</label>
+            <select id="menu">
+                <option value="UdpOption">UDP</option>
+                <option value="TcpOption">TCP</option>
+                <option value="BothOption">Both</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="DropdownMenu">IP Addresses :</label>
+            <select id="menu">
+                <option value="IP Address"></option>
+                <option value="IP Address"></option>
+                <option value="IP Address"></option>
+            </select>
+        </div>
+
+        <div>
+            <label for="ChangingPort">Change Listen Port:</label>
+            <input type="number" id="integerInput" name="integerInput">
+        </div>
+
+        <div>
+            <form action="/submit" method="post">
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+
+    </body>
+
+</html>
 

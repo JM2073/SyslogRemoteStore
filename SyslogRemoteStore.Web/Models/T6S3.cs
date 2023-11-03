@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Timers;
@@ -11,11 +12,18 @@ namespace SyslogRemoteStore.Web.Models;
 public class T6S3 : IT6S3, INotifyPropertyChanged
 {
     private readonly Timer logTimer;
-    
-    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private bool _alertFlag;
+
+    private string _ipvType;
+
+    private ObservableCollection<Log> _logs = new();
+
+    private bool _tcpConnected;
 
     public T6S3(Socket socket, string ip, int port)
     {
+        Id = Guid.NewGuid();
         Socket = socket;
         Ip = ip;
         Port = port;
@@ -24,12 +32,12 @@ public class T6S3 : IT6S3, INotifyPropertyChanged
 
         // Initialize and configure the timer
         logTimer = new Timer();
-        logTimer.Interval = 5 * 60 * 1000; 
+        logTimer.Interval = 5 * 60 * 1000;
         logTimer.Elapsed += LogTimerElapsed;
-        logTimer.AutoReset = false; 
+        logTimer.AutoReset = false;
     }
 
-    private bool _tcpConnected;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public bool TcpConnected
     {
@@ -37,21 +45,19 @@ public class T6S3 : IT6S3, INotifyPropertyChanged
         set => SetField(ref _tcpConnected, value);
     }
 
-    private bool _alertFlag;
-    
     public bool AlertFlag
     {
         get => _alertFlag;
         set => SetField(ref _alertFlag, value);
     }
 
+    public Guid Id { get; set; }
+
     public string Ip { get; set; }
 
     public int Port { get; set; }
-    
-    public Socket Socket { get; set; }
 
-    private ObservableCollection<Log> _logs = new();
+    public Socket Socket { get; set; }
 
     public ObservableCollection<Log> Logs
     {
@@ -59,6 +65,35 @@ public class T6S3 : IT6S3, INotifyPropertyChanged
         set => SetField(ref _logs, value);
     }
 
+    public string GetSocketStatus()
+    {
+        string result = string.Empty;
+        switch (this.Socket.ProtocolType)
+        {
+            case ProtocolType.Udp:
+                result = this.AlertFlag ? "Dissconnected" : "Connected";
+                break;
+            case ProtocolType.Tcp:
+                result = this.TcpConnected ? "Connected" : "Dissconnected";
+                break;
+            default:
+                result = "Unknown";
+                break;
+        }
+        return result;
+    }
+    
+    public string GetIpvType()
+    {
+        return IPAddress.Parse(this.Ip).IsIPv4MappedToIPv6 ? "IPv4" : "IPv6";
+    }
+
+    public string GetFormatedIp()
+    {
+        IPAddress ip = IPAddress.Parse(this.Ip);
+        return IPAddress.Parse(this.Ip).IsIPv4MappedToIPv6 ? ip.MapToIPv4().ToString() : ip.MapToIPv6().ToString();
+    }
+    
     // Event handler for changes in the Logs collection
     private void Logs_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
