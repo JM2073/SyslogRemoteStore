@@ -1,5 +1,8 @@
 ﻿@page "/RadioPage/{RadioId}"
 @inject IRadioViewModel vm
+@inject LogFilterService fs
+@using SyslogRemoteStore.Web.Services
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -130,10 +133,10 @@
 </div>
 <form action="/search" method="get">
     <div style="display: inline-block;">
-        <input type="text" name="q" placeholder="Search..." />
+        <input type="text" name="q" placeholder="Search..." @bind="fs.SourceIp" />
     </div>
     <div style="display: inline-block;">
-        <input type="submit" value="Search" />
+            <button @onclick="filter" value="Search">Search</button>
     </div>
 </form>
 <div>
@@ -148,7 +151,7 @@
             <th>Tag</th>
             <th>Message</th>
         </tr>
-         @foreach (Log log in vm.Radio.Logs)
+            @foreach (Log log in displayedLogs)
                    {
                        <tr>
                            <td>@log.Received</td>
@@ -168,19 +171,46 @@
 {
     [Parameter]
     public string RadioId { get; set; }
-    
+    public List<Log> logs = new List<Log>();
+    public List<Log> displayedLogs = new List<Log>();
+
     protected override async Task OnParametersSetAsync()
     {
         vm.RadioId = RadioId;
-        
+
         vm.Radio.PropertyChanged += HandlePropertyChanged();
+
+        logs = vm.Radio.Logs.ToList();
+
     }
     
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
-        return async (sender, e) => { await InvokeAsync(() => { StateHasChanged(); }); };
+        return async (sender, e) => { await InvokeAsync(() => 
+                    {
+                        StateHasChanged();
+                        logs = vm.Radio.Logs.ToList();
+                        filter();
+                    });
+        };
+        //{ StateHasChanged(); }); };
     }
 
+    public void filter()
+    {
+
+        if (logs != null && string.IsNullOrWhiteSpace(fs.SourceIp) == false)
+        {
+            displayedLogs = fs.FilterLog(logs);
+
+        }
+        else
+        {
+            displayedLogs = logs;
+        }
+        //StateHasChanged();
+
+    }
    
 
 
