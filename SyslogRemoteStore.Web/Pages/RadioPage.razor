@@ -131,14 +131,10 @@
         <img src="T6S3.jpg" alt="Your Image" style="height: auto; max-width: 100%;">
     </div>
 </div>
-<form action="/search" method="get">
-    <div style="display: inline-block;">
+    <div>
         <input type="text" name="q" placeholder="Search..." @bind="fs.SourceIp" />
+        <button @onclick="filter" value="Search">Search</button>
     </div>
-    <div style="display: inline-block;">
-            <button @onclick="filter" value="Search">Search</button>
-    </div>
-</form>
 <div>
     <table class="defaulttable" style="width: 100%; border: 0; overflow-y: scroll">
         <tr>
