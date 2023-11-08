@@ -1,6 +1,6 @@
 ﻿@page "/RadioPage/{RadioId}"
 @inject IRadioViewModel vm
-@inject LogFilterService fs
+@inject RadioFilterService fs
 @using SyslogRemoteStore.Web.Services
 
 <head>
@@ -132,7 +132,7 @@
     </div>
 </div>
     <div>
-        <input type="text" name="q" placeholder="Search..." @bind="fs.SourceIp" />
+        <input type="text" name="q" placeholder="Search..." @bind="fs.Message" />
         <button @onclick="filter" value="Search">Search</button>
     </div>
 <div>
@@ -195,7 +195,7 @@
     public void filter()
     {
 
-        if (logs != null && string.IsNullOrWhiteSpace(fs.SourceIp) == false)
+        if (logs != null && string.IsNullOrWhiteSpace(fs.Message) == false)
         {
             displayedLogs = fs.FilterLog(logs);
 
