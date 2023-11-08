@@ -41,8 +41,8 @@ namespace SyslogRemoteStore.Web.Services
 
             if (!string.IsNullOrEmpty(this.Message))
             {
-                filteredLogs = filteredLogs.Where(l => l.Message.Contains(this.Message)).ToList();
-                filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+                filteredLogs = filteredLogs.Where(l => l.Message.Contains(this.Message, StringComparison.OrdinalIgnoreCase)).ToList();
+                //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
 
             }
 
