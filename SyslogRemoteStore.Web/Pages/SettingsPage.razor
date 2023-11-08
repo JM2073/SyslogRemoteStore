@@ -70,27 +70,60 @@
         input[type="submit"]:hover {
         background-color: #dimgrey; /* Darker background color on hover */
         }
+
+    section {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* set column sizes here */
+        grid-template-rows: auto auto; /* we want two rows */
+
+        grid-gap: 10px; /* how far between cells? */
+        grid-auto-flow: column; /* fill in by column, not row */
+        /* temporary property for visualization */
+        height: 150px;
+    }
+
+    .column {
+        float: left;
+        width: 25%;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
     </style>
 
 <div>
     <EditForm model="@vm" OnSubmit=@FormSubmitted>
+
         <div>
             <label for="Header">Change Syslog Message Severity Colours</label>
+        </div> 
 
-            <label for="Debug">Debug:</label>
-            <input type="color" id="head" name="head" @bind="@vm.DebugHex"/>
+        <section>
+            <div>
+                <label for="Debug">Debug:</label>
+                <input type="color" id="head" name="head" @bind="@vm.DebugHex" />
+            </div>
+            <div>
+                <label for="Info">Info:</label>
+                <input type="color" id="head" name="head" @bind="@vm.InfoHex">
+            </div>
+            <div>
+                <label for="Warning">Warning:</label>
+                <input type="color" id="head" name="head" @bind="@vm.WarningHex">
+            </div>
+            <div>
+                <label for="Error">Error:</label>
+                <input type="color" id="head" name="head" @bind="@vm.ErrorHex">
+            </div>
+        </section>
 
-            <label for="Info">Info:</label>
-            <input type="color" id="head" name="head" @bind="@vm.InfoHex">
 
-            <label for="Warning">Warning:</label>
-            <input type="color" id="head" name="head" @bind="@vm.WarningHex">
-
-            <label for="Error">Error:</label>
-            <input type="color" id="head" name="head" @bind="@vm.ErrorHex">
-        </div>
-
-        <div>
+        <div class="row">
+            <div class="column">
             <label for="ProtocolTypeDropdown">Change Listening Proticals:</label>
             <select id="ProtocolTypeDropdown" @bind="vm.ListeningProtocolType">
                 @foreach (object? option in Enum.GetValues(typeof(ProtocolType)))
@@ -99,24 +132,26 @@
                 }
             </select>
         </div>
-
-        <div>
+            <div class="column">            
             <label for="AvailableIpAddressDropdown">IP Addresses :</label>
             <select id="AvailableIpAddressDropdown" @bind="vm.IpAddress">
-                @foreach (string ip in vm.AvailableIpAddress)
-                {
-                    <option value="@ip">@ip</option>
-                }
+                    @foreach (string ip in vm.AvailableIpAddress)
+                    {
+                        <option value="@ip">@ip</option>
+                    }
             </select>
+        </div>
+            <div class="column">
+                    <label for="integerInput">Change Listen Port:</label>
+                    <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
+            </div>
+            <div class="column"></div>
         </div>
 
         <div>
-            <label for="integerInput">Change Listen Port:</label>
-            <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
+            <input type="submit" value="Submit">
         </div>
 
-
-        <input type="submit" value="Submit">
     </EditForm>
 </div>
 
