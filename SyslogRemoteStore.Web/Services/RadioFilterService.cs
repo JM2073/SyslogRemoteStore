@@ -1,6 +1,6 @@
 ﻿namespace SyslogRemoteStore.Web.Services
 {
-    public class RadioFilterLog
+    public class RadioFilterService
     {
     }
 }
