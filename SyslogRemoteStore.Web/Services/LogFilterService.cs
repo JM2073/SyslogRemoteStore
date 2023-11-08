@@ -19,6 +19,24 @@ namespace SyslogRemoteStore.Web.Services
         public string Severity { get; set; }
 
 
+
+        public bool Error = true;
+        public bool Info = true;
+        public bool Debug = true;
+        public bool Warning = true;
+
+
+        public bool GetSevError() => Error;
+        public bool GetSevInfo() => Info;
+        public bool GetSevDebug() => Debug;
+        public bool GetSevWarning() => Warning;
+
+        public void SeverityError(bool value) => Error = value;
+        public void SeverityInfo(bool value) => Info = value;
+        public void SeverityDebug(bool value) => Debug = value;
+        public void SeverityWarning(bool value) => Warning = value;
+
+
         public List<Log> FilterLog(List<Log> logs)
         {
 
@@ -27,12 +45,10 @@ namespace SyslogRemoteStore.Web.Services
             if (!string.IsNullOrEmpty(this.SourceIp))
             {
                 filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
+                filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+
             }
 
-            if (!string.IsNullOrEmpty(this.Severity))
-            {
-                filteredLogs = filteredLogs.Where(l => l.Severity.Contains(this.Severity)).ToList();
-            }
 
             return filteredLogs;
             
@@ -41,7 +57,6 @@ namespace SyslogRemoteStore.Web.Services
 }
 
 
- 
 
 
 
