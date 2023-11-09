@@ -37,6 +37,7 @@ public class RadioService
 
         _asyncSocketudp.Bind(new IPEndPoint(IPAddress.Any, port));
 
+
         byte[] buffer = new byte[250];
         _asyncSocketudp.BeginReceiveFrom(buffer, 0, buffer.Length, 0, ref _remoteEndPoint,
             ar => HandleMessageCallback(ar, _asyncSocketudp), buffer);

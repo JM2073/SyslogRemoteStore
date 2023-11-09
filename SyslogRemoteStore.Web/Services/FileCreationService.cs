@@ -7,24 +7,13 @@ using System.Text;
 
 namespace SyslogRemoteStore.Web.Services
 {
-    public class FileCreationService : INotifyPropertyChanged
+    public class FileCreationService 
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
+        public void CreateFile(List<Log> logs, string fn) //string filename Changes depending on name
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+            string filename = string.Format(@"{0}.txt",fn);
+            string path = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, filename);
 
-        public string SourceIp { get; set; }
-        public string TimeStamp { get; set; }
-
-        List<Log> logs = new List<Log>();
-
-        string path = AppDomain.CurrentDomain.BaseDirectory + "FileName.txt"; 
-
-        public void CreateFile()
-        {
             try
             {
                 if (File.Exists(path))
@@ -38,24 +27,15 @@ namespace SyslogRemoteStore.Web.Services
                     foreach (var log in logs)
                     {
 
-                        string place = string.Format(@"{0}_{1}\n", log.SourceIp, log.TimeStamp);
+                        string logline = string.Format(@"{0} {1} {2} {3} {4} {5} {6}", log.SourceIp, log.SourceItem, log.Facilty, log.Severity, log.TimeStamp, log.Tag, log.Message);
 
-                        Byte[] LogEntry = new UTF8Encoding(true).GetBytes(place);
+                        Byte[] LogEntry = new UTF8Encoding(true).GetBytes(logline);
                         fs.Write(LogEntry, 0, LogEntry.Length);
+                        byte[] newline = UTF8Encoding.ASCII.GetBytes(Environment.NewLine);
+                        fs.Write(newline, 0, newline.Length);
 
                     }
 
-
-                }
-
-
-                using (StreamReader sr = File.OpenText(path))
-                {
-                    string s = "";
-                    while ((s = sr.ReadLine()) != null)
-                    {
-                        //Console.WriteLine(s);
-                    }
                 }
             }
             catch (Exception Exept)
@@ -64,7 +44,6 @@ namespace SyslogRemoteStore.Web.Services
             }
 
         }
-
     }
     
 }

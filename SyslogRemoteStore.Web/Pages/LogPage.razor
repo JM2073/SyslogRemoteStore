@@ -4,6 +4,7 @@
 @inject ILogsViewModel vm
 @inject LogFilterService fs
 @using SyslogRemoteStore.Web.Services
+@using System.Text;
 
 <style>
     table {
@@ -84,6 +85,7 @@
 
     public List<Log> logs = new List<Log>();
     public List<Log> displayedLogs = new List<Log>();
+    FileCreationService fc = new FileCreationService();
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,6 +96,7 @@
         }
 
         logs = vm.Radios.SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp).ToList();
+
         await base.OnInitializedAsync();
     }
 
@@ -113,11 +116,13 @@
 
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
-        return async (sender, e) => { await InvokeAsync(() => 
+        return async (sender, e) => {await InvokeAsync(() => 
         {
             StateHasChanged(); 
             logs = vm.Radios.SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp).ToList();
             filter();
+            fc.CreateFile(logs ,"Syslog");
+            
         }); 
 
         };
