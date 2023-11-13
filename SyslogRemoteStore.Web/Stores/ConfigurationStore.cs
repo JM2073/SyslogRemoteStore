@@ -1,11 +1,12 @@
 using System.ComponentModel;
+using SyslogRemoteStore.Web.Data;
 using SyslogRemoteStore.Web.Enums;
+using SyslogRemoteStore.Web.Pages;
 
 namespace SyslogRemoteStore.Web.Stores;
-public class ConfigurationStore : BaseStore
+public class ConfigurationStore : BaseStore, INotifyPropertyChanged
 {
-    
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public new event PropertyChangedEventHandler? PropertyChanged;
     
     private ProtocolType _listeningProtocolType = ProtocolType.Both;
 
@@ -13,18 +14,35 @@ public class ConfigurationStore : BaseStore
     private string _errorHex = "#FF0000";
     private string _debugHex = "#00008B";
     private string _infoHex = "#000000";
-    public int Port { get; set; } = 514;
-    public string Ip { get; set; } = "127.0.0.1";
+    private int _port = 514;
+    private string _ip = "127.0.0.1";
+
+    public int Port
+    {
+        get => _port;
+        set => SetValue(ref _port, value);
+    }
+
+    public string Ip
+    {
+        get => _ip;
+        set => SetValue(ref _ip, value);
+    }
 
     public ProtocolType ListeningProtocolType
     {
         get => _listeningProtocolType;
         set
         {
-            SetValue(ref _listeningProtocolType, value);
+            ProtocolType oldVal = _listeningProtocolType;
+            _listeningProtocolType = value;
+            if (!oldVal.Equals(_listeningProtocolType))
+            {
+                RadioService.Instance.handlePropertyChanged(this, new PropertyChangedEventArgs(nameof(ListeningProtocolType)));
+            }
         }
     }
-
+    
     public string WarningHex
     {
         get => _warningHex;

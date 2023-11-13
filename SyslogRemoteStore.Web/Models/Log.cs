@@ -31,8 +31,9 @@ public class Log
         if (match.Success)
         {
             int priorityValue = Int32.TryParse(match.Groups[1].Value, out priorityValue) ? priorityValue : 0;
-            int facility = priorityValue >> 3;
-            int severity = priorityValue & 7;
+            int facility = priorityValue /8;
+            int severity = priorityValue - (facility * 8);
+
 
             Severity = GetSeverity(severity);
             Received = Convert.ToBoolean(int.Parse(match.Groups[2].Value));

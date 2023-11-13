@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SyslogRemoteStore.Web.Data;
 using SyslogRemoteStore.Web.Enums;
 using SyslogRemoteStore.Web.Stores;
 
@@ -52,5 +53,4 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
         _configurationStore.DebugHex = DebugHex;
         _configurationStore.InfoHex = InfoHex;
     }
-    
 }

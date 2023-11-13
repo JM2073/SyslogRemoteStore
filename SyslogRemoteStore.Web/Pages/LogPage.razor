@@ -1,4 +1,4 @@
-﻿@page "/LogView"
+﻿@page "/"
 @using System.Collections.Specialized
 @using SyslogRemoteStore.Web.Models
 @inject ILogsViewModel vm
@@ -102,7 +102,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        vm._configurationStore.PropertyChanged += HandlePropertyChanged();
         vm.Radios.CollectionChanged += RadiosOnCollectionChanged;
         foreach (T6S3 _radio in vm.Radios)
         {

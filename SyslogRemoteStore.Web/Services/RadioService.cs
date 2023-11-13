@@ -16,21 +16,25 @@ public class RadioService
     private CollectionStore _collectionStore;
     private ConfigurationStore _configStore;
     private EndPoint _remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
+    private static RadioService _instance;
+
+    public static RadioService Instance
+    {
+        get => _instance;
+        set => _instance = value;
+    }
 
     public RadioService(ConfigurationStore configStore, CollectionStore collectionStore)
     {
         _configStore = configStore;
         _collectionStore = collectionStore;
+        Instance = this;
         _configStore.PropertyChanged += handlePropertyChanged;
     }
 
-    private void handlePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    public void handlePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-
-        Console.WriteLine("something has changed");
-        if (e.PropertyName == nameof(_configStore.ListeningProtocolType))
-        {
-        }
+     BeginListening();
     }
 
     public void BeginListening()
@@ -50,8 +54,6 @@ public class RadioService
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
-
     }
 
     public async Task ListenUdp(string ip, int port)
@@ -156,5 +158,4 @@ public class RadioService
             Console.WriteLine("Receive error: " + ex.Message);
         }
     }
-
 }
