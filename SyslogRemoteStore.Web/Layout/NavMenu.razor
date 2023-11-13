@@ -20,8 +20,8 @@
             left: -300px;
             width: 300px;
             transition-duration: 100ms;
-              overflow:scroll;
-                -webkit-overflow-scrolling: touch;
+            overflow:scroll;
+            -webkit-overflow-scrolling: touch;
         }
 
         #tog:checked + nav#ham {
@@ -44,7 +44,9 @@
    }
 </style>
 
-<header class="masthead mb-auto row">
+<body style="background-color: #C0C0C4;">
+
+<header class="masthead mb-auto row" style="background-color: #E1E1EA; border-radius: 25px; ">
     <div class="col-md-1">
         <label class="inline-block p-1 border m-2 cursor-pointer z-50" for="tog">
             <img src="menu.png" alt="" style="height:40px; width:40px;">
@@ -77,10 +79,11 @@
             <a class="nav-link active" href="">Home</a>
             <a class="nav-link" href="LogView">Log View</a>
             <a class="nav-link" href="SettingsPage">Settings</a>
-
         </nav>
     </div>
 </header>
+
+</body>
 
 @code {
 
@@ -125,6 +128,8 @@
 
         return result;
     }
+
+
 
 
 }

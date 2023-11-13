@@ -12,7 +12,7 @@ public class CollectionStore : BaseStore
         get => _radios;
         set => SetValue(ref _radios, value);
     }
-
+    public List<String> AvailableIpAddress { get; set; } = new List<string>();
 
 }
 

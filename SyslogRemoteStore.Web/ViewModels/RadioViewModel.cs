@@ -7,7 +7,6 @@ namespace SyslogRemoteStore.Web.ViewModels;
 
 public class RadioViewModel : BaseViewModel, IRadioViewModel
 {
-    private readonly ConfigurationStore _configurationStore;
     private readonly CollectionStore _collectionStore;
 
     public RadioViewModel(ConfigurationStore configurationStore, CollectionStore collectionStore)
@@ -16,6 +15,7 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
         _collectionStore = collectionStore;
         
     }
+    public ConfigurationStore _configurationStore { get; }
 
     public IT6S3 Radio { get; set; }
 
@@ -29,4 +29,5 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
             Radio = _collectionStore.Radios.Single(x => x.Id == Guid.Parse(_radioId));
         }
     }
+
 }

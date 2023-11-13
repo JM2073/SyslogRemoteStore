@@ -12,6 +12,7 @@ builder.Services.AddSingleton<RadioService>();
 builder.Services.AddSingleton<LogFilterService>();
 builder.Services.AddScoped<ILogsViewModel, LogsViewModel>();
 builder.Services.AddScoped<IRadioViewModel, RadioViewModel>();
+builder.Services.AddScoped<ISettingsViewModel, SettingsViewModel>();
 
 // Add singletons to the container
 

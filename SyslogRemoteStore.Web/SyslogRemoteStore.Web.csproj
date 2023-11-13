@@ -20,6 +20,9 @@
     <Compile Update="ViewModels\IRadioViewModel.cs">
       <DependentUpon>RadioViewModel.cs</DependentUpon>
     </Compile>
+    <Compile Update="ViewModels\ISettingsViewModel.cs">
+      <DependentUpon>SettingsViewModel.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
