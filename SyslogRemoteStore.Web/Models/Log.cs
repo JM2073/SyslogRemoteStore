@@ -10,6 +10,7 @@ public class Log
         SourceIp = sourceIp;
         ParseMessage(message);
     }
+    public string FullMessage { get; set; }
     public string Message { get; set; }
     public bool Received { get; set; }
     public string SourceIp { get; set; }
@@ -27,6 +28,7 @@ public class Log
 
         if (match.Success)
         {
+            this.FullMessage = message;
             this.Severity = match.Groups[1].Value;
             this.Received = Convert.ToBoolean(int.Parse(match.Groups[2].Value));
             this.TimeStamp = match.Groups[3].Value;

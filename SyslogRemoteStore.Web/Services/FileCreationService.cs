@@ -27,7 +27,7 @@ namespace SyslogRemoteStore.Web.Services
                     foreach (var log in logs)
                     {
 
-                        string logline = string.Format(@"{0} {1} {2} {3} {4} {5} {6}", log.SourceIp, log.SourceItem, log.Facilty, log.Severity, log.TimeStamp, log.Tag, log.Message);
+                        string logline = string.Format(@"{0}",log.FullMessage);
 
                         Byte[] LogEntry = new UTF8Encoding(true).GetBytes(logline);
                         fs.Write(LogEntry, 0, LogEntry.Length);
