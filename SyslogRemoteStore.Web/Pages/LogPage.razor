@@ -122,7 +122,7 @@
             StateHasChanged(); 
             logs = vm.Radios.SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp).ToList();
             filter();
-            fc.CreateFile(logs ,"Syslog");
+            //fc.CreateFile(logs ,"Syslog");
             
         }); 
 

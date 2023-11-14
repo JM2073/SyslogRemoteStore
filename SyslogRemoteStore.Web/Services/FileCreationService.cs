@@ -22,6 +22,7 @@ namespace SyslogRemoteStore.Web.Services
 
         public void CreateFile(List<Log> logs, string fileName) //string filename Changes depending on name
         {
+
             string filename = string.Format(@"{0}.txt", fileName);
             string path = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, filename);
 
@@ -56,13 +57,16 @@ namespace SyslogRemoteStore.Web.Services
 
         }
 
-        public void ExportClass()
+        public void ExportZip()
         {
 
 
 
 
 
+
+
         }
+
     }
 }
