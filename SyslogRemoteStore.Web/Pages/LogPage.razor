@@ -3,6 +3,7 @@
 @using SyslogRemoteStore.Web.Models
 @inject ILogsViewModel vm
 @inject LogFilterService fs
+@inject FileCreationService fc
 @using SyslogRemoteStore.Web.Services
 @using System.Text;
 
@@ -85,7 +86,7 @@
 
     public List<Log> logs = new List<Log>();
     public List<Log> displayedLogs = new List<Log>();
-    FileCreationService fc = new FileCreationService();
+    //FileCreationService fc = new FileCreationService();
 
     protected override async Task OnInitializedAsync()
     {

@@ -7,11 +7,22 @@ using System.Text;
 
 namespace SyslogRemoteStore.Web.Services
 {
-    public class FileCreationService 
+    public class FileCreationService : INotifyPropertyChanged
     {
-        public void CreateFile(List<Log> logs, string fn) //string filename Changes depending on name
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            string filename = string.Format(@"{0}.txt",fn);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public string SourceIp { get; set; }
+        public string Severity { get; set; }
+
+
+        public void CreateFile(List<Log> logs, string fileName) //string filename Changes depending on name
+        {
+            string filename = string.Format(@"{0}.txt", fileName);
             string path = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, filename);
 
             try
@@ -27,7 +38,7 @@ namespace SyslogRemoteStore.Web.Services
                     foreach (var log in logs)
                     {
 
-                        string logline = string.Format(@"{0}",log.FullMessage);
+                        string logline = string.Format(@"{0}", log.FullMessage);
 
                         Byte[] LogEntry = new UTF8Encoding(true).GetBytes(logline);
                         fs.Write(LogEntry, 0, LogEntry.Length);
@@ -44,6 +55,14 @@ namespace SyslogRemoteStore.Web.Services
             }
 
         }
+
+        public void ExportClass()
+        {
+
+
+
+
+
+        }
     }
-    
 }
