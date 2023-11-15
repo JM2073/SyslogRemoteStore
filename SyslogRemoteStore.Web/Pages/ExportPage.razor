@@ -1,0 +1,52 @@
+﻿@using System;
+@using SyslogRemoteStore.Web.Models
+@inject FileCreationService fc
+@inject FileZipService fz
+@inject IRadioViewModel vm 
+@inject CollectionStore cs
+@using SyslogRemoteStore.Web.Services
+@using System.Collections.Specialized
+
+
+
+@page "/ExportPage"
+
+inject 
+<html>
+<h3>ExportPage</h3>
+
+<button @onclick="ZipFiles">Zip Files</button>
+
+
+</html>
+
+@code 
+{
+
+    private void ZipFiles()
+    {
+        List<string> filesToZip = new List<string>();
+
+        foreach (IGrouping<string, IT6S3> radioIpGroups in cs.Radios.GroupBy(x => x.GetFormatedIp()))
+        {   
+            foreach (IT6S3 radio in radioIpGroups)
+            {
+                string radioIp = radio.Ip;
+                DateTime currentDateTime = DateTime.Now;
+                string dateTime = currentDateTime.ToString("yyyyMMddHHmmssfff");
+                string filename = string.Format(@"{0}_{1}.txt", radioIp, dateTime);
+                filesToZip.Add(filename);
+
+
+            }
+        }
+        
+        string zipFilePath = "Path/To/OutputFolder/MyZipFile.zip";
+
+        fz.ZipFiles(zipFilePath, filesToZip);
+
+        Console.WriteLine("Zip file created successfully.");
+    }
+}
+
+
