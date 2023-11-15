@@ -178,7 +178,11 @@
     
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
-        return async (sender, e) => { await InvokeAsync(() => { StateHasChanged(); }); };
+        return async (sender, e) => { await InvokeAsync(() => { StateHasChanged(); 
+
+               // fc.CreateFile(logs,vm.Radio.Ip);
+        
+        }); };
     }
 
    
