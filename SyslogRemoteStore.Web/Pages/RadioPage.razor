@@ -1,5 +1,8 @@
 ﻿@page "/RadioPage/{RadioId}"
 @inject IRadioViewModel vm
+@inject RadioFilterService fs
+@using SyslogRemoteStore.Web.Services
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -140,14 +143,10 @@
         <img src="T6S3.jpg" alt="Your Image" style="height: auto; max-width: 100%;">
     </div>
 </div>
-<form action="/search" method="get">
-    <div style="display: inline-block;">
-        <input type="text" name="q" placeholder="Search..." />
+    <div>
+        <input type="text" name="q" placeholder="Search..." @bind="fs.Message" @onkeydown="@Enter" />
+        <button @onclick="filter" value="Search">Search</button>
     </div>
-    <div style="display: inline-block;">
-        <input type="submit" value="Search" />
-    </div>
-</form>
 <div>
     <table class="defaulttable" style="width: 100%; border: 0; overflow-y: scroll">
         <tr>
@@ -160,7 +159,7 @@
             <th>Tag</th>
             <th>Message</th>
         </tr>
-         @foreach (Log log in vm.Radio.Logs)
+            @foreach (Log log in displayedLogs)
                    {
                        <tr class="@log.Severity">
                            <td>@log.Received</td>
@@ -180,21 +179,50 @@
 {
     [Parameter]
     public string RadioId { get; set; }
-    
+    public List<Log> logs = new List<Log>();
+    public List<Log> displayedLogs = new List<Log>();
+
     protected override async Task OnParametersSetAsync()
     {
         vm.RadioId = RadioId;
         vm.Radio.PropertyChanged += HandlePropertyChanged();
+        logs = vm.Radio.Logs.ToList();
         vm._configurationStore.PropertyChanged += HandlePropertyChanged();
-
     }
     
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
-        return async (sender, e) => { await InvokeAsync(() => { StateHasChanged(); }); };
+        return async (sender, e) => { await InvokeAsync(() => 
+                    {
+                        StateHasChanged();
+                        logs = vm.Radio.Logs.ToList();
+                        filter();
+                    });
+        };
+        //{ StateHasChanged(); }); };
     }
 
-   
+    public void filter()
+    {
 
+        if (logs != null && string.IsNullOrWhiteSpace(fs.Message) == false)
+        {
+            displayedLogs = fs.FilterLog(logs);
+
+        }
+        else
+        {
+            displayedLogs = logs;
+        }
+        //StateHasChanged();
+
+    }
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            filter();
+        }
+    }
 
 }

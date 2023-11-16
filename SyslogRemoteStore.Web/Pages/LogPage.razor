@@ -61,7 +61,7 @@
         </div>
 
         <div>
-            <input type="text" name="q" placeholder="Search..." @bind="fs.SourceIp"/>
+            <input type="text" name="q" placeholder="Search..." @bind="fs.SourceIp" @onkeydown="@Enter" />
             <button @onclick="filter" value="Search">Search</button>
         </div>
 
@@ -155,6 +155,12 @@
 
     }
 
-  
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            filter();
+        }
+    }
 
 }
