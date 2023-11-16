@@ -43,8 +43,10 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
     public string InfoHex { get; set; }
 
 
-    public void Submit() 
+    public void Submit()
     {
+        bool restartListeners = _configurationStore.Ip != IpAddress || _configurationStore.Port != Port || _configurationStore.ListeningProtocolType != ListeningProtocolType;
+        
         _configurationStore.Ip = IpAddress;
         _configurationStore.Port = Port;
         _configurationStore.ListeningProtocolType = ListeningProtocolType;
@@ -52,5 +54,11 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
         _configurationStore.ErrorHex = ErrorHex;
         _configurationStore.DebugHex = DebugHex;
         _configurationStore.InfoHex = InfoHex;
+
+        if (restartListeners)
+        {
+            RadioService.Instance.RestartListener();
+        }
+        
     }
 }

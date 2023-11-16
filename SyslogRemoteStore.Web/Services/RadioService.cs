@@ -17,26 +17,22 @@ public class RadioService
     private ConfigurationStore _configStore;
     private EndPoint _remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
     private static RadioService _instance;
-
+    
+    
     public static RadioService Instance
     {
         get => _instance;
         set => _instance = value;
     }
-
+    
     public RadioService(ConfigurationStore configStore, CollectionStore collectionStore)
     {
         _configStore = configStore;
         _collectionStore = collectionStore;
         Instance = this;
-        _configStore.PropertyChanged += handlePropertyChanged;
     }
-
-    public void handlePropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-     BeginListening();
-    }
-
+    
+    
     public void BeginListening()
     {
         switch (_configStore.ListeningProtocolType)
@@ -55,7 +51,17 @@ public class RadioService
                 throw new ArgumentOutOfRangeException();
         }
     }
+    
+    
+    public void RestartListener()
+    {
+        var isSomethingThereudp = _asyncSocketudp;
+        var isSomethingTheretcp = _asyncSockettcp;
 
+        isSomethingTheretcp.Close();
+    }
+    
+    
     public async Task ListenUdp(string ip, int port)
     {
         _asyncSocketudp = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp);
@@ -74,6 +80,8 @@ public class RadioService
     {
         try
         {
+       
+            
             int bytesRead = _asyncSocketudp.EndReceiveFrom(ar, ref _remoteEndPoint);
 
             string senderIpAddress = (_remoteEndPoint as IPEndPoint)?.Address.ToString() ?? string.Empty;
@@ -83,6 +91,9 @@ public class RadioService
 
             if (_t6S3 is null)
             {
+                if (_configStore.ListeningProtocolType == Enums.ProtocolType.Tcp)
+                    return;
+                
                 _t6S3 = new T6S3(asyncSocket,senderIpAddress,senderPort);
                 _collectionStore.Radios.Add(_t6S3);
             }
@@ -124,6 +135,10 @@ public class RadioService
 
     private void OnClientConnect(IAsyncResult _async)
     {
+        //dont accept new TCP connections if the ProtocolType is set to UDP
+        if (_configStore.ListeningProtocolType == Enums.ProtocolType.Udp) 
+            return;
+        
         Socket clientSocket = _asyncSockettcp.EndAccept(_async);
         IPEndPoint remoteEndPoint = (IPEndPoint)clientSocket.RemoteEndPoint;
 

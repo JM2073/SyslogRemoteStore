@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using SyslogRemoteStore.Web.Data;
 using SyslogRemoteStore.Web.Services;
 using SyslogRemoteStore.Web.Stores;
@@ -42,7 +43,24 @@ app.MapFallbackToPage("/_Host");
 RadioService _radioService = app.Services.GetRequiredService<RadioService>();
 _radioService.BeginListening();
 
+CollectionStore _collectionStore = app.Services.GetRequiredService<CollectionStore>();
+_collectionStore.AvailableIpAddress = PopulateIpAddress();
+
 app.Run();
 
 
+List<string> PopulateIpAddress()
+{
+    var list = new List<string>();
+    foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())
+    {
+        list.AddRange(
+            from unicastAddress in networkInterface.GetIPProperties().UnicastAddresses
+            where unicastAddress.Address.ToString() != "::1" 
+            select unicastAddress.Address.ToString());
+            
+    }
+    list = list.OrderBy(x=>x.Length).ToList();
+    return list;
+}
 

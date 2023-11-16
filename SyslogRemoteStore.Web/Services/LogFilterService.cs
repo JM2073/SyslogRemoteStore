@@ -18,6 +18,9 @@ namespace SyslogRemoteStore.Web.Services
         public string SourceIp { get; set; }
         public string Severity { get; set; }
 
+        
+        public bool Error { get; set; }
+        public bool Info { get; set; }
 
         public List<Log> FilterLog(List<Log> logs)
         {
@@ -26,7 +29,7 @@ namespace SyslogRemoteStore.Web.Services
 
             if (!string.IsNullOrEmpty(this.SourceIp))
             {
-                filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
+                filteredLogs = filteredLogs.Where(l =>  (Error == true && l.Severity.Contains("error")) || l.Severity.Contains("info")   ).ToList();
             }
 
             if (!string.IsNullOrEmpty(this.Severity))

@@ -14,7 +14,7 @@ public class ConfigurationStore : BaseStore, INotifyPropertyChanged
     private string _errorHex = "#FF0000";
     private string _debugHex = "#00008B";
     private string _infoHex = "#000000";
-    private int _port = 514;
+    private int _port = 25565;
     private string _ip = "127.0.0.1";
 
     public int Port
@@ -32,50 +32,30 @@ public class ConfigurationStore : BaseStore, INotifyPropertyChanged
     public ProtocolType ListeningProtocolType
     {
         get => _listeningProtocolType;
-        set
-        {
-            ProtocolType oldVal = _listeningProtocolType;
-            _listeningProtocolType = value;
-            if (!oldVal.Equals(_listeningProtocolType))
-            {
-                RadioService.Instance.handlePropertyChanged(this, new PropertyChangedEventArgs(nameof(ListeningProtocolType)));
-            }
-        }
+        set => SetValue(ref _listeningProtocolType, value);
     }
     
     public string WarningHex
     {
         get => _warningHex;
-        set
-        {
-            SetValue(ref _warningHex, value);
-        }
+        set => SetValue(ref _warningHex, value);
     }
 
     public string ErrorHex
     {
         get => _errorHex;
-        set
-        {
-            SetValue(ref _errorHex, value);
-        }
+        set => SetValue(ref _errorHex, value);
     }
 
     public string DebugHex
     {
         get => _debugHex;
-        set
-        {
-            SetValue(ref _debugHex, value);
-        }
+        set => SetValue(ref _debugHex, value);
     }
 
     public string InfoHex
     {
         get => _infoHex;
-        set
-        {
-            SetValue(ref _infoHex, value);
-        }
+        set => SetValue(ref _infoHex, value);
     }
 }
