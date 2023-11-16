@@ -1,8 +1,7 @@
 ﻿@page "/SettingsPage"
-
-<html>
-
-        <style>
+@using SyslogRemoteStore.Web.Enums
+@inject ISettingsViewModel vm
+<style>
      
           label {
            font-weight: bold;
@@ -71,48 +70,105 @@
         input[type="submit"]:hover {
         background-color: #dimgrey; /* Darker background color on hover */
         }
+
+    section {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* set column sizes here */
+        grid-template-rows: auto auto; /* we want two rows */
+
+        grid-gap: 10px; /* how far between cells? */
+        grid-auto-flow: column; /* fill in by column, not row */
+        /* temporary property for visualization */
+        height: 150px;
+    }
+
+    .column {
+        float: left;
+        width: 25%;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
     </style>
 
-    <body>
+<div>
+    <EditForm model="@vm" OnSubmit=@FormSubmitted>
 
         <div>
-            <label for= "Header">Change Syslog Message Severity Colours</label>
-            <label for="Debug">Debug:</label> <input type="color" id="head" name="head" value="#0000"/>
-            <label for="Info">Info:</label> <input type="color" id="head" name="head" value="#0000">
-            <label for="Warning">Warning:</label> <input type="color" id="head" name="head" value="#0000">
-            <label for="Error">Error:</label> <input type="color" id="head" name="head" value="#0000">
-        </div>
+            <label for="Header">Change Syslog Message Severity Colours</label>
+        </div> 
 
-        <div>
-            <label for="DropdownMenu">Change Listening Proticals:</label>
-            <select id="menu">
-                <option value="UdpOption">UDP</option>
-                <option value="TcpOption">TCP</option>
-                <option value="BothOption">Both</option>
+        <section>
+            <div>
+                <label for="Debug">Debug:</label>
+                <input type="color" id="head" name="head" @bind="@vm.DebugHex" />
+            </div>
+            <div>
+                <label for="Info">Info:</label>
+                <input type="color" id="head" name="head" @bind="@vm.InfoHex">
+            </div>
+            <div>
+                <label for="Warning">Warning:</label>
+                <input type="color" id="head" name="head" @bind="@vm.WarningHex">
+            </div>
+            <div>
+                <label for="Error">Error:</label>
+                <input type="color" id="head" name="head" @bind="@vm.ErrorHex">
+            </div>
+        </section>
+
+
+        <div class="row">
+            <div class="column">
+            <label for="ProtocolTypeDropdown">Change Listening Proticals:</label>
+            <select id="ProtocolTypeDropdown" @bind="vm.ListeningProtocolType">
+                @foreach (object? option in Enum.GetValues(typeof(ProtocolType)))
+                {
+                    <option value="@((ProtocolType)option)">@((ProtocolType)option)</option>
+                }
             </select>
         </div>
-
-        <div>
-            <label for="DropdownMenu">IP Addresses :</label>
-            <select id="menu">
-                <option value="IP Address"></option>
-                <option value="IP Address"></option>
-                <option value="IP Address"></option>
+            <div class="column">            
+            <label for="AvailableIpAddressDropdown">IP Addresses :</label>
+            <select id="AvailableIpAddressDropdown" @bind="vm.IpAddress">
+                    @foreach (string ip in vm.AvailableIpAddress)
+                    {
+                        <option value="@ip">@ip</option>
+                    }
             </select>
         </div>
-
-        <div>
-            <label for="ChangingPort">Change Listen Port:</label>
-            <input type="number" id="integerInput" name="integerInput">
+            <div class="column">
+                    <label for="integerInput">Change Listen Port:</label>
+                    <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
+            </div>
+            <div class="column"></div>
         </div>
 
         <div>
-            <form action="/submit" method="post">
-                <input type="submit" value="Submit">
-            </form>
+            <input type="submit" value="Submit">
         </div>
 
-    </body>
+    </EditForm>
+</div>
 
-</html>
-
+@code {
+    string LastSubmitResult;
+    
+    void FormSubmitted(EditContext editContext)
+    {
+        bool formIsValid = editContext.Validate();
+        LastSubmitResult =
+            formIsValid
+                ? "Success - form was valid"
+                : "Failure - form was invalid";
+        if (formIsValid is true)
+        {
+            vm.Submit();
+        }
+    }
+    
+}

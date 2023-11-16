@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -12,20 +13,45 @@ public class RadioService
 {
     private Socket _asyncSockettcp;
     private Socket _asyncSocketudp;
-    private readonly CollectionStore _collectionStore;
-    private readonly ConfigurationStore _configStore;
+    private CollectionStore _collectionStore;
+    private ConfigurationStore _configStore;
     private EndPoint _remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
     public RadioService(ConfigurationStore configStore, CollectionStore collectionStore)
     {
         _configStore = configStore;
         _collectionStore = collectionStore;
+        _configStore.PropertyChanged += handlePropertyChanged;
+    }
+
+    private void handlePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+
+        Console.WriteLine("something has changed");
+        if (e.PropertyName == nameof(_configStore.ListeningProtocolType))
+        {
+        }
     }
 
     public void BeginListening()
     {
-        ListenUdp(_configStore.Ip, _configStore.Port);
-        ListenTcp(_configStore.Ip, _configStore.Port);
+        switch (_configStore.ListeningProtocolType)
+        {
+            case Enums.ProtocolType.Udp:
+                ListenUdp(_configStore.Ip, _configStore.Port);
+                break;
+            case Enums.ProtocolType.Tcp:
+                ListenTcp(_configStore.Ip, _configStore.Port);
+                break;
+            case Enums.ProtocolType.Both:
+                ListenUdp(_configStore.Ip, _configStore.Port);
+                ListenTcp(_configStore.Ip, _configStore.Port);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        
+
     }
 
     public async Task ListenUdp(string ip, int port)
@@ -62,7 +88,7 @@ public class RadioService
             byte[] buffer = (byte[])ar.AsyncState;
             string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-            _t6S3.Logs.Add(new Log(message, $"{senderIpAddress}:{senderPort}"));
+            _t6S3.Logs.Add(new Log(message, senderIpAddress,senderPort));
             
             // Start the next asynchronous receive operation
             buffer = new byte[1024];
@@ -116,7 +142,7 @@ public class RadioService
             byte[] rxBuffer = (byte[])_async.AsyncState;
             string request = Encoding.ASCII.GetString(rxBuffer, 0, bytesRead);
 
-            t6S3.Logs.Add(new Log(request,$"{t6S3.Ip}:{t6S3.Port}"));
+            t6S3.Logs.Add(new Log(request,t6S3.Ip, t6S3.Port));
 
             t6S3.Socket.BeginReceive(rxBuffer, 0, rxBuffer.Length, 0, async => DequeueRequests(async, t6S3), rxBuffer);
         }

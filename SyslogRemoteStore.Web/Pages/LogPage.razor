@@ -36,6 +36,21 @@
     .mustwrap{
     word-break: break-word;
     }
+    .info{
+    color: @vm._configurationStore.InfoHex;
+    }
+    .error{
+    color: @vm._configurationStore.ErrorHex;
+    }
+    .debug{
+    color: @vm._configurationStore.DebugHex;
+    }
+    .warning{
+    color: @vm._configurationStore.WarningHex;
+    }
+    
+    
+    
 </style>
 <div class="col-md-12" style="display: flex">
     <div class="col-md-2"></div>
@@ -63,11 +78,11 @@
             </tr>
             @foreach (Log log in displayedLogs)
             {
-                <tr>
+                <tr class="@log.Severity">
                     <td>@log.Received</td>
-                    <td>@log.SourceIp</td>
+                    <td>@log.GetFormatedIp()</td>
                     <td>@log.SourceItem</td>
-                    <td class="nowrap">@log.Facilty</td>
+                    <td>@log.Facilty</td>
                     <td>@log.Severity</td>
                     <td class="nowrap">@log.TimeStamp</td>
                     <td>@log.Tag</td>
@@ -87,6 +102,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        vm._configurationStore.PropertyChanged += HandlePropertyChanged();
         vm.Radios.CollectionChanged += RadiosOnCollectionChanged;
         foreach (T6S3 _radio in vm.Radios)
         {
@@ -138,6 +154,7 @@
         StateHasChanged();
 
     }
+
     public void Enter(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
@@ -145,4 +162,5 @@
             filter();
         }
     }
+
 }
