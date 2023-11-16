@@ -23,9 +23,10 @@ namespace SyslogRemoteStore.Web.Services
 
         public void CreateFile(List<Log> logs, string Ip) //string filename Changes depending on name
         {
-            DateTime currentDateTime = DateTime.Now;
-            string dateTime = currentDateTime.ToString("yyyyMMddHHmmssfff");
-            string filename = string.Format(@"{0}_{1}.txt", Ip,dateTime);
+            //DateTime currentDateTime = DateTime.Now;
+            //string dateTime = currentDateTime.ToString("yyyyMMddHHmmssfff");
+
+            string filename = string.Format(@"{0}.txt", Ip);
             string path = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, filename);
 
             try

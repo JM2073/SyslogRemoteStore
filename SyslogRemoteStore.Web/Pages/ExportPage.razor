@@ -6,6 +6,7 @@
 @inject CollectionStore cs
 @using SyslogRemoteStore.Web.Services
 @using System.Collections.Specialized
+@using System.Collections.ObjectModel
 
 
 
@@ -40,12 +41,12 @@ inject
 
             }
         }
-        
-        string zipFilePath = "Path/To/OutputFolder/MyZipFile.zip";
+
+        string zipFilePath = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "SyslogZip.zip");
 
         fz.ZipFiles(zipFilePath, filesToZip);
 
-        Console.WriteLine("Zip file created successfully.");
+        
     }
 }
 
