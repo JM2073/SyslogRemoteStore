@@ -21,6 +21,8 @@ public class T6S3 : IT6S3, INotifyPropertyChanged
 
     private bool _tcpConnected;
 
+    private bool _isHidden;
+
     public T6S3(Socket socket, string ip, int port)
     {
         Id = Guid.NewGuid();
@@ -28,6 +30,7 @@ public class T6S3 : IT6S3, INotifyPropertyChanged
         Ip = ip;
         Port = port;
         TcpConnected = socket.ProtocolType == ProtocolType.Tcp;
+        IsHidden = false;
         _logs.CollectionChanged += Logs_CollectionChanged;
 
         // Initialize and configure the timer
@@ -35,6 +38,12 @@ public class T6S3 : IT6S3, INotifyPropertyChanged
         logTimer.Interval = 5 * 60 * 1000;
         logTimer.Elapsed += LogTimerElapsed;
         logTimer.AutoReset = false;
+    }
+
+    public bool IsHidden
+    {
+        get => _isHidden;
+        set => SetField(ref _isHidden, value);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -8,6 +8,7 @@ public interface IT6S3
 {
     event PropertyChangedEventHandler? PropertyChanged;
 
+    bool IsHidden { get; }
     bool TcpConnected { get; }
     bool AlertFlag { get; }
     Guid Id { get; }

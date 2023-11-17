@@ -10,4 +10,5 @@ public interface IRadioViewModel
     string RadioId { get; set; }
     ConfigurationStore _configurationStore { get; }
 
+    void HideRadio();
 }

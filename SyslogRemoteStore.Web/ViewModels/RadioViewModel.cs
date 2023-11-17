@@ -29,5 +29,11 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
             Radio = _collectionStore.Radios.Single(x => x.Id == Guid.Parse(_radioId));
         }
     }
+    
+    public void HideRadio()
+    {
+        _collectionStore.Radios.Single(x => x.Id == Guid.Parse(_radioId)).IsHidden = true;
+
+    }
 
 }

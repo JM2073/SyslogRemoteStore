@@ -146,6 +146,7 @@
     <div>
         <input type="text" name="q" placeholder="Search..." @bind="fs.Message" @onkeydown="@Enter" />
         <button @onclick="filter" value="Search">Search</button>
+        <button @onclick="vm.HideRadio" value="Hide Radio">Hide Radio</button>
     </div>
 <div>
     <table class="defaulttable" style="width: 100%; border: 0; overflow-y: scroll">
@@ -199,23 +200,18 @@
                         filter();
                     });
         };
-        //{ StateHasChanged(); }); };
     }
 
     public void filter()
     {
-
         if (logs != null && string.IsNullOrWhiteSpace(fs.Message) == false)
         {
             displayedLogs = fs.FilterLog(logs);
-
         }
         else
         {
             displayedLogs = logs;
         }
-        //StateHasChanged();
-
     }
     public void Enter(KeyboardEventArgs e)
     {
