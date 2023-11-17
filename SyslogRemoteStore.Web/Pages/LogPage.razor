@@ -133,8 +133,9 @@
         {
             StateHasChanged(); 
             logs = vm.Radios.SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp).ToList();
-            filter();
             fs.SeverityFilterLog(logs);
+            filter();
+            
         }); 
 
         };

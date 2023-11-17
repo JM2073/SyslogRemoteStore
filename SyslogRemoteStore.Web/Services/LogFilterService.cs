@@ -46,7 +46,19 @@ namespace SyslogRemoteStore.Web.Services
             if (!string.IsNullOrEmpty(this.SourceIp))
             {
                 filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
-                filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+                //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+                filteredLogs = filteredLogs
+                    .Where(l =>
+                    {
+                        var result = (Error && l.Severity.Contains("error")) ||
+                     (Info && l.Severity.Contains("info")) ||
+                     (Debug && l.Severity.Contains("debug")) ||
+                     (Warning && l.Severity.Contains("warning"));
+                        //Console.WriteLine($"Log Severity: {l.Severity}, Result: {result}");
+                        return result;
+                    })
+                    .ToList();
+
             }
             
 
@@ -60,7 +72,15 @@ namespace SyslogRemoteStore.Web.Services
 
             List<Log> filteredLogs = logs;
 
-            filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+            //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+
+            filteredLogs = filteredLogs
+            .Where(l =>
+                (Error && l.Severity.ToLower().Contains("error")) ||
+                (Info && l.Severity.ToLower().Contains("info")) ||
+                (Debug && l.Severity.ToLower().Contains("debug")) ||
+                (Warning && l.Severity.ToLower().Contains("warning")))
+            .ToList();
 
             return filteredLogs;
         }
