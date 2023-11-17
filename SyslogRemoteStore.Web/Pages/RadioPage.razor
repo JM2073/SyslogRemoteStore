@@ -1,6 +1,7 @@
 ﻿@page "/RadioPage/{RadioId}"
 @inject IRadioViewModel vm
 @inject LogFilterService fs
+@inject FileCreationService fc
 @using SyslogRemoteStore.Web.Services
 
 <head>
@@ -196,6 +197,7 @@
                     {
                         StateHasChanged();
                         logs = vm.Radio.Logs.ToList();
+                        fc.CreateFile(logs, vm.Radio.GetFormatedIp());
                         filter();
                     });
         };

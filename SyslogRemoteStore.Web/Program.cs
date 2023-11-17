@@ -10,6 +10,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<RadioService>();
 builder.Services.AddSingleton<LogFilterService>();
+builder.Services.AddSingleton<FileZipService>();
+builder.Services.AddSingleton<FileCreationService>();
 builder.Services.AddScoped<ILogsViewModel, LogsViewModel>();
 builder.Services.AddScoped<IRadioViewModel, RadioViewModel>();
 builder.Services.AddScoped<ISettingsViewModel, SettingsViewModel>();
