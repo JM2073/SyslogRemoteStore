@@ -20,10 +20,10 @@
             border-collapse: collapse;
             border: 0;
         }
-        /*.buttons button {*/
-        /*    display: inline-block;*/
-        /*    margin: 5px;*/
-        /*}*/
+        .buttons button {
+            display: inline-block;
+            margin: 5px;
+        }
         th, td {
             border: 1px solid #ccc;
             padding: 10px;
@@ -75,36 +75,36 @@
             padding: 5px;
             margin-top: 5px;
         }
-        /*.button {*/
-        /*    border: none;*/
-        /*    color: white;*/
-        /*    padding: 16px 32px;*/
-        /*    text-align: center;*/
-        /*    text-decoration: none;*/
-        /*    display: inline-block;*/
-        /*    font-size: 16px;*/
-        /*    margin: 4px 2px;*/
-        /*    transition-duration: 0.4s;*/
-        /*    cursor: pointer;*/
-        /*}*/
-        /*.button1 {*/
-        /*    background-color: white;*/
-        /*    color: black;*/
-        /*    border: 2px solid #4CAF50;*/
-        /*}*/
-        /*.button1:hover {*/
-        /*    background-color: #4CAF50;*/
-        /*    color: white;*/
-        /*}*/
-        /*.button2 {*/
-        /*    background-color: white;*/
-        /*    color: black;*/
-        /*    border: 2px solid #008CBA;*/
-        /*}*/
-        /*.button2:hover {*/
-        /*    background-color: grey;*/
-        /*    color: white;*/
-        /*}*/
+        .button {
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+        .button1 {
+            background-color: white;
+            color: black;
+            border: 2px solid #4CAF50;
+        }
+        .button1:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .button2 {
+            background-color: white;
+            color: black;
+            border: 2px solid #008CBA;
+        }
+        .button2:hover {
+            background-color: grey;
+            color: white;
+        }
     .info{
     color: @vm._configurationStore.InfoHex;
     }
@@ -183,31 +183,12 @@ else
     </div>
 
 }
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <strong class="me-auto">Information</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            The Radio has been hidden.
-        </div>
-    </div>
-</div>
-<script>
-const toastTrigger = document.getElementById('liveToastBtn')
-const toastLiveExample = document.getElementById('liveToast')
-if (toastTrigger) {
-  toastTrigger.addEventListener('click', () => {
-    const toast = new bootstrap.Toast(toastLiveExample)
+<InformativeDialog @ref="informativeDialog" OnClosed="HandleInformativeClosed"></InformativeDialog>
 
-    toast.show()
-  })
-}
-</script>
 </body>
 @code
 {
+    private InformativeDialog informativeDialog;
     [Parameter]
     public string RadioId { get; set; }
     public List<Log> logs = new List<Log>();
@@ -255,5 +236,9 @@ if (toastTrigger) {
     {
         vm.HideRadio();
         InvokeAsync(() => { StateHasChanged(); });
+        informativeDialog.Show("The Radio has been hidden.", "gray");
+    }
+    private async Task HandleInformativeClosed()
+    {
     }
 }

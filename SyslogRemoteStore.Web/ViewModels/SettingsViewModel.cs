@@ -66,8 +66,9 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
         
     }
 
-    public void ShowRadio(Guid radioId)
+    public void ToggleRadioVisibility (Guid radioId, bool value)
     {
-        _collectionStore.Radios.Single(x => x.Id == radioId).IsHidden = false;
+        _collectionStore.Radios.Single(x => x.Id == radioId).IsHidden = value;
     }
+    
 }

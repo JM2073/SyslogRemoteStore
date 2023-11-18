@@ -1,0 +1,60 @@
+<style>
+    .informative-overlay {
+    position: fixed;
+    bottom: 20px; /* Adjust the bottom position as needed */
+    right: 20px; /* Adjust the right position as needed */
+    z-index: 1000; /* Ensure the overlay appears on top of other elements */
+    }
+    
+    .informative-dialog {
+        background-color: @DisplayColour; /* Green background color */
+        color: white; /* White text color */
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        cursor: pointer; /* Allow user interaction */
+    }
+    
+    .dialog-content {
+        text-align: center;
+        font-size: 16px;
+    }
+</style>
+
+<div class="informative-overlay" style="display: @(IsVisible ? "flex" : "none")">
+    <div class="informative-dialog" style="display: @(IsVisible ? "block" : "none")">
+        <div class="dialog-content">
+            @Message
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnClosed { get; set; }
+    
+    private string Message { get; set; }
+    private string DisplayColour { get; set; }
+    private bool IsVisible { get; set; }
+    
+    
+    public void Show(string message, string displayColour)
+    {
+        Message = message;
+        DisplayColour = displayColour;
+        IsVisible = true;
+      
+        StartTimer();
+    }
+
+    private void StartTimer()
+    {
+        // Set a timer to automatically hide the dialog after 5 seconds
+        Task.Delay(5000).ContinueWith(_ => InvokeAsync(Hide));
+    }
+
+    private void Hide()
+    {
+        IsVisible = false;
+        OnClosed.InvokeAsync(null); // Notify parent about the dialog being closed
+    }
+}

@@ -117,7 +117,7 @@
     </style>
 
 <div>
-    <EditForm model="@vm" OnSubmit="@FormSubmitted">
+    <EditForm model="@vm" OnSubmit="@preFormSubmit">
 
         <div>
             <label class="Header" for="Header">Change Syslog Message Severity Colours</label>
@@ -215,7 +215,14 @@
                         </td>
                         <td>@radio.Logs.Count()</td>
                         <td>
-                            <button @onclick="() => vm.ShowRadio(radio.Id)"> Show Radio </button>
+                            @if (radio.IsHidden)
+                            {
+                                <button class="btn btn-primary" @onclick="() => ToggleRadioVisibility(radio.Id, false)"> Show Radio </button>
+                            }
+                            else
+                            {
+                                <button  class="btn btn-primary" @onclick="() => ToggleRadioVisibility(radio.Id, true)"> Hide Radio </button>
+                            }
                         </td>
                     </tr>
                 }
@@ -225,15 +232,26 @@
     </div>
 </div>
 
-<ConfirmationDialog @ref="confirmationDialog" Message="Are you sure?" ConfirmationChanged="HandleConfirmation"></ConfirmationDialog>
+<ConfirmationDialog @ref="confirmationDialog" Message="when changing these settings be mindful of your current connected devices. Would you like to continue?" ConfirmationChanged="HandleConfirmation"></ConfirmationDialog>
 
+
+<InformativeDialog @ref="informativeDialog" OnClosed="HandleInformativeClosed"></InformativeDialog>
 @code {
     string LastSubmitResult;
     private ConfirmationDialog confirmationDialog;
+    private InformativeDialog informativeDialog;
     private EditContext editContext;
+    
+    private string IpAddress { get; set; } 
+    private int Port { get; set; } 
+    private ProtocolType ListeningProtocolType { get; set; } 
     
     protected override async Task OnInitializedAsync()
     {
+        this.IpAddress = vm.IpAddress;
+        this.Port = vm.Port;
+        this.ListeningProtocolType = vm.ListeningProtocolType;
+        
         cs.Radios.CollectionChanged += RadiosOnCollectionChanged;
         foreach (T6S3 _radio in cs.Radios)
         {
@@ -260,12 +278,17 @@
         return async (sender, e) => { await InvokeAsync(() => { StateHasChanged(); }); };
     }
 
-    async Task FormSubmitted(EditContext editContext)
+    async Task preFormSubmit(EditContext editContext)
     {
-        editContext = this.editContext;
-        confirmationDialog.Show();
-        
-        
+        this.editContext = editContext;
+        if (vm.ListeningProtocolType != this.ListeningProtocolType || vm.IpAddress != this.IpAddress || vm.Port != this.Port)
+        {
+            confirmationDialog.Show();
+        }
+        else
+        {
+            FormSubmit();
+        }
     }
 
     private string ConnectionStatus(T6S3 radio)
@@ -287,30 +310,45 @@
         return result;
     }
 
-    
-    private async Task ShowConfirmationDialog()
-    {
-   
-    }
-
     private async Task HandleConfirmation(bool result)
     {
         if (result)
         {
-            bool formIsValid = editContext.Validate();
-            LastSubmitResult =
-                formIsValid
-                    ? "Success - form was valid"
-                    : "Failure - form was invalid";
-            if (formIsValid is true)
-            {
-                vm.Submit();
-            }
+            FormSubmit();
         }
         else
         {
-            Console.WriteLine("no");
-    // User canceled, handle accordingly
+            informativeDialog.Show("Settings where not changed.", "red");
         }
     }
+
+    private void FormSubmit()
+    {
+        bool formIsValid = editContext.Validate();
+        LastSubmitResult =
+            formIsValid
+                ? "Success - form was valid"
+                : "Failure - form was invalid";
+        if (formIsValid is true)
+        {
+            vm.Submit();
+            informativeDialog.Show("Settings where changed.", "green");
+        }
+        else
+        {
+            informativeDialog.Show("Settings where not changed.", "red");
+        }
+    }
+    private async Task HandleInformativeClosed()
+    {
+    }
+
+    private void ToggleRadioVisibility(Guid radioId, bool value)
+    {
+        string message;
+        vm.ToggleRadioVisibility(radioId, value);
+        message = value is true ? "The Radio has been hidden." : "The Radio is no longer hidden.";
+        informativeDialog.Show(message, "gray");
+    }
+
 }

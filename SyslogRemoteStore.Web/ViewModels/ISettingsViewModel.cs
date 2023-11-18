@@ -16,5 +16,6 @@ public interface ISettingsViewModel
     string DebugHex { get; set; }
     string InfoHex { get; set; }
     void Submit();
-    void ShowRadio(Guid radioId);
+    void ToggleRadioVisibility(Guid radioId, bool value);
+
 }
