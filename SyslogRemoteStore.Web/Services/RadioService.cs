@@ -87,7 +87,7 @@ public class RadioService
             string senderIpAddress = (_remoteEndPoint as IPEndPoint)?.Address.ToString() ?? string.Empty;
             int senderPort = (_remoteEndPoint as IPEndPoint)?.Port ?? 0;
 
-            IT6S3? _t6S3 = _collectionStore.Radios.SingleOrDefault(x => x.Ip == senderIpAddress && x.Port == senderPort);
+            T6S3? _t6S3 = _collectionStore.Radios.SingleOrDefault(x => x.Ip == senderIpAddress && x.Port == senderPort);
 
             if (_t6S3 is null)
             {

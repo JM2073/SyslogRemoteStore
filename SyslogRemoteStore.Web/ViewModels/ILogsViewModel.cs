@@ -7,7 +7,7 @@ namespace SyslogRemoteStore.Web.ViewModels;
 public interface ILogsViewModel
 {
     ConfigurationStore _configurationStore { get; }
-    ObservableCollection<IT6S3> Radios { get; }
+    ObservableCollection<T6S3> Radios { get; }
     void Export();
     void Delete();
 }

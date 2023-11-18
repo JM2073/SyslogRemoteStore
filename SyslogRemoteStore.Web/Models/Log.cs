@@ -13,7 +13,6 @@ public class Log
     }
 
     public string Message { get; set; }
-    public bool Received { get; set; }
     public string SourceIp { get; set; }
     public int SourcePort { get; set; }
     public string SourceItem { get; set; }
@@ -31,12 +30,11 @@ public class Log
         if (match.Success)
         {
             int priorityValue = Int32.TryParse(match.Groups[1].Value, out priorityValue) ? priorityValue : 0;
-            int facility = priorityValue /8;
-            int severity = priorityValue - (facility * 8);
+            int facility = priorityValue / 8;
+            int severity = priorityValue % 7;
 
 
             Severity = GetSeverity(severity);
-            Received = Convert.ToBoolean(int.Parse(match.Groups[2].Value));
             TimeStamp = match.Groups[3].Value;
             Facilty = GetFacilty(facility);
             SourceItem = match.Groups[4].Value;

@@ -1,6 +1,8 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using SyslogRemoteStore.Web.Data;
 using SyslogRemoteStore.Web.Enums;
+using SyslogRemoteStore.Web.Models;
 using SyslogRemoteStore.Web.Stores;
 
 namespace SyslogRemoteStore.Web.ViewModels;
@@ -23,8 +25,10 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
         DebugHex = _configurationStore.DebugHex;
         InfoHex = _configurationStore.InfoHex;
 
+        Radios = _collectionStore.Radios;
         AvailableIpAddress = _collectionStore.AvailableIpAddress;
     }
+    public ObservableCollection<T6S3> Radios { get; set; }
     public List<string> AvailableIpAddress { get; }
 
     [Required(ErrorMessage = "is Required")]
@@ -60,5 +64,10 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
             RadioService.Instance.RestartListener();
         }
         
+    }
+
+    public void ShowRadio(Guid radioId)
+    {
+        _collectionStore.Radios.Single(x => x.Id == radioId).IsHidden = false;
     }
 }

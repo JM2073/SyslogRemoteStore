@@ -17,7 +17,7 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
     }
     public ConfigurationStore _configurationStore { get; }
 
-    public IT6S3 Radio { get; set; }
+    public T6S3 Radio { get; set; }
 
     private string _radioId;
     public string RadioId
@@ -29,11 +29,8 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
             Radio = _collectionStore.Radios.Single(x => x.Id == Guid.Parse(_radioId));
         }
     }
-    
     public void HideRadio()
     {
         _collectionStore.Radios.Single(x => x.Id == Guid.Parse(_radioId)).IsHidden = true;
-
     }
-
 }

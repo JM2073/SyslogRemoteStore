@@ -9,7 +9,7 @@ using Timer = System.Timers.Timer;
 
 namespace SyslogRemoteStore.Web.Models;
 
-public class T6S3 : IT6S3, INotifyPropertyChanged
+public class T6S3 : INotifyPropertyChanged
 {
     private readonly Timer logTimer;
 

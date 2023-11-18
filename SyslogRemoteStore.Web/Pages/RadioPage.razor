@@ -143,38 +143,39 @@
         <img src="T6S3.jpg" alt="Your Image" style="height: auto; max-width: 100%;">
     </div>
 </div>
-    <div>
-        <input type="text" name="q" placeholder="Search..." @bind="fs.Message" @onkeydown="@Enter" />
-        <button @onclick="filter" value="Search">Search</button>
-        <button @onclick="vm.HideRadio" value="Hide Radio">Hide Radio</button>
-    </div>
 <div>
-    <table class="defaulttable" style="width: 100%; border: 0; overflow-y: scroll">
-        <tr>
-            <th>Received</th>
-            <th>Source IP</th>
-            <th>Source Item</th>
-            <th>Facility</th>
-            <th>Severity</th>
-            <th>TimeStamp</th>
-            <th>Tag</th>
-            <th>Message</th>
-        </tr>
-            @foreach (Log log in displayedLogs)
-                   {
-                       <tr class="@log.Severity">
-                           <td>@log.Received</td>
-                           <td>@log.GetFormatedIp()</td>
-                           <td>@log.SourceItem</td>
-                           <td>@log.Facilty</td>
-                           <td>@log.Severity</td>
-                           <td class="nowrap">@log.TimeStamp</td>
-                           <td>@log.Tag</td>
-                           <td class="mustwrap">@log.Message</td>
-                       </tr>
-                   }
-    </table>
+    <input type="text" name="q" placeholder="Search..." @bind="fs.Message" @onkeydown="@Enter" />
+    <button @onclick="filter" value="Search">Search</button>
+    <button @onclick="HideRadio" value="Hide Radio">Hide Radio</button>
 </div>
+
+    <div>
+        <table class="defaulttable" style="width: 100%; border: 0; overflow-y: scroll">
+            <tr>
+  
+                <th>Source IP</th>
+                <th>Source Item</th>
+                <th>Facility</th>
+                <th>Severity</th>
+                <th>TimeStamp</th>
+                <th>Tag</th>
+                <th>Message</th>
+            </tr>
+            @foreach (Log log in displayedLogs.OrderByDescending(x=>x.TimeStamp).ToList())
+            {
+                <tr class="@log.Severity">
+                    <td>@log.GetFormatedIp()</td>
+                    <td>@log.SourceItem</td>
+                    <td>@log.Facilty</td>
+                    <td>@log.Severity</td>
+                    <td class="nowrap">@log.TimeStamp</td>
+                    <td>@log.Tag</td>
+                    <td class="mustwrap">@log.Message</td>
+                </tr>
+            }
+        </table>
+    </div>
+
 </body>
 @code
 {
@@ -221,4 +222,9 @@
         }
     }
 
+    private void HideRadio()
+    {
+        vm.HideRadio();
+        InvokeAsync(() => { StateHasChanged(); });
+    }
 }

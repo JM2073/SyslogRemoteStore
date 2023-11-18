@@ -1,8 +1,25 @@
 ﻿@page "/SettingsPage"
+@using SPType = System.Net.Sockets.ProtocolType
 @using SyslogRemoteStore.Web.Enums
 @inject ISettingsViewModel vm
+@inject CollectionStore cs
 <style>
+         table {
+       
+             border-collapse: collapse;
+         border: 0;
+         }
      
+         th, td {
+             border: 0px solid #000;
+             padding: 8px;
+             text-align: left;
+         }
+     
+         th {
+             background-color: #f0f0f0;
+         }
+         
           label {
            font-weight: bold;
            display: block;
@@ -93,19 +110,23 @@
         display: table;
         clear: both;
     }
+    
+    label.Header{
+            font-size: x-large;
+    }
     </style>
 
 <div>
-    <EditForm model="@vm" OnSubmit=@FormSubmitted>
+    <EditForm model="@vm" OnSubmit="@FormSubmitted">
 
         <div>
-            <label for="Header">Change Syslog Message Severity Colours</label>
-        </div> 
+            <label class="Header" for="Header">Change Syslog Message Severity Colours</label>
+        </div>
 
         <section>
             <div>
                 <label for="Debug">Debug:</label>
-                <input type="color" id="head" name="head" @bind="@vm.DebugHex" />
+                <input type="color" id="head" name="head" @bind="@vm.DebugHex"/>
             </div>
             <div>
                 <label for="Info">Info:</label>
@@ -124,26 +145,26 @@
 
         <div class="row">
             <div class="column">
-            <label for="ProtocolTypeDropdown">Change Listening Proticals:</label>
-            <select id="ProtocolTypeDropdown" @bind="vm.ListeningProtocolType">
-                @foreach (object? option in Enum.GetValues(typeof(ProtocolType)))
-                {
-                    <option value="@((ProtocolType)option)">@((ProtocolType)option)</option>
-                }
-            </select>
-        </div>
-            <div class="column">            
-            <label for="AvailableIpAddressDropdown">IP Addresses :</label>
-            <select id="AvailableIpAddressDropdown" @bind="vm.IpAddress">
+                <label for="ProtocolTypeDropdown">Change Listening Proticals:</label>
+                <select id="ProtocolTypeDropdown" @bind="vm.ListeningProtocolType">
+                    @foreach (object? option in Enum.GetValues(typeof(ProtocolType)))
+                    {
+                        <option value="@((ProtocolType)option)">@((ProtocolType)option)</option>
+                    }
+                </select>
+            </div>
+            <div class="column">
+                <label for="AvailableIpAddressDropdown">IP Addresses :</label>
+                <select id="AvailableIpAddressDropdown" @bind="vm.IpAddress">
                     @foreach (string ip in vm.AvailableIpAddress)
                     {
                         <option value="@ip">@ip</option>
                     }
-            </select>
-        </div>
+                </select>
+            </div>
             <div class="column">
-                    <label for="integerInput">Change Listen Port:</label>
-                    <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
+                <label for="integerInput">Change Listen Port:</label>
+                <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
             </div>
             <div class="column"></div>
         </div>
@@ -153,11 +174,88 @@
         </div>
 
     </EditForm>
+    <br/>
+    <hr/>
+    <br/>
+    
+    <div>
+        <div>
+             <label class="Header">Radio Visibility</label>
+        </div>
+        <div>
+        <table>
+            <thead>
+            <tr>
+                <th>Connection Status</th>
+                <th>IP</th>
+                <th>Port</th>
+                <th>Radio Visible</th>
+                <th># of Logs</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (T6S3 radio in vm.Radios)
+            {
+                <tr>
+                    <td style="text-align: center" ><span class="@ConnectionStatus(radio)">&#x2B24;</span></td>
+                    <td>@radio.GetFormatedIp()</td>
+                    <td>@radio.Port</td>
+                    <td style="text-align: center">
+                        
+                        @if (@radio.IsHidden)
+                        {
+                            <span style="color: red;">&Cross;</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">&check;</span>
+                        }
+                        
+                    </td>
+                    <td>@radio.Logs.Count()</td>
+                    <td><button @onclick="() => vm.ShowRadio(radio.Id)"> Show Radio </button></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    </div>
 </div>
 
 @code {
     string LastSubmitResult;
-    
+    protected override async Task OnInitializedAsync()
+    {
+        cs.Radios.CollectionChanged += RadiosOnCollectionChanged;
+        foreach (T6S3 _radio in cs.Radios)
+        {
+            _radio.PropertyChanged += HandlePropertyChanged();
+        }
+    }
+
+    private void RadiosOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.OldItems)
+                item.PropertyChanged -= HandlePropertyChanged();
+        }
+        if (e.NewItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.NewItems)
+                item.PropertyChanged += HandlePropertyChanged();
+        }
+    }
+
+    private PropertyChangedEventHandler? HandlePropertyChanged()
+    {
+        return async (sender, e) =>
+        {
+            await InvokeAsync(() => { StateHasChanged(); });
+        };
+    }
+
     void FormSubmitted(EditContext editContext)
     {
         bool formIsValid = editContext.Validate();
@@ -170,5 +268,22 @@
             vm.Submit();
         }
     }
-    
+    private string ConnectionStatus(T6S3 radio)
+    {
+        string result = string.Empty;
+        switch (radio.Socket.ProtocolType)
+        {
+            case SPType.Udp:
+                result = radio.AlertFlag ? "disconnected " : "connected";
+                break;
+            case SPType.Tcp:
+                result = radio.TcpConnected ? "connected" : "disconnected";
+                break;
+            default:
+                throw new Exception("strange Protocol Type");
+        }
+
+        return result;
+    }
+
 }

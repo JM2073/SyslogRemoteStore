@@ -66,3 +66,12 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+    
+.connected {
+
+    color: #008000;
+}
+.disconnected{
+
+    color: #ff0000;
+}

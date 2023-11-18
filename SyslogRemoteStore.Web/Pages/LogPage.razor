@@ -50,47 +50,46 @@
     
     
 </style>
-<div class="col-md-12" style="display: flex">
-    <div class="col-md-2"></div>
-    <div class="col-md-8 justify-content-end">
-        <div class="buttons">
-            <button onclick="@vm.Export">Export</button>
-            <button onclick="@vm.Delete">Delete</button>
-        </div>
 
-        <div>
-            <input type="text" name="q" placeholder="Search..." @bind="fs.SourceIp" @onkeydown="@Enter" />
-            <button @onclick="filter" value="Search">Search</button>
-        </div>
+    <div class="col-md-12" style="display: flex">
+        <div class="col-md-2"></div>
+        <div class="col-md-8 justify-content-end">
+            <div class="buttons">
+                <button onclick="@vm.Export">Export</button>
+                <button onclick="@vm.Delete">Delete</button>
+            </div>
 
-        <table id="LogTable">
-            <tr>
-                <th>Received</th>
-                <th>Source IP</th>
-                <th>Source Item</th>
-                <th>Facilty</th>
-                <th>Severity</th>
-                <th>TimeStamp</th>
-                <th>Tag</th>
-                <th>Message</th>
-            </tr>
-            @foreach (Log log in displayedLogs)
-            {
-                <tr class="@log.Severity">
-                    <td>@log.Received</td>
-                    <td>@log.GetFormatedIp()</td>
-                    <td>@log.SourceItem</td>
-                    <td>@log.Facilty</td>
-                    <td>@log.Severity</td>
-                    <td class="nowrap">@log.TimeStamp</td>
-                    <td>@log.Tag</td>
-                    <td class="mustwrap">@log.Message</td>
+            <div>
+                <input type="text" name="q" placeholder="Search..." @bind="fs.SourceIp" @onkeydown="@Enter"/>
+                <button @onclick="filter" value="Search">Search</button>
+            </div>
+
+            <table id="LogTable">
+                <tr>
+                    <th>Source IP</th>
+                    <th>Source Item</th>
+                    <th>Facilty</th>
+                    <th>Severity</th>
+                    <th>TimeStamp</th>
+                    <th>Tag</th>
+                    <th>Message</th>
                 </tr>
-            }
-        </table>
+                @foreach (Log log in displayedLogs.OrderByDescending(x=>x.TimeStamp).ToList())
+                {
+                    <tr class="@log.Severity">
+                        <td>@log.GetFormatedIp()</td>
+                        <td>@log.SourceItem</td>
+                        <td>@log.Facilty</td>
+                        <td>@log.Severity</td>
+                        <td class="nowrap">@log.TimeStamp</td>
+                        <td>@log.Tag</td>
+                        <td class="mustwrap">@log.Message</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="col-md-2"></div>
     </div>
-    <div class="col-md-2"></div>
-</div>
 
 
 @code {
@@ -106,8 +105,14 @@
             _radio.PropertyChanged += HandlePropertyChanged();
         }
 
-        logs = vm.Radios.Where(x=>x.IsHidden == false).SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp).ToList();
+        PopulateAllLogs();
+  
         await base.OnInitializedAsync();
+    }
+
+    private void PopulateAllLogs()
+    {
+        logs = vm.Radios.Where(x=>x.IsHidden == false).SelectMany(x => x.Logs).ToList();
     }
 
     private void RadiosOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -129,7 +134,7 @@
         return async (sender, e) => { await InvokeAsync(() => 
         {
             StateHasChanged(); 
-            logs = vm.Radios.Where(x=>x.IsHidden == false).SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp).ToList();
+            PopulateAllLogs();
             filter();
         }); 
 
@@ -139,7 +144,7 @@
     public void filter()
     {
 
-        if (logs!= null && string.IsNullOrWhiteSpace(fs.SourceIp) == false)
+        if (logs != null && string.IsNullOrWhiteSpace(fs.SourceIp) == false)
         {
             displayedLogs = fs.FilterLog(logs);
 
@@ -159,5 +164,6 @@
             filter();
         }
     }
+
 
 }

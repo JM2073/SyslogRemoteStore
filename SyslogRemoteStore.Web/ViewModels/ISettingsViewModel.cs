@@ -1,10 +1,13 @@
+using System.Collections.ObjectModel;
 using SyslogRemoteStore.Web.Enums;
+using SyslogRemoteStore.Web.Models;
 
 namespace SyslogRemoteStore.Web.ViewModels;
 
 public interface ISettingsViewModel
 {
     List<string> AvailableIpAddress { get; }
+    ObservableCollection<T6S3> Radios { get; }
     string IpAddress { get; set; }
     int Port { get; set; }
     ProtocolType ListeningProtocolType { get; set; }
@@ -13,4 +16,5 @@ public interface ISettingsViewModel
     string DebugHex { get; set; }
     string InfoHex { get; set; }
     void Submit();
+    void ShowRadio(Guid radioId);
 }
