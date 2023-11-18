@@ -1,0 +1,62 @@
+<style>
+    
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure the overlay appears on top of other elements */
+}
+
+.confirmation-dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.dialog-content {
+    text-align: center;
+}
+
+.confirmation-dialog button {
+    margin: 0 5px;
+}
+</style>
+<div class="confirmation-overlay" style="display: @(IsVisible ? "flex" : "none")">
+    <div class="confirmation-dialog" style="display: @(IsVisible ? "block" : "none")">
+        <div class="dialog-content">
+            <p>@Message</p>
+            <button @onclick="Confirm" class="btn btn-primary">Yes</button>
+            <button @onclick="Cancel" class="btn btn-secondary">No</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Message { get; set; }
+    [Parameter] public EventCallback<bool> ConfirmationChanged { get; set; }
+
+    private bool IsVisible { get; set; }
+
+    public void Show()
+    {
+        IsVisible = true;
+    }
+
+    private void Confirm()
+    {
+        IsVisible = false;
+        ConfirmationChanged.InvokeAsync(true);
+    }
+
+    private void Cancel()
+    {
+        IsVisible = false;
+        ConfirmationChanged.InvokeAsync(false);
+    }
+}

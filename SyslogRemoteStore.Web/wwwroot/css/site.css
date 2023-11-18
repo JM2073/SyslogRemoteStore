@@ -12,15 +12,15 @@ h1:focus {
     outline: none;
 }
 
-a, .btn-link {
-    color: #0071c1;
-}
+/*a, .btn-link {*/
+/*    color: #0071c1;*/
+/*}*/
 
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}
+/*.btn-primary {*/
+/*    color: #fff;*/
+/*    background-color: #1b6ec2;*/
+/*    border-color: #1861ac;*/
+/*}*/
 
 .content {
     padding-top: 1.1rem;
@@ -74,4 +74,30 @@ a, .btn-link {
 .disconnected{
 
     color: #ff0000;
+}
+.spinner-Con{
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    text-align: center;
+}
+
+.spinner {
+    border: 16px solid #808080FF;
+    border-top: 16px solid #337AB7;
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+    animation: spin 700ms linear infinite;
+
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
 }

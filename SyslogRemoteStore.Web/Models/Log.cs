@@ -19,7 +19,6 @@ public class Log
     public string Facilty { get; set; }
     public string Severity { get; set; }
     public string TimeStamp { get; set; }
-    public string Tag { get; set; }
 
     public void ParseMessage(string message)
     {
@@ -31,14 +30,13 @@ public class Log
         {
             int priorityValue = Int32.TryParse(match.Groups[1].Value, out priorityValue) ? priorityValue : 0;
             int facility = priorityValue / 8;
-            int severity = priorityValue % 7;
+            int severity = priorityValue & 7;
 
 
             Severity = GetSeverity(severity);
             TimeStamp = match.Groups[3].Value;
             Facilty = GetFacilty(facility);
             SourceItem = match.Groups[4].Value;
-            Tag = match.Groups[5].Value;
             Message = match.Groups[6].Value;
         }
     }
@@ -71,6 +69,23 @@ public class Log
                 break;
             case 7:
                 result = "debug";
+                break;
+        }
+
+        switch (result)
+        {
+            case "emergency":
+                result = "debug";
+                break;
+            case "alert":
+                result = "warning";
+                break;
+            case "critical":
+            case "error":
+                result = "error";
+                break;
+            default:
+                result = "informational";
                 break;
         }
 

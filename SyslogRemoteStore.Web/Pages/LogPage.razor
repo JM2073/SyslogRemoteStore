@@ -50,8 +50,18 @@
     
     
 </style>
+<div class="col-md-12" style="display: flex">
 
-    <div class="col-md-12" style="display: flex">
+@if (displayedLogs.Any() == false)
+{
+    <div class="spinner-Con">
+        <div class="spinner"></div>
+        <h1>LOADING</h1>
+    </div>
+}
+else
+{
+    
         <div class="col-md-2"></div>
         <div class="col-md-8 justify-content-end">
             <div class="buttons">
@@ -71,7 +81,6 @@
                     <th>Facilty</th>
                     <th>Severity</th>
                     <th>TimeStamp</th>
-                    <th>Tag</th>
                     <th>Message</th>
                 </tr>
                 @foreach (Log log in displayedLogs.OrderByDescending(x=>x.TimeStamp).ToList())
@@ -82,16 +91,16 @@
                         <td>@log.Facilty</td>
                         <td>@log.Severity</td>
                         <td class="nowrap">@log.TimeStamp</td>
-                        <td>@log.Tag</td>
                         <td class="mustwrap">@log.Message</td>
                     </tr>
                 }
             </table>
         </div>
-        <div class="col-md-2"></div>
-    </div>
+    <div class="col-md-2"></div>
+  
 
-
+}
+  </div>
 @code {
 
     public List<Log> logs = new List<Log>();

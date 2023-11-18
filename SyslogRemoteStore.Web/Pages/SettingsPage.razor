@@ -172,59 +172,66 @@
         <div>
             <input type="submit" value="Submit">
         </div>
-
+        
     </EditForm>
-    <br/>
-    <hr/>
-    <br/>
-    
+
+
     <div>
         <div>
-             <label class="Header">Radio Visibility</label>
+            <label class="Header">Radio Visibility</label>
         </div>
         <div>
-        <table>
-            <thead>
-            <tr>
-                <th>Connection Status</th>
-                <th>IP</th>
-                <th>Port</th>
-                <th>Radio Visible</th>
-                <th># of Logs</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (T6S3 radio in vm.Radios)
-            {
+            <table>
+                <thead>
                 <tr>
-                    <td style="text-align: center" ><span class="@ConnectionStatus(radio)">&#x2B24;</span></td>
-                    <td>@radio.GetFormatedIp()</td>
-                    <td>@radio.Port</td>
-                    <td style="text-align: center">
-                        
-                        @if (@radio.IsHidden)
-                        {
-                            <span style="color: red;">&Cross;</span>
-                        }
-                        else
-                        {
-                            <span style="color: green;">&check;</span>
-                        }
-                        
-                    </td>
-                    <td>@radio.Logs.Count()</td>
-                    <td><button @onclick="() => vm.ShowRadio(radio.Id)"> Show Radio </button></td>
+                    <th>Connection Status</th>
+                    <th>IP</th>
+                    <th>Port</th>
+                    <th>Radio Visible</th>
+                    <th># of Logs</th>
+                    <th></th>
                 </tr>
-            }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                @foreach (T6S3 radio in vm.Radios)
+                {
+                    <tr>
+                        <td style="text-align: center">
+                            <span class="@ConnectionStatus(radio)">&#x2B24;</span>
+                        </td>
+                        <td>@radio.GetFormatedIp()</td>
+                        <td>@radio.Port</td>
+                        <td style="text-align: center">
+
+                            @if (radio.IsHidden)
+                            {
+                                <span style="color: red;">&Cross;</span>
+                            }
+                            else
+                            {
+                                <span style="color: green;">&check;</span>
+                            }
+
+                        </td>
+                        <td>@radio.Logs.Count()</td>
+                        <td>
+                            <button @onclick="() => vm.ShowRadio(radio.Id)"> Show Radio </button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
+<ConfirmationDialog @ref="confirmationDialog" Message="Are you sure?" ConfirmationChanged="HandleConfirmation"></ConfirmationDialog>
+
 @code {
     string LastSubmitResult;
+    private ConfirmationDialog confirmationDialog;
+    private EditContext editContext;
+    
     protected override async Task OnInitializedAsync()
     {
         cs.Radios.CollectionChanged += RadiosOnCollectionChanged;
@@ -250,26 +257,20 @@
 
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
-        return async (sender, e) =>
-        {
-            await InvokeAsync(() => { StateHasChanged(); });
-        };
+        return async (sender, e) => { await InvokeAsync(() => { StateHasChanged(); }); };
     }
 
-    void FormSubmitted(EditContext editContext)
+    async Task FormSubmitted(EditContext editContext)
     {
-        bool formIsValid = editContext.Validate();
-        LastSubmitResult =
-            formIsValid
-                ? "Success - form was valid"
-                : "Failure - form was invalid";
-        if (formIsValid is true)
-        {
-            vm.Submit();
-        }
+        editContext = this.editContext;
+        confirmationDialog.Show();
+        
+        
     }
+
     private string ConnectionStatus(T6S3 radio)
     {
+        
         string result = string.Empty;
         switch (radio.Socket.ProtocolType)
         {
@@ -286,4 +287,30 @@
         return result;
     }
 
+    
+    private async Task ShowConfirmationDialog()
+    {
+   
+    }
+
+    private async Task HandleConfirmation(bool result)
+    {
+        if (result)
+        {
+            bool formIsValid = editContext.Validate();
+            LastSubmitResult =
+                formIsValid
+                    ? "Success - form was valid"
+                    : "Failure - form was invalid";
+            if (formIsValid is true)
+            {
+                vm.Submit();
+            }
+        }
+        else
+        {
+            Console.WriteLine("no");
+    // User canceled, handle accordingly
+        }
+    }
 }
