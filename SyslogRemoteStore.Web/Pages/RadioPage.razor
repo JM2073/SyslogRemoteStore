@@ -144,9 +144,30 @@
     </div>
 </div>
 <div>
-    <input type="text" name="q" placeholder="Search..." @bind="fs.Message" @onkeydown="@Enter" />
-    <button @onclick="filter" class="btn btn-primary" value="Search">Search</button>
-    <button @onclick="HideRadio" id="liveToastBtn" class="btn btn-primary" value="Hide Radio">Hide Radio</button>
+    <div>
+    <input type="text" name="q" placeholder="Search by message..." @bind="fs.Message" @onkeydown="@Enter" />
+        
+        Severity filter
+        <input class="form-check-input" type="checkbox" @bind="@fs.Debug" id="debugCheck">
+        <label class="form-check-label" for="debugCheck">
+            Debug
+        </label>
+        <input class="form-check-input" type="checkbox" @bind="@fs.Error" id="ErrorCheck">
+        <label class="form-check-label" for="ErrorCheck">
+            Error
+        </label>
+        <input class="form-check-input" type="checkbox" @bind="@fs.Info" id="InfoCheck">
+        <label class="form-check-label" for="InfoCheck">
+            Info
+        </label>
+        <input class="form-check-input" type="checkbox" @bind="@fs.Warning" id="WarningCheck">
+        <label class="form-check-label" for="WarningCheck">
+            Warning
+        </label>
+        <button @onclick="filter" class="btn btn-primary" value="Search">Search</button>
+        <button @onclick="HideRadio" id="liveToastBtn" class="btn btn-primary" value="Hide Radio">Hide Radio</button>
+    </div>
+
 </div>
 @if (displayedLogs.Any() is false)
 {
@@ -197,11 +218,17 @@ else
     protected override async Task OnParametersSetAsync()
     {
         vm.RadioId = RadioId;
-        vm.Radio.PropertyChanged += HandlePropertyChanged();
         logs = vm.Radio.Logs.ToList();
+        vm.Radio.PropertyChanged += HandlePropertyChanged();
         vm._configurationStore.PropertyChanged += HandlePropertyChanged();
+        fs.PropertyChanged += HandleFilterChanged;
     }
     
+    private void HandleFilterChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        filter();
+    }
+
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
         return async (sender, e) => { await InvokeAsync(() => 
@@ -215,14 +242,8 @@ else
 
     public void filter()
     {
-        if (logs != null && string.IsNullOrWhiteSpace(fs.Message) == false)
-        {
-            displayedLogs = fs.FilterLog(logs);
-        }
-        else
-        {
-            displayedLogs = logs;
-        }
+        displayedLogs = fs.FilterLog(logs);
+        StateHasChanged();
     }
     public void Enter(KeyboardEventArgs e)
     {

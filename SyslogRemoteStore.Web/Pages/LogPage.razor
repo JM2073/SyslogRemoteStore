@@ -1,7 +1,7 @@
 ﻿@page "/"
+@using SyslogRemoteStore.Web.Services
 @inject ILogsViewModel vm
 @inject LogFilterService fs
-@using SyslogRemoteStore.Web.Services
 
 <style>
     table {
@@ -52,16 +52,7 @@
 </style>
 <div class="col-md-12" style="display: flex">
 
-@if (displayedLogs.Any() == false)
-{
-    <div class="spinner-Con">
-        <div class="spinner"></div>
-        <h1>LOADING</h1>
-    </div>
-}
-else
-{
-    
+
         <div class="col-md-2"></div>
         <div class="col-md-8 justify-content-end">
             <div class="buttons">
@@ -70,8 +61,32 @@ else
             </div>
 
             <div>
-                <input type="text" name="q" placeholder="Search..." @bind="fs.SourceIp" @onkeydown="@Enter"/>
-                <button @onclick="filter" value="Search">Search</button>
+
+                <div>
+                <input type="text" name="q" placeholder="Search by source IP..." @bind="fs.SourceIp" @onkeydown="@Enter"/>
+                    
+                    | Severity filter
+                    <input class="form-check-input" type="checkbox" @bind="@fs.Debug" id="debugCheck">
+                    <label class="form-check-label" for="debugCheck">
+                        Debug
+                    </label>
+                    <input class="form-check-input" type="checkbox" @bind="@fs.Error" id="ErrorCheck">
+                    <label class="form-check-label" for="ErrorCheck">
+                        Error
+                    </label>
+                    <input class="form-check-input" type="checkbox" @bind="@fs.Info" id="InfoCheck">
+                    <label class="form-check-label" for="InfoCheck">
+                        Info
+                    </label>
+                    <input class="form-check-input" type="checkbox" @bind="@fs.Warning" id="WarningCheck">
+                <label class="form-check-label" for="WarningCheck">
+                    Warning
+                </label>
+                |
+                    <button @onclick="filter" class="btn btn-primary" value="Search">Search</button>
+
+                </div>
+
             </div>
 
             <table id="LogTable">
@@ -83,45 +98,60 @@ else
                     <th>TimeStamp</th>
                     <th>Message</th>
                 </tr>
-                @foreach (Log log in displayedLogs.OrderByDescending(x=>x.TimeStamp).ToList())
-                {
-                    <tr class="@log.Severity">
-                        <td>@log.GetFormatedIp()</td>
-                        <td>@log.SourceItem</td>
-                        <td>@log.Facilty</td>
-                        <td>@log.Severity</td>
-                        <td class="nowrap">@log.TimeStamp</td>
-                        <td class="mustwrap">@log.Message</td>
-                    </tr>
-                }
+                    @if (displayedLogs.Any() == false)
+                    {
+                        <div class="spinner-Con">
+                            <div class="spinner"></div>
+                            <h1>LOADING</h1>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (Log log in displayedLogs.OrderByDescending(x => x.TimeStamp).ToList())
+                        {
+                            <tr class="@log.Severity">
+                                <td>@log.GetFormatedIp()</td>
+                                <td>@log.SourceItem</td>
+                                <td>@log.Facilty</td>
+                                <td>@log.Severity</td>
+                                <td class="nowrap">@log.TimeStamp</td>
+                                <td class="mustwrap">@log.Message</td>
+                            </tr>
+                        }
+                    }
             </table>
         </div>
-    <div class="col-md-2"></div>
-  
+        <div class="col-md-2"></div>
+</div>
 
-}
-  </div>
 @code {
 
-    public List<Log> logs = new List<Log>();
-    public List<Log> displayedLogs = new List<Log>();
+    public List<Log> logs = new();
+    public List<Log> displayedLogs = new();
 
     protected override async Task OnInitializedAsync()
     {
+        fs.PropertyChanged += HandleFilterChanged;
         vm.Radios.CollectionChanged += RadiosOnCollectionChanged;
+
         foreach (T6S3 _radio in vm.Radios)
         {
             _radio.PropertyChanged += HandlePropertyChanged();
         }
 
         PopulateAllLogs();
-  
+
         await base.OnInitializedAsync();
+    }
+
+    private void HandleFilterChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        filter();
     }
 
     private void PopulateAllLogs()
     {
-        logs = vm.Radios.Where(x=>x.IsHidden == false).SelectMany(x => x.Logs).ToList();
+        logs = vm.Radios.Where(x => x.IsHidden == false).SelectMany(x => x.Logs).ToList();
     }
 
     private void RadiosOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -140,30 +170,21 @@ else
 
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
-        return async (sender, e) => { await InvokeAsync(() => 
+        return async (sender, e) =>
         {
-            StateHasChanged(); 
-            PopulateAllLogs();
-            filter();
-        }); 
-
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+                PopulateAllLogs();
+                filter();
+            });
         };
     }
 
     public void filter()
     {
-
-        if (logs != null && string.IsNullOrWhiteSpace(fs.SourceIp) == false)
-        {
-            displayedLogs = fs.FilterLog(logs);
-
-        }
-        else
-        {
-            displayedLogs = logs;
-        }
+        displayedLogs = fs.FilterLog(logs);
         StateHasChanged();
-
     }
 
     public void Enter(KeyboardEventArgs e)

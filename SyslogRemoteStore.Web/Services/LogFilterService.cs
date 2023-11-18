@@ -2,30 +2,52 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 
 namespace SyslogRemoteStore.Web.Services
 {
     public class LogFilterService : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        private bool _error = true;
+        private bool _info = true;
+        private bool _debug = true;
+        private bool _warning = true;
+        private string _sourceIp;
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public string SourceIp
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            get => _sourceIp;
+            set => SetField(ref _sourceIp, value);
         }
 
-        public string SourceIp { get; set; }
-        public string Severity { get; set; }
+        public bool Error
+        {
+            get => _error;
+            set => SetField(ref _error, value);
+        }
+
+        public bool Info
+        {
+            get => _info;
+            set => SetField(ref _info, value);
+        }
+
+        public bool Debug
+        {
+            get => _debug;
+            set => SetField(ref _debug, value);
+        }
+
+        public bool Warning
+        {
+            get => _warning;
+            set => SetField(ref _warning, value);
+        }
 
 
-
-        public bool Error = true;
-        public bool Info = true;
-        public bool Debug = true;
-        public bool Warning = true;
-
-
+        /*
+        TODO: what is the point in this ?
         public bool GetSevError() => Error;
         public bool GetSevInfo() => Info;
         public bool GetSevDebug() => Debug;
@@ -35,23 +57,37 @@ namespace SyslogRemoteStore.Web.Services
         public void SeverityInfo(bool value) => Info = value;
         public void SeverityDebug(bool value) => Debug = value;
         public void SeverityWarning(bool value) => Warning = value;
-
+        */
 
         public List<Log> FilterLog(List<Log> logs)
         {
 
             List<Log> filteredLogs = logs;
 
+            filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+
             if (!string.IsNullOrEmpty(this.SourceIp))
             {
-                filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
-                //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
-
+                filteredLogs = filteredLogs.Where(l => l.GetFormatedIp().Contains(SourceIp)).ToList();
             }
-
 
             return filteredLogs;
             
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }
