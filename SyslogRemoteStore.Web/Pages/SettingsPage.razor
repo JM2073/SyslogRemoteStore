@@ -298,7 +298,7 @@
         switch (radio.Socket.ProtocolType)
         {
             case SPType.Udp:
-                result = radio.AlertFlag ? "disconnected " : "connected";
+                result = radio.UdpConnected ? "connected" : "disconnected ";
                 break;
             case SPType.Tcp:
                 result = radio.TcpConnected ? "connected" : "disconnected";
@@ -333,6 +333,10 @@
         {
             vm.Submit();
             informativeDialog.Show("Settings where changed.", "green");
+            
+            this.IpAddress = vm.IpAddress;
+            this.Port = vm.Port;
+            this.ListeningProtocolType = vm.ListeningProtocolType;
         }
         else
         {

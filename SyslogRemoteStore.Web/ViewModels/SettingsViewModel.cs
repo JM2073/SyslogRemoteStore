@@ -61,7 +61,7 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
 
         if (restartListeners)
         {
-            RadioService.Instance.RestartListener();
+            RadioService.Instance.CloseOpenConnections();
         }
         
     }

@@ -58,7 +58,7 @@
                                 {
                                     <li >
                                         <span class="@(ConnectionStatus(radio))">&#x2B24;</span>
-                                        <a style="vertical-align: middle" href="/RadioPage/@radio.Id"> @(radio.TcpConnected ? "TCP" : "UDP") | @radio.Port</a>
+                                        <a style="vertical-align: middle" href="/RadioPage/@radio.Id"> @(GetProtocalType(radio)) | @radio.Port</a>
                                     </li>
                                 }
                             </ul>
@@ -118,7 +118,7 @@
         switch (radio.Socket.ProtocolType)
         {
             case ProtocolType.Udp:
-                result = radio.AlertFlag ? "disconnected" : "connected";
+                result = radio.UdpConnected ? "connected" : "disconnected";
                 break;
             case ProtocolType.Tcp:
                 result = radio.TcpConnected ? "connected" : "disconnected";
@@ -131,6 +131,22 @@
     }
 
 
+    private string GetProtocalType(T6S3 radio)
+    {
+        string result = string.Empty;
+        switch (radio.Socket.ProtocolType)
+        {
+            case ProtocolType.Udp:
+                result = "UDP";
+                break;
+            case ProtocolType.Tcp:
+                result = "TCP";
+                break;
+            default:
+                throw new Exception("strange Protocol Type");
+        }
 
+        return result;
+    }
 
 }

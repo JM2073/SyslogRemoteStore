@@ -13,15 +13,17 @@ public class T6S3 : INotifyPropertyChanged
 {
     private readonly Timer logTimer;
 
-    private bool _alertFlag;
-
-    private string _ipvType;
-
-    private ObservableCollection<Log> _logs = new();
+    private bool _udpConnected;
 
     private bool _tcpConnected;
 
     private bool _isHidden;
+    
+    private string _ipvType;
+
+    private ObservableCollection<Log> _logs = new();
+
+
 
     public T6S3(Socket socket, string ip, int port)
     {
@@ -30,12 +32,13 @@ public class T6S3 : INotifyPropertyChanged
         Ip = ip;
         Port = port;
         TcpConnected = socket.ProtocolType == ProtocolType.Tcp;
+        UdpConnected = socket.ProtocolType == ProtocolType.Udp;
         IsHidden = false;
         _logs.CollectionChanged += Logs_CollectionChanged;
 
         // Initialize and configure the timer
         logTimer = new Timer();
-        logTimer.Interval = 5 * 60 * 1000;
+        logTimer.Interval = TimeSpan.FromMinutes(5).TotalMilliseconds;
         logTimer.Elapsed += LogTimerElapsed;
         logTimer.AutoReset = false;
     }
@@ -54,10 +57,10 @@ public class T6S3 : INotifyPropertyChanged
         set => SetField(ref _tcpConnected, value);
     }
 
-    public bool AlertFlag
+    public bool UdpConnected
     {
-        get => _alertFlag;
-        set => SetField(ref _alertFlag, value);
+        get => _udpConnected;
+        set => SetField(ref _udpConnected, value);
     }
 
     public Guid Id { get; set; }
@@ -80,7 +83,7 @@ public class T6S3 : INotifyPropertyChanged
         switch (this.Socket.ProtocolType)
         {
             case ProtocolType.Udp:
-                result = this.AlertFlag ? "Dissconnected" : "Connected";
+                result = this.UdpConnected ? "Connected" : "Dissconnected";
                 break;
             case ProtocolType.Tcp:
                 result = this.TcpConnected ? "Connected" : "Dissconnected";
@@ -106,14 +109,22 @@ public class T6S3 : INotifyPropertyChanged
     // Event handler for changes in the Logs collection
     private void Logs_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        OnPropertyChanged("Logs");
+        OnPropertyChanged(nameof(Logs));
         ResetLogTimer(); // Reset the timer when a log is added
     }
 
     // Event handler for the log timer elapsed
     private void LogTimerElapsed(object sender, ElapsedEventArgs e)
     {
-        _alertFlag = true;
+        switch (Socket.ProtocolType)
+        {
+            case ProtocolType.Udp:
+                this.UdpConnected = false;
+                break;
+            case ProtocolType.Tcp:
+                this.TcpConnected = false;
+                break;
+        }
     }
 
     // Reset the log timer
@@ -121,8 +132,16 @@ public class T6S3 : INotifyPropertyChanged
     {
         logTimer.Stop();
         logTimer.Start();
-        _alertFlag = false;
-        OnPropertyChanged("AlertFlag"); // Notify about the alert flag change
+        
+        switch (Socket.ProtocolType)
+        {
+            case ProtocolType.Udp:
+                this.UdpConnected = true;
+                break;
+            case ProtocolType.Tcp:
+                this.TcpConnected = true;
+                break;
+        }
     }
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
