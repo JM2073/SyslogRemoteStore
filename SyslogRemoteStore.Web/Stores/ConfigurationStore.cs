@@ -8,7 +8,7 @@ public class ConfigurationStore : BaseStore, INotifyPropertyChanged
 {
     public new event PropertyChangedEventHandler? PropertyChanged;
     
-    private ProtocolType _listeningProtocolType = ProtocolType.Tcp;
+    private ProtocolType _listeningProtocolType = ProtocolType.Both;
 
     private string _warningHex = "#FFFF00";
     private string _errorHex = "#FF0000";

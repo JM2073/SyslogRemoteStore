@@ -4,6 +4,14 @@
 @inject ISettingsViewModel vm
 @inject CollectionStore cs
 <style>
+
+   
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
          table {
        
              border-collapse: collapse;
@@ -27,81 +35,77 @@
           }
 
 
-        input[type="text"] {
-            padding: 8px;
-            width: 200px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+    input[type="text"] {
+        padding: 8px;
+        width: 200px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
 
-        /* Style for the label */
-        label {
+    /* Style for the label */
+    label {
         display: block; /* Place the label on a new line */
         font-weight: bold;
-        }
+    }
 
-        /* Style for the dropdown menu */
-        select {
+    /* Style for the dropdown menu */
+    select {
+        left: 20px;
         width: 200px; /* Adjust the width as needed */
         padding: 10px;
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        }
+    }
 
-        /* Style for the label */
-        label {
+    /* Style for the label */
+    label {
         display: block; /* Place the label on a new line */
         font-weight: bold;
         margin-bottom: 5px; /* Add some spacing below the label */
-        }
+    }
 
-        /* Style for the input box */
-        input[type="number"] {
+    /* Style for the input box */
+    input[type="number"] {
         width: 200px; /* Adjust the width as needed */
         padding: 10px;
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        }
+    }
 
-        ol {
+    ol {
         padding-left: 20px; /* Add left padding for indentation */
-        }
+    }
 
-        li {
+    li {
         margin: 5px 0; /* Add margin between list items */
-        }
+    }
 
-        /* Style for the submit button */
-        input[type="submit"] {
-        background-color: #4CAF50; /* Background color */
+    /* Style for the submit button */
+    input[type="submit"] {
+        background-color: black; /* Background color */
         color: white; /* Text color */
         padding: 10px 20px; /* Padding around text */
         border: none; /* Remove border */
         border-radius: 5px; /* Add rounded corners */
         cursor: pointer; /* Change cursor to pointer on hover */
-        }
+    }
 
         /* Change button style on hover */
         input[type="submit"]:hover {
-        background-color: #dimgrey; /* Darker background color on hover */
+            background-color: #dimgrey; /* Darker background color on hover */
         }
 
     section {
         display: grid;
         grid-template-columns: 1fr 1fr; /* set column sizes here */
         grid-template-rows: auto auto; /* we want two rows */
-
+        text-align: center;
         grid-gap: 10px; /* how far between cells? */
         grid-auto-flow: column; /* fill in by column, not row */
         /* temporary property for visualization */
         height: 150px;
-    }
-
-    .column {
-        float: left;
-        width: 25%;
     }
 
     /* Clear floats after the columns */
@@ -117,117 +121,133 @@
     </style>
 
 <div>
-    <EditForm model="@vm" OnSubmit="@preFormSubmit">
 
-        <div>
-            <label class="Header" for="Header">Change Syslog Message Severity Colours</label>
-        </div>
+    <div class="col-md-12" style="display: flex">
+        <div class="col-md-2"></div>
+        <div class="col-md-8  justify-content-end">
+            <EditForm model="@vm" OnSubmit="@preFormSubmit">
 
-        <section>
-            <div>
-                <label for="Debug">Debug:</label>
-                <input type="color" id="head" name="head" @bind="@vm.DebugHex"/>
-            </div>
-            <div>
-                <label for="Info">Info:</label>
-                <input type="color" id="head" name="head" @bind="@vm.InfoHex">
-            </div>
-            <div>
-                <label for="Warning">Warning:</label>
-                <input type="color" id="head" name="head" @bind="@vm.WarningHex">
-            </div>
-            <div>
-                <label for="Error">Error:</label>
-                <input type="color" id="head" name="head" @bind="@vm.ErrorHex">
-            </div>
-        </section>
+                <div>
+                    <label style="text-align: center;" for="Header">Change Syslog Message Severity Colours</label>
+                </div>
 
+                <div style="padding-top: 25px">
+                </div>
 
-        <div class="row">
-            <div class="column">
-                <label for="ProtocolTypeDropdown">Change Listening Proticals:</label>
-                <select id="ProtocolTypeDropdown" @bind="vm.ListeningProtocolType">
-                    @foreach (object? option in Enum.GetValues(typeof(ProtocolType)))
-                    {
-                        <option value="@((ProtocolType)option)">@((ProtocolType)option)</option>
-                    }
-                </select>
-            </div>
-            <div class="column">
-                <label for="AvailableIpAddressDropdown">IP Addresses :</label>
-                <select id="AvailableIpAddressDropdown" @bind="vm.IpAddress">
-                    @foreach (string ip in vm.AvailableIpAddress)
-                    {
-                        <option value="@ip">@ip</option>
-                    }
-                </select>
-            </div>
-            <div class="column">
-                <label for="integerInput">Change Listen Port:</label>
-                <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
-            </div>
-            <div class="column"></div>
-        </div>
+                <section>
+                    <div>
+                        <label for="Debug">Debug:</label>
+                        <input type="color" id="head" name="head" @bind="@vm.DebugHex"/>
+                    </div>
+                    <div>
+                        <label for="Info">Info:</label>
+                        <input type="color" id="head" name="head" @bind="@vm.InfoHex">
+                    </div>
+                    <div>
+                        <label for="Warning">Warning:</label>
+                        <input type="color" id="head" name="head" @bind="@vm.WarningHex">
+                    </div>
+                    <div>
+                        <label for="Error">Error:</label>
+                        <input type="color" id="head" name="head" @bind="@vm.ErrorHex">
+                    </div>
+                </section>
 
-        <div>
-            <input type="submit" value="Submit">
-        </div>
-        
-    </EditForm>
+                <div style="padding-top: 25px">
+                </div>
 
+                <div class="row">
 
-    <div>
-        <div>
-            <label class="Header">Radio Visibility</label>
-        </div>
-        <div>
-            <table>
-                <thead>
-                <tr>
-                    <th>Connection Status</th>
-                    <th>IP</th>
-                    <th>Port</th>
-                    <th>Radio Visible</th>
-                    <th># of Logs</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (T6S3 radio in vm.Radios)
-                {
-                    <tr>
-                        <td style="text-align: center">
-                            <span class="@ConnectionStatus(radio)">&#x2B24;</span>
-                        </td>
-                        <td>@radio.GetFormatedIp()</td>
-                        <td>@radio.Port</td>
-                        <td style="text-align: center">
-
-                            @if (radio.IsHidden)
+                    <div class="col-md-4 spacerE  ">
+                        <label for="ProtocolTypeDropdown">Change Listening Proticals:</label>
+                        <select id="ProtocolTypeDropdown" @bind="vm.ListeningProtocolType">
+                            @foreach (object? option in Enum.GetValues(typeof(ProtocolType)))
                             {
-                                <span style="color: red;">&Cross;</span>
+                                <option value="@((ProtocolType)option)">@(((ProtocolType)option).ToString().ToUpper())</option>
                             }
-                            else
-                            {
-                                <span style="color: green;">&check;</span>
-                            }
+                        </select>
+                    </div>
 
-                        </td>
-                        <td>@radio.Logs.Count()</td>
-                        <td>
-                            @if (radio.IsHidden)
+                    <div class="col-md-4 spacerE ">
+                        <label for="AvailableIpAddressDropdown">IP Addresses :</label>
+                        <select id="AvailableIpAddressDropdown" @bind="vm.IpAddress">
+                            @foreach (string ip in vm.AvailableIpAddress)
                             {
-                                <button class="btn btn-primary" @onclick="() => ToggleRadioVisibility(radio.Id, false)"> Show Radio </button>
+                                <option value="@ip">@ip</option>
                             }
-                            else
-                            {
-                                <button  class="btn btn-primary" @onclick="() => ToggleRadioVisibility(radio.Id, true)"> Hide Radio </button>
-                            }
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 spacerE ">
+                        <label for="integerInput">Change Listen Port:</label>
+                        <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
+                    </div>
+
+                </div>
+
+                <div style="padding-top: 75px">
+                </div>
+
+                <div>
+                    <input style="margin-left: 45%;" type="submit" value="Submit">
+                </div>
+            </EditForm>
+
+
+            <div>
+                <div>
+                    <label class="Header">Radio Visibility</label>
+                </div>
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Connection Status</th>
+                            <th>IP</th>
+                            <th>Port</th>
+                            <th>Radio Visible</th>
+                            <th># of Logs</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (T6S3 radio in vm.Radios)
+                        {
+                            <tr>
+                                <td style="text-align: center">
+                                    <span class="@ConnectionStatus(radio)">&#x2B24;</span>
+                                </td>
+                                <td>@radio.GetFormatedIp()</td>
+                                <td>@radio.Port</td>
+                                <td style="text-align: center">
+
+                                    @if (radio.IsHidden)
+                                    {
+                                        <span style="color: red;">&Cross;</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color: green;">&check;</span>
+                                    }
+
+                                </td>
+                                <td>@radio.Logs.Count()</td>
+                                <td>
+                                    @if (radio.IsHidden)
+                                    {
+                                        <button class="btn btn-primary" @onclick="() => ToggleRadioVisibility(radio.Id, false)"> Show Radio </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-primary" @onclick="() => ToggleRadioVisibility(radio.Id, true)"> Hide Radio </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -236,22 +256,23 @@
 
 
 <InformativeDialog @ref="informativeDialog" OnClosed="HandleInformativeClosed"></InformativeDialog>
+
 @code {
     string LastSubmitResult;
     private ConfirmationDialog confirmationDialog;
     private InformativeDialog informativeDialog;
     private EditContext editContext;
-    
-    private string IpAddress { get; set; } 
-    private int Port { get; set; } 
-    private ProtocolType ListeningProtocolType { get; set; } 
-    
+
+    private string IpAddress { get; set; }
+    private int Port { get; set; }
+    private ProtocolType ListeningProtocolType { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        this.IpAddress = vm.IpAddress;
-        this.Port = vm.Port;
-        this.ListeningProtocolType = vm.ListeningProtocolType;
-        
+        IpAddress = vm.IpAddress;
+        Port = vm.Port;
+        ListeningProtocolType = vm.ListeningProtocolType;
+
         cs.Radios.CollectionChanged += RadiosOnCollectionChanged;
         foreach (T6S3 _radio in cs.Radios)
         {
@@ -281,7 +302,7 @@
     async Task preFormSubmit(EditContext editContext)
     {
         this.editContext = editContext;
-        if (vm.ListeningProtocolType != this.ListeningProtocolType || vm.IpAddress != this.IpAddress || vm.Port != this.Port)
+        if (vm.ListeningProtocolType != ListeningProtocolType || vm.IpAddress != IpAddress || vm.Port != Port)
         {
             confirmationDialog.Show();
         }
@@ -293,7 +314,6 @@
 
     private string ConnectionStatus(T6S3 radio)
     {
-        
         string result = string.Empty;
         switch (radio.Socket.ProtocolType)
         {
@@ -333,16 +353,17 @@
         {
             vm.Submit();
             informativeDialog.Show("Settings where changed.", "green");
-            
-            this.IpAddress = vm.IpAddress;
-            this.Port = vm.Port;
-            this.ListeningProtocolType = vm.ListeningProtocolType;
+
+            IpAddress = vm.IpAddress;
+            Port = vm.Port;
+            ListeningProtocolType = vm.ListeningProtocolType;
         }
         else
         {
             informativeDialog.Show("Settings where not changed.", "red");
         }
     }
+
     private async Task HandleInformativeClosed()
     {
     }
