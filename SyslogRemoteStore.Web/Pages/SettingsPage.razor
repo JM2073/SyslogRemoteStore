@@ -2,89 +2,87 @@
 @using SyslogRemoteStore.Web.Enums
 @inject ISettingsViewModel vm
 <style>
-     
-          label {
-           font-weight: bold;
-           display: block;
-           margin-bottom: 5px;
-          }
+
+   
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
 
 
-        input[type="text"] {
-            padding: 8px;
-            width: 200px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+    input[type="text"] {
+        padding: 8px;
+        width: 200px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
 
-        /* Style for the label */
-        label {
+    /* Style for the label */
+    label {
         display: block; /* Place the label on a new line */
         font-weight: bold;
-        }
+    }
 
-        /* Style for the dropdown menu */
-        select {
+    /* Style for the dropdown menu */
+    select {
+        left: 20px;
         width: 200px; /* Adjust the width as needed */
         padding: 10px;
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        }
+    }
 
-        /* Style for the label */
-        label {
+    /* Style for the label */
+    label {
         display: block; /* Place the label on a new line */
         font-weight: bold;
         margin-bottom: 5px; /* Add some spacing below the label */
-        }
+    }
 
-        /* Style for the input box */
-        input[type="number"] {
+    /* Style for the input box */
+    input[type="number"] {
         width: 200px; /* Adjust the width as needed */
         padding: 10px;
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        }
+    }
 
-        ol {
+    ol {
         padding-left: 20px; /* Add left padding for indentation */
-        }
+    }
 
-        li {
+    li {
         margin: 5px 0; /* Add margin between list items */
-        }
+    }
 
-        /* Style for the submit button */
-        input[type="submit"] {
-        background-color: #4CAF50; /* Background color */
+    /* Style for the submit button */
+    input[type="submit"] {
+        background-color: black; /* Background color */
         color: white; /* Text color */
         padding: 10px 20px; /* Padding around text */
         border: none; /* Remove border */
         border-radius: 5px; /* Add rounded corners */
         cursor: pointer; /* Change cursor to pointer on hover */
-        }
+    }
 
         /* Change button style on hover */
         input[type="submit"]:hover {
-        background-color: #dimgrey; /* Darker background color on hover */
+            background-color: #dimgrey; /* Darker background color on hover */
         }
 
     section {
         display: grid;
         grid-template-columns: 1fr 1fr; /* set column sizes here */
         grid-template-rows: auto auto; /* we want two rows */
-
+        text-align: center;
         grid-gap: 10px; /* how far between cells? */
         grid-auto-flow: column; /* fill in by column, not row */
         /* temporary property for visualization */
         height: 150px;
-    }
-
-    .column {
-        float: left;
-        width: 25%;
     }
 
     /* Clear floats after the columns */
@@ -93,71 +91,99 @@
         display: table;
         clear: both;
     }
-    </style>
 
-<div>
-    <EditForm model="@vm" OnSubmit=@FormSubmitted>
+   
 
-        <div>
-            <label for="Header">Change Syslog Message Severity Colours</label>
-        </div> 
+</style>
 
-        <section>
-            <div>
-                <label for="Debug">Debug:</label>
-                <input type="color" id="head" name="head" @bind="@vm.DebugHex" />
-            </div>
-            <div>
-                <label for="Info">Info:</label>
-                <input type="color" id="head" name="head" @bind="@vm.InfoHex">
-            </div>
-            <div>
-                <label for="Warning">Warning:</label>
-                <input type="color" id="head" name="head" @bind="@vm.WarningHex">
-            </div>
-            <div>
-                <label for="Error">Error:</label>
-                <input type="color" id="head" name="head" @bind="@vm.ErrorHex">
-            </div>
-        </section>
+<div style="background-color: white;">
+    <div style="padding-top: 50px">
+    </div>
 
+    <div class="col-md-12" style="display: flex">
+        <div class="col-md-2"></div>
+        <div class="col-md-8  justify-content-end">
+            <EditForm model="@vm" OnSubmit=@FormSubmitted>
 
-        <div class="row">
-            <div class="column">
-            <label for="ProtocolTypeDropdown">Change Listening Proticals:</label>
-            <select id="ProtocolTypeDropdown" @bind="vm.ListeningProtocolType">
-                @foreach (object? option in Enum.GetValues(typeof(ProtocolType)))
-                {
-                    <option value="@((ProtocolType)option)">@((ProtocolType)option)</option>
-                }
-            </select>
+                <div>
+                    <label style="text-align: center;" for="Header">Change Syslog Message Severity Colours</label>
+                </div>
+
+                <div style="padding-top: 25px">
+                </div>
+
+                <section>
+                    <div>
+                        <label for="Debug">Debug:</label>
+                        <input type="color" id="head" name="head" @bind="@vm.DebugHex" />
+                    </div>
+                    <div>
+                        <label for="Info">Info:</label>
+                        <input type="color" id="head" name="head" @bind="@vm.InfoHex">
+                    </div>
+                    <div>
+                        <label for="Warning">Warning:</label>
+                        <input type="color" id="head" name="head" @bind="@vm.WarningHex">
+                    </div>
+                    <div>
+                        <label for="Error">Error:</label>
+                        <input type="color" id="head" name="head" @bind="@vm.ErrorHex">
+                    </div>
+
+                </section>
+
+                <div style="padding-top: 25px">
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 spacerE  ">
+                        <label for="ProtocolTypeDropdown">Change Listening Proticals:</label>
+                        <select id="ProtocolTypeDropdown" @bind="vm.ListeningProtocolType">
+                            @foreach (object? option in Enum.GetValues(typeof(ProtocolType)))
+                            {
+                                <option value="@((ProtocolType)option)">@(((ProtocolType)option).ToString().ToUpper())</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 spacerE ">
+                        <label for="AvailableIpAddressDropdown">IP Addresses :</label>
+                        <select id="AvailableIpAddressDropdown" @bind="vm.IpAddress">
+                            @foreach (string ip in vm.AvailableIpAddress)
+                            {
+                                <option value="@ip">@ip</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 spacerE ">
+                        <label for="integerInput">Change Listen Port:</label>
+                        <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
+                    </div>
+
+                </div>
+
+                <div style="padding-top: 75px">
+                </div>
+
+                <div>
+                    <input style="margin-left: 45%;" type="submit" value="Submit">
+                </div>
+            </EditForm>
+
         </div>
-            <div class="column">            
-            <label for="AvailableIpAddressDropdown">IP Addresses :</label>
-            <select id="AvailableIpAddressDropdown" @bind="vm.IpAddress">
-                    @foreach (string ip in vm.AvailableIpAddress)
-                    {
-                        <option value="@ip">@ip</option>
-                    }
-            </select>
-        </div>
-            <div class="column">
-                    <label for="integerInput">Change Listen Port:</label>
-                    <input type="number" id="integerInput" name="integerInput" @bind="vm.Port">
-            </div>
-            <div class="column"></div>
-        </div>
+        <div class="col-md-2"></div>
+    </div>
 
-        <div>
-            <input type="submit" value="Submit">
-        </div>
+    <div style="padding-top: 75px">
+    </div>
 
-    </EditForm>
 </div>
 
 @code {
     string LastSubmitResult;
-    
+
     void FormSubmitted(EditContext editContext)
     {
         bool formIsValid = editContext.Validate();
@@ -170,5 +196,5 @@
             vm.Submit();
         }
     }
-    
+
 }
