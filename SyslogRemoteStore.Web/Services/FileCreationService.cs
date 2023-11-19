@@ -21,10 +21,11 @@ namespace SyslogRemoteStore.Web.Services
         public string Severity { get; set; }
 
 
-        public void CreateFile(List<Log> logs, string Ip) //string filename Changes depending on name
+        public void CreateFile(ObservableCollection<Log> logs, string Ip) //string filename Changes depending on name
         {
             DateTime currentDateTime = DateTime.Now;
-            string dateTime = currentDateTime.ToString("yyyyMMddHHmmssfff");
+            string dateTime = currentDateTime.ToString("yyyyMMddHHmmss");
+
             string filename = string.Format(@"{0}_{1}.txt", Ip, dateTime);
             string path = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, filename);
 
@@ -56,6 +57,18 @@ namespace SyslogRemoteStore.Web.Services
             {
                 Console.WriteLine(Exept.ToString());
             }
+
+        }
+        public string GetFileName(string Ip)
+        {
+
+            DateTime currentDateTime = DateTime.Now;
+            string dateTime = currentDateTime.ToString("yyyyMMddHHmmss");
+
+            string filename = string.Format(@"{0}_{1}.txt", Ip, dateTime);
+            string path = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, filename);
+            return path;
+
 
         }
 

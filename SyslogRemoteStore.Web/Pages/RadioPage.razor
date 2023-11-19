@@ -197,7 +197,6 @@
                     {
                         StateHasChanged();
                         logs = vm.Radio.Logs.ToList();
-                        fc.CreateFile(logs, vm.Radio.GetFormatedIp());
                         filter();
                     });
         };
