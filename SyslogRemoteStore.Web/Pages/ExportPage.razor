@@ -33,7 +33,7 @@
             {
 
 
-                fc.CreateFile(radio.Logs, radio.GetFormatedIp());
+                fc.CreateFile(radio.Logs, radio.GetFormatedIp()); //fc.CreateFile(radio.Logs, radio.GetFormatedIp(),radio.Port.ToString());
                 filesToZip.Add(fc.GetFileName(radio.GetFormatedIp()));
 
 
@@ -48,6 +48,6 @@
             File.Delete(file);
         }
 
-        Console.WriteLine("Zip file created successfully.");    
+           
     }
 }

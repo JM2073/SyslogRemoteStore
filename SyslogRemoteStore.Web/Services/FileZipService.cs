@@ -1,5 +1,7 @@
 ﻿using SyslogRemoteStore.Web.Models;
+using System;
 using System.IO.Compression;
+using System.Net.Mime;
 
 namespace SyslogRemoteStore.Web.Services
 {
@@ -28,5 +30,10 @@ namespace SyslogRemoteStore.Web.Services
                 }
             }
         }
+
+        public void DownloadFile()
+        {
+
+    }
     }
 }

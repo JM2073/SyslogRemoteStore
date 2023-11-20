@@ -45,22 +45,11 @@ namespace SyslogRemoteStore.Web.Services
             
             if (!string.IsNullOrEmpty(this.SourceIp))
             {
-                filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
-                //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
-                /*filteredLogs = filteredLogs
-                    .Where(l =>
-                    {
-                        var result = (Error && l.Severity.Contains("error")) ||
-                     (Info && l.Severity.Contains("info")) ||
-                     (Debug && l.Severity.Contains("debug")) ||
-                     (Warning && l.Severity.Contains("warning"));
-                        //Console.WriteLine($"Log Severity: {l.Severity}, Result: {result}");
-                        return result;
-                    })
-                    .ToList();*/
+               filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
+               filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
 
             }
-            
+
 
 
             return filteredLogs;
@@ -93,7 +82,7 @@ namespace SyslogRemoteStore.Web.Services
             if (!string.IsNullOrEmpty(this.Message))
             {
                 filteredLogs = filteredLogs.Where(l => l.Message.Contains(this.Message, StringComparison.OrdinalIgnoreCase)).ToList();
-                //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+                filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
 
             }
 

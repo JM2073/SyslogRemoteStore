@@ -17,16 +17,12 @@ namespace SyslogRemoteStore.Web.Services
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public string SourceIp { get; set; }
-        public string Severity { get; set; }
-
-
-        public void CreateFile(ObservableCollection<Log> logs, string Ip) //string filename Changes depending on name
+        public void CreateFile(ObservableCollection<Log> logs, string Ip) //port //string filename Changes depending on name
         {
             DateTime currentDateTime = DateTime.Now;
             string dateTime = currentDateTime.ToString("yyyyMMddHHmmss");
 
-            string filename = string.Format(@"{0}_{1}.txt", Ip, dateTime);
+            string filename = string.Format(@"{0}_{1}.txt", Ip, dateTime); //string filename = string.Format(@"{0}[{2}]_{1}.txt", Ip, dateTime,port);
             string path = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, filename);
 
             try
@@ -59,35 +55,17 @@ namespace SyslogRemoteStore.Web.Services
             }
 
         }
-        public string GetFileName(string Ip)
+        public string GetFileName(string Ip) // port
         {
 
             DateTime currentDateTime = DateTime.Now;
             string dateTime = currentDateTime.ToString("yyyyMMddHHmmss");
 
-            string filename = string.Format(@"{0}_{1}.txt", Ip, dateTime);
+            string filename = string.Format(@"{0}_{1}.txt", Ip, dateTime); //string filename = string.Format(@"{0}[{2}]_{1}.txt", Ip, dateTime,port);
             string path = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, filename);
             return path;
 
 
         }
-
-        public void ExportZip(string zipFileName, string[] filesToInclude)
-        {
-
-            using (FileStream zipToCreate = new FileStream(zipFileName, FileMode.Create))
-            {
-                using (ZipArchive archive = new ZipArchive(zipToCreate, ZipArchiveMode.Create))
-                {
-                    foreach (string file in filesToInclude)
-                    {
-                        string entryName = Path.GetFileName(file);
-                        archive.CreateEntryFromFile(file, entryName);
-                    }
-                }
-            }
-
-        }
-
     }
 }
