@@ -42,7 +42,7 @@ app.MapFallbackToPage("/_Host");
 
 
 RadioService _radioService = app.Services.GetRequiredService<RadioService>();
-_radioService.BeginListening();
+_radioService.BeginListeningAsync();
 
 CollectionStore _collectionStore = app.Services.GetRequiredService<CollectionStore>();
 _collectionStore.AvailableIpAddress = PopulateIpAddress();

@@ -26,7 +26,7 @@ public class RadioService
     public static RadioService Instance { get; set; }
 
 
-    public void BeginListening()
+    public async Task BeginListeningAsync()
     {
         switch (_configStore.ListeningProtocolType)
         {
@@ -63,7 +63,7 @@ public class RadioService
                 radio.TcpConnected = false;
             }
 
-        BeginListening();
+        BeginListeningAsync();
     }
 
 
@@ -71,8 +71,6 @@ public class RadioService
     {
         try
         {
-            while (_configStore.ListeningProtocolType is ProtocolType.Both or ProtocolType.Udp)
-            {
                 _asyncSocketudp = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram,
                     System.Net.Sockets.ProtocolType.Udp);
 
@@ -84,9 +82,7 @@ public class RadioService
                 byte[] buffer = new byte[250];
                 _asyncSocketudp.BeginReceiveFrom(buffer, 0, buffer.Length, 0, ref _remoteEndPoint,
                     ar => HandleMessageCallback(ar, _asyncSocketudp), buffer);
-            }
 
-            Console.WriteLine("Exit UDP while loop.");
         }
         catch (Exception e)
         {
@@ -99,8 +95,6 @@ public class RadioService
     {
         try
         {
-            while (_configStore.ListeningProtocolType is ProtocolType.Both or ProtocolType.Udp)
-            {
                 int bytesRead = _asyncSocketudp.EndReceiveFrom(ar, ref _remoteEndPoint);
 
                 string senderIpAddress = (_remoteEndPoint as IPEndPoint)?.Address.ToString() ?? string.Empty;
@@ -127,7 +121,6 @@ public class RadioService
                 buffer = new byte[1024];
                 _asyncSocketudp.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _remoteEndPoint,
                     ar1 => HandleMessageCallback(ar1, asyncSocket), buffer);
-            }
         }
         catch (SocketException se)
         {
@@ -143,8 +136,6 @@ public class RadioService
     {
         try
         {
-            while (_configStore.ListeningProtocolType is ProtocolType.Both or ProtocolType.Tcp)
-            {
                 _asyncSockettcp = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream,
                     System.Net.Sockets.ProtocolType.Tcp);
 
@@ -157,7 +148,6 @@ public class RadioService
                 _asyncSockettcp.Listen((int)SocketOptionName.MaxConnections);
 
                 _asyncSockettcp.BeginAccept(OnClientConnect, null);
-            }
         }
         catch (Exception e)
         {
@@ -170,8 +160,6 @@ public class RadioService
     {
         try
         {
-            while (_configStore.ListeningProtocolType is ProtocolType.Both or ProtocolType.Tcp)
-            {
                 Socket clientSocket = _asyncSockettcp.EndAccept(_async);
                 IPEndPoint remoteEndPoint = (IPEndPoint)clientSocket.RemoteEndPoint;
 
@@ -182,7 +170,6 @@ public class RadioService
                 t6S3.Socket.BeginReceive(rxBuffer, 0, rxBuffer.Length, 0, ar => DequeueRequests(ar, t6S3), rxBuffer);
 
                 _asyncSockettcp.BeginAccept(OnClientConnect, null);
-            }
         }
         catch (Exception e)
         {
@@ -195,8 +182,6 @@ public class RadioService
     {
         try
         {
-            while (_configStore.ListeningProtocolType is ProtocolType.Both or ProtocolType.Tcp)
-            {
                 if (t6S3.Socket.Connected)
                 {
                     int bytesRead = t6S3.Socket.EndReceive(_async);
@@ -212,7 +197,6 @@ public class RadioService
                 {
                     t6S3.TcpConnected = false;
                 }
-            }
         }
         catch (SocketException se)
         {
