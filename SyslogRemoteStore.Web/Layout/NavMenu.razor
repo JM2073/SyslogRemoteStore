@@ -1,5 +1,6 @@
 ﻿@using System.Net.Sockets
 @inject CollectionStore cs
+@inject  WebAppState appState
 
 <style>
     #tog {
@@ -9,12 +10,12 @@
     }
 
         #tog:checked {
-            background-color: black;
+            background-color: #3B413C;
         }
 
-        #tog + nav#ham {
+        nav#ham {
             display: block;
-            position: fixed;
+/*            position: fixed;*/
             top: 50px;
             bottom: 0;
             left: -300px;
@@ -24,9 +25,11 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        #tog:checked + nav#ham {
+        nav#ham {
             left: 0;
         }
+
+
 
     nav#ham > ul > li {
         border-bottom: 1px solid #808080;
@@ -36,38 +39,69 @@
         margin-left: 2ch;
     }
 
+
+    #container.cc{
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        grid-template-rows: 100px 1fr;
+        gap: 0px 0px;
+        grid-template-areas:
+            "header header"
+            "aside main"
+            ". .";
+    }
+
+    #container.cc-closed {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        grid-template-rows: 100px 1fr;
+        gap: 0px 0px;
+        grid-template-areas:
+            "header header"
+            "main main"
+            ". .";
+    }
+
+    #container.p-3{
+        padding: 0 !important;
+        ;
+    }
+
+    aside.closed {
+        display:none;
+    }
+
+    header {
+        grid-area: header;
+
+    }
+
+    aside {
+        grid-area: aside;
+
+    }
+
+    main {
+        grid-area: main;
+
+    }
+
+    nav{
+        height:100%;
+        width:100%;
+    }
+
+
 </style>
 
-<body style="background-color: #C0C0C4;">
-
-<header class="masthead mb-auto row" style="background-color: #E1E1EA; border-radius: 25px; ">
+    <header class="masthead mb-auto row" style="background-color: #AEB5B6;">
     <div class="col-md-1">
-        <label class="inline-block p-1 border m-2 cursor-pointer z-50" for="tog">
-            <img src="menu.png" alt="" style="height:40px; width:40px;">
+        <label class="inline-block p-1  m-2 cursor-pointer" for="tog">
+            <img src="Hamburger-Icon.png" id="image" alt="" style="height:45px; width:45px;" @onclick="appState.UpdateNavState"/>
         </label>
-        <input type="checkbox" id="tog" checked>
-        <nav id="ham" class="z-0 p-4 bg-slate-50">
-            <ul>
-                @foreach (IGrouping<string, T6S3> radioIpGroups in cs.Radios.Where(x=>x.IsHidden == false).GroupBy(x => x.GetFormatedIp()))
-                {
-                    <li>
-                        <details>
-                            <summary>@radioIpGroups.Key</summary>
-                            <ul>
-                                @foreach (T6S3 radio in radioIpGroups)
-                                {
-                                    <li >
-                                        <span class="@(ConnectionStatus(radio))">&#x2B24;</span>
-                                        <a style="vertical-align: middle" href="/RadioPage/@radio.Id"> @(GetProtocalType(radio)) | @radio.Port</a>
-                                    </li>
-                                }
-                            </ul>
-                        </details>
-                    </li>
-                }
-            </ul>
-        </nav>
+
     </div>
+
     <div class="col-md-11">
 
         <nav class="nav nav-masthead justify-content-center">
@@ -77,7 +111,34 @@
     </div>
 </header>
 
-</body>
+
+
+
+<aside id="aside" class="closed">
+
+<nav id="ham" class="z-0 p-4 bg-slate-50">
+    <ul>
+        @foreach (IGrouping<string, T6S3> radioIpGroups in cs.Radios.Where(x => x.IsHidden == false).GroupBy(x => x.GetFormatedIp()))
+        {
+            <li>
+                <details>
+                    <summary>@radioIpGroups.Key</summary>
+                    <ul>
+                        @foreach (T6S3 radio in radioIpGroups)
+                        {
+                            <li>
+                                <span class="@(ConnectionStatus(radio))">&#x2B24;</span>
+                                <a style="vertical-align: middle" href="/RadioPage/@radio.Id"> @(GetProtocalType(radio)) | @radio.Port</a>
+                            </li>
+                        }
+                    </ul>
+                </details>
+            </li>
+        }
+    </ul>
+</nav>
+
+</aside>
 
 @code {
 

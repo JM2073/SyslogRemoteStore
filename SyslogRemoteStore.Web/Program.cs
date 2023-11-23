@@ -1,5 +1,6 @@
 using System.Net.NetworkInformation;
 using SyslogRemoteStore.Web.Data;
+using SyslogRemoteStore.Web.Models;
 using SyslogRemoteStore.Web.Services;
 using SyslogRemoteStore.Web.Stores;
 using SyslogRemoteStore.Web.ViewModels;
@@ -17,7 +18,7 @@ builder.Services.AddScoped<IRadioViewModel, RadioViewModel>();
 builder.Services.AddScoped<ISettingsViewModel, SettingsViewModel>();
 
 // Add singletons to the container
-
+builder.Services.AddSingleton<WebAppState>();
 builder.Services.AddSingleton<ConfigurationStore>();
 builder.Services.AddSingleton<CollectionStore>();
 

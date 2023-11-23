@@ -75,7 +75,7 @@ h1:focus {
 
     color: #ff0000;
 }
-.spinner-Con{
+.spinner-Con {
     top: 50%;
     left: 50%;
     position: fixed;
@@ -83,14 +83,14 @@ h1:focus {
 }
 
 .spinner {
-    border: 16px solid #808080FF;
-    border-top: 16px solid #337AB7;
+    border: 16px solid black;
+    border-top: 16px solid gray;
     border-radius: 50%;
-    width: 125px;
-    height: 125px;
+    width: 50px;
+    height: 50px;
     animation: spin 700ms linear infinite;
-
 }
+
 
 @keyframes spin {
     0% {

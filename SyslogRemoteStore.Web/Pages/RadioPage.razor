@@ -3,172 +3,214 @@
 @inject RadioFilterService fs
 @using SyslogRemoteStore.Web.Services
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        .container {
+         
+        .topRow-container{
             display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-right: 10px;
+            right: 25px;
         }
-        .table-container {
-            width: 50%;
+
+        .statsTable{
+            border: 3px solid black;
+            padding:5px;
+            margin-left: 50px;
         }
-        .image-container {
-            width: 50%;
+
+        .image{
+            width: 400px;
+            border: 3px solid black;
+            margin-left: 400px;
         }
-        table {
-            border-collapse: collapse;
-            border: 0;
+
+        .search-container {
+            display: flex;
+            align-items: center;
+        }       
+
+        .search input {
+            margin-right: 10px;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
         }
-        .buttons button {
+
+        .searchBtn button {
             display: inline-block;
             margin: 5px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        td {
-            height: 80px;
-        }
-        .defaulttable {
-            height: 150px;
-            overflow-y: scroll;
-            border-bottom: 1px solid #ddd;
-        }
-        .defaulttable th,
-        .defaulttable td,
-        .defaulttable thead th,
-        .defaulttable tbody + tbody {
-            border: 0;
-        }
-        .left {
-            text-align: left;
-            border: 3px solid green;
-        }
-        .buttons {
-            text-align: center;
-        }
-        body {
-            text-align: left;
-            margin: 0; /* Remove default body margin */
-        }
-        form {
-            width: 300px;
-            margin: 0; /* Remove margin to align the form to the left */
-        }
-        th, td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-            text-align: left;
-        }
-        input {
-            width: 100%;
-            padding: 5px;
-            margin-top: 5px;
-        }
-        .button {
+            background-color: black;
+            color: #fff;
+            padding: 2px 7px;
             border: none;
-            color: white;
-            padding: 16px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            transition-duration: 0.4s;
+            border-radius: 5px;
             cursor: pointer;
         }
-        .button1 {
-            background-color: white;
-            color: black;
-            border: 2px solid #4CAF50;
+
+        .severityFilter {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-right: 25px;
         }
-        .button1:hover {
-            background-color: #4CAF50;
-            color: white;
+
+        .severityFilter input{
+            margin: 5px;
         }
-        .button2 {
-            background-color: white;
-            color: black;
-            border: 2px solid #008CBA;
+
+        .severityFilter input:checked {
+            background-color: black;
+            border-color: grey;
         }
-        .button2:hover {
-            background-color: grey;
-            color: white;
+
+        .form-check-label, .btn {
+            margin-right: 10px;
         }
-    .info{
-    color: @vm._configurationStore.InfoHex;
-    }
-    .error{
-    color: @vm._configurationStore.ErrorHex;
-    }
-    .debug{
-    color: @vm._configurationStore.DebugHex;
-    }
-    .warning{
-    color: @vm._configurationStore.WarningHex;
-    }
+
+        .hideRadioBtn {
+            display: inline-block;
+            margin: 5px;
+            background-color: black;
+            color: #fff;
+            padding: 2px 7px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+     
+        .tableForIps {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 400px;
+        }
+
+        .tableForIps tr {
+            background-color: #AEB5B6;
+            text-align: left;
+        }
+
+        .tableForIps th{
+            border: 1px solid black; 
+            padding: 8px; 
+            text-align: left;
+        }
+        .tableForIps td {
+            padding: 12px 15px;
+        }
+
+        .tableForIps tr.dataRow:hover {
+            background-color: #f5f5f5; 
+        }
+
+        .info {
+            color: @vm._configurationStore.InfoHex;
+        }
+
+        .error {
+            color: @vm._configurationStore.ErrorHex;
+        }
+
+        .debug {
+            color: @vm._configurationStore.DebugHex;
+        }
+
+        .warning {
+            color: @vm._configurationStore.WarningHex;
+        }
+
     </style>
-</head>
-<body>
-<div class="container">
-    <div class="table-container">
-        <table class="defaulttable" style="border: 0;">
-            <thead>
-            <tr>
-                <th>Radio IP Address: @($"{vm.Radio.GetFormatedIp()}:{vm.Radio.Port}")</th>
-            </tr>
-            <tr>
-                <th>Transport Protocol: @vm.Radio.Socket.ProtocolType.ToString()</th>
-            </tr>
-            <tr>
-                <th>IP Version: @vm.Radio.GetIpvType()</th>
-            </tr>
-            <tr>
-                <th>Socket Status: @vm.Radio.GetSocketStatus()</th>
-            </tr>
-            </thead>
-        </table>
-    </div>
-    <div class="image-container">
-        <img src="T6S3.jpg" alt="Your Image" style="height: auto; max-width: 100%;">
-    </div>
-</div>
-<div>
-    <div>
-    <input type="text" name="q" placeholder="Search by message..." @bind="fs.Message" @onkeydown="@Enter" />
-        
-        Severity filter
-        <input class="form-check-input" type="checkbox" @bind="@fs.Debug" id="debugCheck">
-        <label class="form-check-label" for="debugCheck">
-            Debug
-        </label>
-        <input class="form-check-input" type="checkbox" @bind="@fs.Error" id="ErrorCheck">
-        <label class="form-check-label" for="ErrorCheck">
-            Error
-        </label>
-        <input class="form-check-input" type="checkbox" @bind="@fs.Info" id="InfoCheck">
-        <label class="form-check-label" for="InfoCheck">
-            Info
-        </label>
-        <input class="form-check-input" type="checkbox" @bind="@fs.Warning" id="WarningCheck">
-        <label class="form-check-label" for="WarningCheck">
-            Warning
-        </label>
-        <button @onclick="filter" class="btn btn-primary" value="Search">Search</button>
-        <button @onclick="HideRadio" id="liveToastBtn" class="btn btn-primary" value="Hide Radio">Hide Radio</button>
+
+
+
+
+    <div style="padding-top: 15px">
     </div>
 
-</div>
+    <div class="topRow-container">
+
+        <div class="statsTable">
+            <table>
+                <thead>
+                    <tr> 
+                        <th>Radio IP Address: @($"{vm.Radio.GetFormatedIp()}:{vm.Radio.Port}")</th>
+                    </tr>
+
+                    <tr>
+                    <th>Transport Protocol: @vm.Radio.Socket.ProtocolType.ToString()</th>
+                    </tr>
+
+                    <tr>
+                        <th>IP Version: @vm.Radio.GetIpvType()</th>
+                    </tr>
+
+                    <tr>
+                        <th>Socket Status: @vm.Radio.GetSocketStatus()</th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+    
+        <div class="image">
+            <img src="T6S3.jpg" alt="Your Image">
+        </div>
+     
+    </div>
+
+
+    <div style="padding-top: 30px">
+    </div>
+
+    <div>
+
+        <div class="search-container">
+            <div class="search">
+                <input type="text" name="q" placeholder="Search by message..." @bind="fs.Message" @onkeydown="@Enter" />
+            </div>
+
+            <div class="searchBtn">
+                <button @onclick="filter" class="btn btn-primary" value="Search">Search</button>
+            </div>
+
+        </div>
+
+
+        <div style="padding-top: 15px">
+        </div>
+        
+        <div class="severityFilter">
+
+                <label style="text-size-adjust:auto; margin-right: 10px;">
+                    Severity Filter:
+                </label>
+
+                <input class="form-check-input" type="checkbox" @bind="@fs.Debug" id="debugCheck">
+                <label class="form-check-label" for="debugCheck">
+                    Debug
+                </label>
+
+                <input class="form-check-input" type="checkbox" @bind="@fs.Error" id="ErrorCheck">
+                <label class="form-check-label" for="ErrorCheck">
+                    Error
+                </label>
+
+                <input class="form-check-input" type="checkbox" @bind="@fs.Info" id="InfoCheck">
+                <label class="form-check-label" for="InfoCheck">
+                    Info
+                </label>
+
+                <input class="form-check-input" type="checkbox" @bind="@fs.Warning" id="WarningCheck">
+                <label class="form-check-label" for="WarningCheck">
+                    Warning
+                </label>
+
+            <button @onclick="HideRadio" id="liveToastBtn" class="hideRadioBtn" value="Hide Radio">Hide Radio</button>
+        </div>
+    </div>
+
 @if (displayedLogs.Any() is false)
 {
     <div class="spinner-Con">
@@ -178,8 +220,11 @@
 }
 else
 {
+
+        <div style="padding-top: 15px">
+        </div>
     <div>
-        <table class="defaulttable" style="width: 100%; border: 0; overflow-y: scroll">
+        <table class="tableForIps" style="width: 100%; border: 0; overflow-y: scroll; border: 1px solid black;">
             <tr>
 
                 <th>Source IP</th>
@@ -189,9 +234,10 @@ else
                 <th>TimeStamp</th>
                 <th>Message</th>
             </tr>
+
             @foreach (Log log in displayedLogs.OrderByDescending(x => x.TimeStamp).ToList())
             {
-                <tr class="@log.Severity">
+                <tr class="@log.Severity dataRow">
                     <td>@log.GetFormatedIp()</td>
                     <td>@log.SourceItem</td>
                     <td>@log.Facilty</td>
@@ -206,7 +252,6 @@ else
 }
 <InformativeDialog @ref="informativeDialog" OnClosed="HandleInformativeClosed"></InformativeDialog>
 
-</body>
 @code
 {
     private InformativeDialog informativeDialog;
