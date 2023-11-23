@@ -49,7 +49,8 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
 
     public void Submit()
     {
-        bool restartListeners = _configurationStore.Ip != IpAddress || _configurationStore.Port != Port || _configurationStore.ListeningProtocolType != ListeningProtocolType;
+        bool killListeners = _configurationStore.Ip != IpAddress || _configurationStore.Port != Port;
+        bool restartListeners =  _configurationStore.ListeningProtocolType != ListeningProtocolType;
         
         _configurationStore.Ip = IpAddress;
         _configurationStore.Port = Port;
@@ -59,9 +60,13 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
         _configurationStore.DebugHex = DebugHex;
         _configurationStore.InfoHex = InfoHex;
 
-        if (restartListeners)
+        if (killListeners)
         {
-            RadioService.Instance.CloseOpenConnections();
+            RadioService.Instance.CloseAllOpenConnections();
+        }
+        else if(restartListeners)
+        {
+            RadioService.Instance.ChangeProtocoleType();
         }
         
     }
