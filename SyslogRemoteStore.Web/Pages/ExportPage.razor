@@ -4,6 +4,7 @@
 @inject FileZipService fz
 @inject IRadioViewModel vm
 @inject CollectionStore cs
+@inject IJSRuntime JS
 @using SyslogRemoteStore.Web.Services
 @using System.Collections.Specialized
 
@@ -31,14 +32,11 @@
 
             foreach (IT6S3 radio in radioIpGroups)
             {
-
-
                 fc.CreateFile(radio.Logs, radio.GetFormatedIp()); //fc.CreateFile(radio.Logs, radio.GetFormatedIp(),radio.Port.ToString());
                 filesToZip.Add(fc.GetFileName(radio.GetFormatedIp()));
-
-
             }
         }
+
 
         string zipFilePath = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "SyslogFiles.zip"); ;
 
@@ -48,6 +46,41 @@
             File.Delete(file);
         }
 
-           
+        //return zipFilePath;
     }
+
+
+    /*private Stream GetFileStream()
+    {
+        byte[] binaryData = File.ReadAllBytes(ZipFiles());
+
+        MemoryStream fileStream = new MemoryStream(binaryData);
+        return fileStream;
+    }*/
+    
+    
+
+    /*private async Task DownloadFile()
+    {
+        try
+        {
+            Stream fileStream = GetFileStream();
+            using DotNetStreamReference streamRef = new DotNetStreamReference(stream: fileStream);
+            await JS.InvokeVoidAsync("downloadFileFromStream", ZipFiles(), streamRef);
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Cannot do it :(");
+        }
+
+    }*/
+
+    }
+   
+    
 }
+
+
+
+           
+ 

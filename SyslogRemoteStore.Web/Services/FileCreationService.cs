@@ -17,7 +17,7 @@ namespace SyslogRemoteStore.Web.Services
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void CreateFile(ObservableCollection<Log> logs, string Ip) //port //string filename Changes depending on name
+        public void CreateFile(ObservableCollection<Log> logs, string Ip) //port 
         {
             DateTime currentDateTime = DateTime.Now;
             string dateTime = currentDateTime.ToString("yyyyMMddHHmmss");
@@ -57,15 +57,12 @@ namespace SyslogRemoteStore.Web.Services
         }
         public string GetFileName(string Ip) // port
         {
-
             DateTime currentDateTime = DateTime.Now;
             string dateTime = currentDateTime.ToString("yyyyMMddHHmmss");
 
             string filename = string.Format(@"{0}_{1}.txt", Ip, dateTime); //string filename = string.Format(@"{0}[{2}]_{1}.txt", Ip, dateTime,port);
             string path = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, filename);
             return path;
-
-
         }
     }
 }

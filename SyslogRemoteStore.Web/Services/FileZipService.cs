@@ -1,12 +1,20 @@
 ﻿using SyslogRemoteStore.Web.Models;
 using System;
+using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Net.Mime;
+using System.Text;
 
 namespace SyslogRemoteStore.Web.Services
 {
     public class FileZipService : IFileZip
     {
+
+
+
+
+
+
         public void ZipFiles(string zipPath, List<string> filesToZip)
         {
             // Create the zip file
@@ -24,16 +32,12 @@ namespace SyslogRemoteStore.Web.Services
                         }
                         else
                         {
-                            //Console.WriteLine($"File not found: {path}");
+                            Console.WriteLine($"File not found: {path}");
                         }
                     }
                 }
             }
         }
 
-        public void DownloadFile()
-        {
-
-    }
     }
 }

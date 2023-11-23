@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
+
 namespace SyslogRemoteStore.Web.Services
 {
     public class LogFilterService : INotifyPropertyChanged
@@ -46,7 +47,7 @@ namespace SyslogRemoteStore.Web.Services
             if (!string.IsNullOrEmpty(this.SourceIp))
             {
                filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
-               filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+               //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
 
             }
 
@@ -54,24 +55,6 @@ namespace SyslogRemoteStore.Web.Services
 
             return filteredLogs;
             
-        }
-
-        public List<Log> SeverityFilterLog(List<Log> logs)
-        {
-
-            List<Log> filteredLogs = logs;
-
-            //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
-
-            filteredLogs = filteredLogs
-            .Where(l =>
-                (Error && l.Severity.ToLower().Contains("error")) ||
-                (Info && l.Severity.ToLower().Contains("info")) ||
-                (Debug && l.Severity.ToLower().Contains("debug")) ||
-                (Warning && l.Severity.ToLower().Contains("warning")))
-            .ToList();
-
-            return filteredLogs;
         }
 
         public List<Log> RadioFilterLog(List<Log> logs)
@@ -82,7 +65,7 @@ namespace SyslogRemoteStore.Web.Services
             if (!string.IsNullOrEmpty(this.Message))
             {
                 filteredLogs = filteredLogs.Where(l => l.Message.Contains(this.Message, StringComparison.OrdinalIgnoreCase)).ToList();
-                filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+                //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
 
             }
 
