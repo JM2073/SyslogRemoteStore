@@ -1,6 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
+@using SyslogRemoteStore.Web.Models;
+@inject WebAppState appState
 @namespace SyslogRemoteStore.Web.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -35,6 +38,41 @@
         <a class="dismiss">🗙</a>
     </div>
 
-<script src="_framework/blazor.server.js"></script>
+<script src="_framework/blazor.server.js">
+ </script>
+
+ <script>
+            setTimeout(()=>{
+
+
+
+                        var image = document.querySelector('#image')
+            image.addEventListener('click', ()=>{
+
+
+
+            if (document.querySelector('#container').classList.contains('cc-closed')){
+             let body = document.querySelector('#container');
+                body.classList.remove("cc-closed");
+                body.classList.add("cc");
+                 document.querySelector('aside').classList.remove("closed");
+            } else {
+              let body = document.querySelector('#container');
+           body.classList.remove("cc");
+            body.classList.add("cc-closed");
+            document.querySelector('#aside').classList.add("closed");
+            }
+        })
+
+
+
+            }, 1000)
+
+
+
+ </script>
+            
+
+
 </body>
 </html>

@@ -3,37 +3,38 @@
 @using SyslogRemoteStore.Web.Enums
 @inject ISettingsViewModel vm
 @inject CollectionStore cs
-<style>
 
-   
+<style>
 
     label {
         font-weight: bold;
         display: block;
         margin-bottom: 5px;
     }
-         table {
-       
-             border-collapse: collapse;
-         border: 0;
-         }
-     
-         th, td {
-             border: 0px solid #000;
-             padding: 8px;
-             text-align: left;
-         }
-     
-         th {
-             background-color: #f0f0f0;
-         }
-         
-          label {
-           font-weight: bold;
-           display: block;
-           margin-bottom: 5px;
-          }
 
+    table {
+       
+        border-collapse: collapse;
+        border: 3px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+     
+    th, td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+    }
+     
+    th {
+        background-color: #AEB5B6;
+    }
+         
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
 
     input[type="text"] {
         padding: 8px;
@@ -42,32 +43,28 @@
         border-radius: 4px;
     }
 
-    /* Style for the label */
     label {
-        display: block; /* Place the label on a new line */
+        display: block; 
         font-weight: bold;
     }
 
-    /* Style for the dropdown menu */
     select {
         left: 20px;
-        width: 200px; /* Adjust the width as needed */
+        width: 200px;
         padding: 10px;
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 4px;
     }
 
-    /* Style for the label */
     label {
-        display: block; /* Place the label on a new line */
+        display: block; 
         font-weight: bold;
-        margin-bottom: 5px; /* Add some spacing below the label */
+        margin-bottom: 5px;
     }
 
-    /* Style for the input box */
     input[type="number"] {
-        width: 200px; /* Adjust the width as needed */
+        width: 200px; 
         padding: 10px;
         font-size: 16px;
         border: 1px solid #ccc;
@@ -75,40 +72,36 @@
     }
 
     ol {
-        padding-left: 20px; /* Add left padding for indentation */
+        padding-left: 20px; 
     }
 
     li {
-        margin: 5px 0; /* Add margin between list items */
+        margin: 5px 0; 
     }
 
-    /* Style for the submit button */
     input[type="submit"] {
-        background-color: black; /* Background color */
-        color: white; /* Text color */
-        padding: 10px 20px; /* Padding around text */
-        border: none; /* Remove border */
-        border-radius: 5px; /* Add rounded corners */
-        cursor: pointer; /* Change cursor to pointer on hover */
+        background-color: black; 
+        color: white; 
+        padding: 10px 20px; 
+        border: none; 
+        border-radius: 5px; 
+        cursor: pointer; 
     }
 
-        /* Change button style on hover */
-        input[type="submit"]:hover {
-            background-color: #dimgrey; /* Darker background color on hover */
-        }
+    input[type="submit"]:hover {
+        background-color: dimgray;
+    }
 
     section {
         display: grid;
-        grid-template-columns: 1fr 1fr; /* set column sizes here */
-        grid-template-rows: auto auto; /* we want two rows */
+        grid-template-columns: 1fr 1fr; 
+        grid-template-rows: auto auto;
         text-align: center;
-        grid-gap: 10px; /* how far between cells? */
-        grid-auto-flow: column; /* fill in by column, not row */
-        /* temporary property for visualization */
+        grid-gap: 10px; 
+        grid-auto-flow: column; 
         height: 150px;
     }
 
-    /* Clear floats after the columns */
     .row:after {
         content: "";
         display: table;
@@ -117,21 +110,38 @@
     
     label.Header{
             font-size: x-large;
+            text-align: center;
     }
+
+    .btn.btn-primary {
+        background-color: black; 
+        color: #fff; 
+        padding: 5px 10px; 
+        border: none; 
+        border-radius: 5px; 
+        cursor: pointer;
+    }
+
     </style>
 
 <div>
+
+
 
     <div class="col-md-12" style="display: flex">
         <div class="col-md-2"></div>
         <div class="col-md-8  justify-content-end">
             <EditForm model="@vm" OnSubmit="@preFormSubmit">
 
+
+                <div style="padding-top: 30px">
+                </div>
+
                 <div>
                     <label style="text-align: center;" for="Header">Change Syslog Message Severity Colours</label>
                 </div>
 
-                <div style="padding-top: 25px">
+                <div style="padding-top: 15px">
                 </div>
 
                 <section>
@@ -185,7 +195,7 @@
 
                 </div>
 
-                <div style="padding-top: 75px">
+                <div style="padding-top: 50px">
                 </div>
 
                 <div>
@@ -193,11 +203,14 @@
                 </div>
             </EditForm>
 
+            <div style="padding-top: 30px">
+            </div>
 
             <div>
                 <div>
-                    <label class="Header">Radio Visibility</label>
+                    <label class="Header">Radio Visibility </label>
                 </div>
+
                 <div>
                     <table>
                         <thead>
@@ -210,6 +223,7 @@
                             <th></th>
                         </tr>
                         </thead>
+
                         <tbody>
                         @foreach (T6S3 radio in vm.Radios)
                         {
@@ -247,6 +261,10 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div style="padding-top: 30px">
+                </div>
+
             </div>
         </div>
     </div>
