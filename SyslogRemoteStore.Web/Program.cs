@@ -18,7 +18,6 @@ builder.Services.AddScoped<IRadioViewModel, RadioViewModel>();
 builder.Services.AddScoped<ISettingsViewModel, SettingsViewModel>();
 
 // Add singletons to the container
-builder.Services.AddSingleton<WebAppState>();
 builder.Services.AddSingleton<ConfigurationStore>();
 builder.Services.AddSingleton<CollectionStore>();
 

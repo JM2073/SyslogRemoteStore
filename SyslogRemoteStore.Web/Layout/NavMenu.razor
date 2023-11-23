@@ -1,6 +1,5 @@
 ﻿@using System.Net.Sockets
 @inject CollectionStore cs
-@inject  WebAppState appState
 
 <style>
     #tog {
@@ -42,7 +41,7 @@
 
     #container.cc{
         display: grid;
-        grid-template-columns: 1fr 2fr;
+        grid-template-columns: 0fr 2fr;
         grid-template-rows: 100px 1fr;
         gap: 0px 0px;
         grid-template-areas:
@@ -53,7 +52,7 @@
 
     #container.cc-closed {
         display: grid;
-        grid-template-columns: 1fr 2fr;
+        grid-template-columns: 0fr 2fr;
         grid-template-rows: 100px 1fr;
         gap: 0px 0px;
         grid-template-areas:
@@ -97,7 +96,7 @@
     <header class="masthead mb-auto row" style="background-color: #AEB5B6;">
     <div class="col-md-1">
         <label class="inline-block p-1  m-2 cursor-pointer" for="tog">
-            <img src="Hamburger-Icon.png" id="image" alt="" style="height:45px; width:45px;" @onclick="appState.UpdateNavState"/>
+            <img src="Hamburger-Icon.png" id="image" alt="" style="height:45px; width:45px;"/>
         </label>
 
     </div>

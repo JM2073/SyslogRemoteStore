@@ -264,6 +264,8 @@ else
     {
         vm.RadioId = RadioId;
         logs = vm.Radio.Logs.ToList();
+        displayedLogs = logs;
+        
         vm.Radio.PropertyChanged += HandlePropertyChanged();
         vm._configurationStore.PropertyChanged += HandlePropertyChanged();
         fs.PropertyChanged += HandleFilterChanged;

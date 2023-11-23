@@ -151,6 +151,7 @@
         }
 
         logs = vm.Radios.Where(x=>x.IsHidden == false).SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp).ToList();
+        displayedLogs = logs;
         await base.OnInitializedAsync();
     }
 
