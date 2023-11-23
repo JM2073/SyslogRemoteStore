@@ -9,6 +9,7 @@ public interface IRadioViewModel
     T6S3 Radio { get; set; }
     string RadioId { get; set; }
     ConfigurationStore _configurationStore { get; }
+    void ToggleRadioVisibility(bool value);
 
     void HideRadio();
 }

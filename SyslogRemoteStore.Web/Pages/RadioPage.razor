@@ -1,9 +1,9 @@
 ﻿@page "/RadioPage/{RadioId}"
+@using SyslogRemoteStore.Web.Services
 @inject IRadioViewModel vm
 @inject RadioFilterService fs
-@using SyslogRemoteStore.Web.Services
 
-    <style>
+<style>
          
         .topRow-container{
             display: flex;
@@ -82,92 +82,97 @@
     </style>
 
 
+<div style="padding-top: 15px">
+</div>
+
+<div class="topRow-container">
+
+    <div class="statsTable">
+        <table>
+            <thead>
+            <tr>
+                <th>Radio IP Address: @($"{vm.Radio.GetFormatedIp()}:{vm.Radio.Port}")</th>
+            </tr>
+
+            <tr>
+                <th>Transport Protocol: @vm.Radio.Socket.ProtocolType.ToString()</th>
+            </tr>
+
+            <tr>
+                <th>IP Version: @vm.Radio.GetIpvType()</th>
+            </tr>
+
+            <tr>
+                <th>Socket Status: @vm.Radio.GetSocketStatus()</th>
+            </tr>
+            </thead>
+        </table>
+
+    </div>
+
+    <div class="image">
+        <img src="T6S3.jpg" alt="Your Image">
+    </div>
+
+</div>
+
+
+<div style="padding-top: 30px">
+</div>
+
+<div>
+
+    <div class="search-container">
+        <div class="search">
+            <input type="text" name="q" placeholder="Search by message..." @bind="fs.Message" @onkeydown="@Enter"/>
+        </div>
+
+        <div class="searchBtn">
+            <button @onclick="filter" class="btn btn-primary" value="Search">Search</button>
+        </div>
+
+    </div>
 
 
     <div style="padding-top: 15px">
     </div>
 
-    <div class="topRow-container">
+    <div class="severityFilter">
 
-        <div class="statsTable">
-            <table>
-                <thead>
-                    <tr> 
-                        <th>Radio IP Address: @($"{vm.Radio.GetFormatedIp()}:{vm.Radio.Port}")</th>
-                    </tr>
+        <label style="text-size-adjust:auto; margin-right: 10px;">
+            Severity Filter:
+        </label>
 
-                    <tr>
-                    <th>Transport Protocol: @vm.Radio.Socket.ProtocolType.ToString()</th>
-                    </tr>
+        <input class="form-check-input" type="checkbox" @bind="@fs.Debug" id="debugCheck">
+        <label class="form-check-label" for="debugCheck">
+            Debug
+        </label>
 
-                    <tr>
-                        <th>IP Version: @vm.Radio.GetIpvType()</th>
-                    </tr>
+        <input class="form-check-input" type="checkbox" @bind="@fs.Error" id="ErrorCheck">
+        <label class="form-check-label" for="ErrorCheck">
+            Error
+        </label>
 
-                    <tr>
-                        <th>Socket Status: @vm.Radio.GetSocketStatus()</th>
-                    </tr>
-                </thead>
-            </table>
+        <input class="form-check-input" type="checkbox" @bind="@fs.Info" id="InfoCheck">
+        <label class="form-check-label" for="InfoCheck">
+            Info
+        </label>
 
-        </div>
-    
-        <div class="image">
-            <img src="T6S3.jpg" alt="Your Image">
-        </div>
-     
+        <input class="form-check-input" type="checkbox" @bind="@fs.Warning" id="WarningCheck">
+        <label class="form-check-label" for="WarningCheck">
+            Warning
+        </label>
+
+        @if (vm.Radio.IsHidden)
+        {
+            <button id="liveToastBtn" class="hideRadioBtn" value="Hide Radio" @onclick="() => ToggleRadioVisibility(false)"> Show Radio </button>
+        }
+        else
+        {
+            <button id="liveToastBtn" class="hideRadioBtn" value="Hide Radio" @onclick="() => ToggleRadioVisibility(true)"> Hide Radio </button>
+        }
     </div>
-
-
-    <div style="padding-top: 30px">
-    </div>
-
-    <div>
-
-        <div class="search-container">
-            <div class="search">
-                <input type="text" name="q" placeholder="Search by message..." @bind="fs.Message" @onkeydown="@Enter" />
-            </div>
-
-            <div class="searchBtn">
-                <button @onclick="filter" class="btn btn-primary" value="Search">Search</button>
-            </div>
-
-        </div>
-
-
-        <div style="padding-top: 15px">
-        </div>
-        
-        <div class="severityFilter">
-
-                <label style="text-size-adjust:auto; margin-right: 10px;">
-                    Severity Filter:
-                </label>
-
-                <input class="form-check-input" type="checkbox" @bind="@fs.Debug" id="debugCheck">
-                <label class="form-check-label" for="debugCheck">
-                    Debug
-                </label>
-
-                <input class="form-check-input" type="checkbox" @bind="@fs.Error" id="ErrorCheck">
-                <label class="form-check-label" for="ErrorCheck">
-                    Error
-                </label>
-
-                <input class="form-check-input" type="checkbox" @bind="@fs.Info" id="InfoCheck">
-                <label class="form-check-label" for="InfoCheck">
-                    Info
-                </label>
-
-                <input class="form-check-input" type="checkbox" @bind="@fs.Warning" id="WarningCheck">
-                <label class="form-check-label" for="WarningCheck">
-                    Warning
-                </label>
-
-            <button @onclick="HideRadio" id="liveToastBtn" class="hideRadioBtn" value="Hide Radio">Hide Radio</button>
-        </div>
-    </div>
+</div>
 
 @if (displayedLogs.Any() is false)
 {
@@ -178,9 +183,8 @@
 }
 else
 {
-
-        <div style="padding-top: 15px">
-        </div>
+    <div style="padding-top: 15px">
+    </div>
     <div>
         <table class="tableForIps" style="width: 100%; border: 0; overflow-y: scroll; border: 1px solid black;">
             <tr>
@@ -206,29 +210,30 @@ else
             }
         </table>
     </div>
-
 }
 <InformativeDialog @ref="informativeDialog" OnClosed="HandleInformativeClosed"></InformativeDialog>
 
 @code
 {
     private InformativeDialog informativeDialog;
+
     [Parameter]
     public string RadioId { get; set; }
-    public List<Log> logs = new List<Log>();
-    public List<Log> displayedLogs = new List<Log>();
+
+    public List<Log> logs = new();
+    public List<Log> displayedLogs = new();
 
     protected override async Task OnParametersSetAsync()
     {
         vm.RadioId = RadioId;
         logs = vm.Radio.Logs.ToList();
         displayedLogs = logs;
-        
+
         vm.Radio.PropertyChanged += HandlePropertyChanged();
         vm._configurationStore.PropertyChanged += HandlePropertyChanged();
         fs.PropertyChanged += HandleFilterChanged;
     }
-    
+
     private void HandleFilterChanged(object? sender, PropertyChangedEventArgs e)
     {
         filter();
@@ -236,12 +241,14 @@ else
 
     private PropertyChangedEventHandler? HandlePropertyChanged()
     {
-        return async (sender, e) => { await InvokeAsync(() => 
-                    {
-                        StateHasChanged();
-                        logs = vm.Radio.Logs.ToList();
-                        filter();
-                    });
+        return async (sender, e) =>
+        {
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+                logs = vm.Radio.Logs.ToList();
+                filter();
+            });
         };
     }
 
@@ -250,6 +257,7 @@ else
         displayedLogs = fs.FilterLog(logs);
         StateHasChanged();
     }
+
     public void Enter(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
@@ -264,7 +272,17 @@ else
         InvokeAsync(() => { StateHasChanged(); });
         informativeDialog.Show("The Radio has been hidden.", "gray");
     }
+
     private async Task HandleInformativeClosed()
     {
+    }
+
+
+    private void ToggleRadioVisibility(bool value)
+    {
+        string message;
+        vm.ToggleRadioVisibility(value);
+        message = value is true ? "The Radio has been hidden." : "The Radio is no longer hidden.";
+        informativeDialog.Show(message, "gray");
     }
 }
