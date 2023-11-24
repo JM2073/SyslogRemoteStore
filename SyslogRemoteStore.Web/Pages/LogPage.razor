@@ -74,7 +74,7 @@
       
               <div class="search-container">
                   <div class="search">
-                      <input type="text" name="q" placeholder="Search by Source IP..." @bind="fs.SourceIp" @onkeydown="@Enter" />
+                      <input type="text" name="q" placeholder="Search by Source IP..." @bind="fs.Message" @onkeydown="@Enter" />
                   </div>
       
                   <div class="searchBtn">
@@ -122,7 +122,6 @@
         <table id="LogTable">
             <tr>
 
-                <th>Source IP</th>
                 <th>Source Item</th>
                 <th>Facilty</th>
                 <th>Severity</th>
@@ -142,7 +141,6 @@
                 {
                     <tr class="@log.Severity">
 
-                        <td>@log.GetFormatedIp()</td>
                         <td>@log.SourceItem</td>
                         <td>@log.Facilty</td>
                         <td>@log.Severity</td>

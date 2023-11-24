@@ -13,12 +13,12 @@ namespace SyslogRemoteStore.Web.Services
         private bool _info = true;
         private bool _debug = true;
         private bool _warning = true;
-        private string _sourceIp;
+        private string _message;
 
-        public string SourceIp
+        public string Message
         {
-            get => _sourceIp;
-            set => SetField(ref _sourceIp, value);
+            get => _message;
+            set => SetField(ref _message, value);
         }
 
         public bool Error
@@ -44,31 +44,17 @@ namespace SyslogRemoteStore.Web.Services
             get => _warning;
             set => SetField(ref _warning, value);
         }
-
-
-        /*
-        TODO: what is the point in this ?
-        public bool GetSevError() => Error;
-        public bool GetSevInfo() => Info;
-        public bool GetSevDebug() => Debug;
-        public bool GetSevWarning() => Warning;
-
-        public void SeverityError(bool value) => Error = value;
-        public void SeverityInfo(bool value) => Info = value;
-        public void SeverityDebug(bool value) => Debug = value;
-        public void SeverityWarning(bool value) => Warning = value;
-        */
-
+        
         public List<Log> FilterLog(List<Log> logs)
         {
 
             List<Log> filteredLogs = logs;
 
-            filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+           // filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
 
-            if (!string.IsNullOrEmpty(this.SourceIp))
+            if (!string.IsNullOrEmpty(this.Message))
             {
-                filteredLogs = filteredLogs.Where(l => l.GetFormatedIp().Contains(SourceIp)).ToList();
+                filteredLogs = filteredLogs.Where(l => l.Message.Contains(Message)).ToList();
             }
 
             return filteredLogs;

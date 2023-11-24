@@ -189,7 +189,6 @@ else
         <table class="tableForIps" style="width: 100%; border: 0; overflow-y: scroll; border: 1px solid black;">
             <tr>
 
-                <th>Source IP</th>
                 <th>Source Item</th>
                 <th>Facility</th>
                 <th>Severity</th>
@@ -200,7 +199,6 @@ else
             @foreach (Log log in displayedLogs.OrderByDescending(x => x.TimeStamp).ToList())
             {
                 <tr class="@log.Severity dataRow">
-                    <td>@log.GetFormatedIp()</td>
                     <td>@log.SourceItem</td>
                     <td>@log.Facilty</td>
                     <td>@log.Severity</td>

@@ -5,16 +5,12 @@ namespace SyslogRemoteStore.Web.Models;
 
 public class Log
 {
-    public Log(string message, string sourceIp, int sourcePort)
+    public Log(string message)
     {
-        SourceIp = sourceIp;
-        SourcePort = sourcePort;
         ParseMessage(message);
     }
 
     public string Message { get; set; }
-    public string SourceIp { get; set; }
-    public int SourcePort { get; set; }
     public string SourceItem { get; set; }
     public string Facilty { get; set; }
     public string Severity { get; set; }
@@ -22,125 +18,62 @@ public class Log
 
     public void ParseMessage(string message)
     {
-        // Split the input string using regular expressions to capture the components
-        string pattern = @"<(\d+|\S*)>(\d+)\s(\S+)\s([^.]+). ([^<]+)(?: - - - - )?\s(\S+)";
-        Match match = Regex.Match(message, pattern);
+        string[] result = message.Split("]", StringSplitOptions.None);
 
-        if (match.Success)
-        {
-            int priorityValue = Int32.TryParse(match.Groups[1].Value, out priorityValue) ? priorityValue : 0;
-            int facility = priorityValue / 8;
-            int severity = priorityValue & 7;
-
-
-            Severity = GetSeverity(severity);
-            TimeStamp = match.Groups[3].Value;
-            Facilty = GetFacilty(facility);
-            SourceItem = match.Groups[4].Value;
-            Message = match.Groups[6].Value;
-        }
+        Message = result[1];
+        
+        int startIndex = message.IndexOf('<');
+        int endIndex = message.IndexOf('>');
+        string s = message.Substring(startIndex+ 1 , endIndex - startIndex - 1);
+        
+        int priorityValue = Int32.TryParse(s, out priorityValue)
+            ? priorityValue
+            : 0;
+        Facilty = GetFacilty(priorityValue / 8);
+        Severity = GetSeverity(priorityValue % 8);
+        
+        startIndex = message.IndexOf("eti=\"", StringComparison.Ordinal);
+        endIndex = message.IndexOf("\"]", StringComparison.Ordinal);
+        TimeStamp = message.Substring(startIndex+ 5 , endIndex - startIndex-5 );
     }
 
     private string GetSeverity(int severity)
     {
-        string result = string.Empty;
-        switch (severity)
+        string result = severity switch
         {
-            case 0:
-                result = "emergency";
-                break;
-            case 1:
-                result = "alert";
-                break;
-            case 2:
-                result = "critical";
-                break;
-            case 3:
-                result = "error";
-                break;
-            case 4:
-                result = "warning";
-                break;
-            case 5:
-                result = "notice";
-                break;
-            case 6:
-                result = "informational";
-                break;
-            case 7:
-                result = "debug";
-                break;
-        }
-
-        switch (result)
-        {
-            case "emergency":
-                result = "debug";
-                break;
-            case "alert":
-                result = "warning";
-                break;
-            case "critical":
-            case "error":
-                result = "error";
-                break;
-            default:
-                result = "informational";
-                break;
-        }
+            0 => "emergency",
+            1 => "alert",
+            2 => "critical",
+            3 => "error",
+            4 => "warning",
+            5 => "notice",
+            6 => "informational",
+            7 => "debug",
+            _ => string.Empty
+        };
 
         return result;
     }
 
     private string GetFacilty(int facility)
     {
-        string result = string.Empty;
-        switch (facility)
+        string result = facility switch
         {
-            case 0:
-                result = "kernel messages";
-                break;
-            case 1:
-                result = "user-level messages";
-                break;
-            case 2:
-                result = "mail system";
-                break;
-            case 3:
-                result = "system daemons";
-                break;
-            case 4:
-                result = "security/authorization messages";
-                break;
-            case 5:
-                result = "messages generated internally by Syslog";
-                break;
-            case 6:
-                result = "line printer subsystem";
-                break;
-            case 7:
-                result = "network news subsystem";
-                break;
-            case 8:
-                result = "UUCP subsystem";
-                break;
-            case 9:
-                result = "clock daemon";
-                break;
-            case 10:
-                result = "security/authorization messages";
-                break;
-            case 11:
-                result = "FTP daemon";
-                break;
-        }
+            0 => "kernel messages",
+            1 => "user-level messages",
+            2 => "mail system",
+            3 => "system daemons",
+            4 => "security/authorization messages",
+            5 => "messages generated internally by Syslog",
+            6 => "line printer subsystem",
+            7 => "network news subsystem",
+            8 => "UUCP subsystem",
+            9 => "clock daemon",
+            10 => "security/authorization messages",
+            11 => "FTP daemon",
+            _ => string.Empty
+        };
 
         return result;
-    }
-    
-    public string GetFormatedIp()
-    {
-        IPAddress ip = IPAddress.Parse(this.SourceIp);
-        return $"{(IPAddress.Parse(this.SourceIp).IsIPv4MappedToIPv6 ? ip.MapToIPv4().ToString() : ip.MapToIPv6().ToString())}:{this.SourcePort}";
     }
 }

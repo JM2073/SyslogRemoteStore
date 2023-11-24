@@ -54,13 +54,11 @@ List<string> PopulateIpAddress()
 {
     var list = new List<string>();
     foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())
-    {
         list.AddRange(
             from unicastAddress in networkInterface.GetIPProperties().UnicastAddresses
             where unicastAddress.Address.ToString() != "::1" 
             select unicastAddress.Address.ToString());
             
-    }
     list = list.OrderBy(x=>x.Length).ToList();
     return list;
 }
