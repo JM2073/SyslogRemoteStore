@@ -16,25 +16,26 @@ public class Log
     public string Severity { get; set; }
     public string TimeStamp { get; set; }
 
-    public void ParseMessage(string message)
+    private void ParseMessage(string message)
     {
         string[] result = message.Split("]", StringSplitOptions.None);
 
-        Message = result[1];
-        
+        Message = result.Length > 1 ? result[1].Trim() : result[0].Trim();
+
         int startIndex = message.IndexOf('<');
         int endIndex = message.IndexOf('>');
-        string s = message.Substring(startIndex+ 1 , endIndex - startIndex - 1);
-        
-        int priorityValue = Int32.TryParse(s, out priorityValue)
-            ? priorityValue
-            : 0;
+        string prioritySubstring = (startIndex != -1 && endIndex != -1) ? message.Substring(startIndex + 1, endIndex - startIndex - 1) : "0";
+
+        int priorityValue = Int32.TryParse(prioritySubstring, out priorityValue) ? priorityValue : 0;
         Facilty = GetFacilty(priorityValue / 8);
         Severity = GetSeverity(priorityValue % 8);
-        
+      
         startIndex = message.IndexOf("eti=\"", StringComparison.Ordinal);
         endIndex = message.IndexOf("\"]", StringComparison.Ordinal);
-        TimeStamp = message.Substring(startIndex+ 5 , endIndex - startIndex-5 );
+        
+        TimeStamp = (startIndex != -1 && endIndex != -1)
+            ? message.Substring(startIndex + 5, endIndex - startIndex - 5).Trim()
+            : string.Empty;
     }
 
     private string GetSeverity(int severity)

@@ -19,10 +19,11 @@ public class T6S3 : INotifyPropertyChanged
 
     private bool _isHidden;
     
+    private bool _pendingDisconnect;
+
     private string _ipvType;
 
     private ObservableCollection<Log> _logs = new();
-
 
 
     public T6S3(Socket socket, string ip, int port)
@@ -32,6 +33,7 @@ public class T6S3 : INotifyPropertyChanged
         Ip = ip;
         Port = port;
         TcpConnected = socket.ProtocolType == ProtocolType.Tcp;
+        PendingDisconnect = false;
         UdpConnected = socket.ProtocolType == ProtocolType.Udp;
         IsHidden = false;
         _logs.CollectionChanged += Logs_CollectionChanged;
@@ -57,6 +59,12 @@ public class T6S3 : INotifyPropertyChanged
         set => SetField(ref _tcpConnected, value);
     }
 
+    public bool PendingDisconnect
+    {
+        get => _pendingDisconnect;
+        set => SetField(ref _pendingDisconnect, value);
+    }
+
     public bool UdpConnected
     {
         get => _udpConnected;
@@ -79,19 +87,12 @@ public class T6S3 : INotifyPropertyChanged
 
     public string GetSocketStatus()
     {
-        string result = string.Empty;
-        switch (this.Socket.ProtocolType)
+        string result = this.Socket.ProtocolType switch
         {
-            case ProtocolType.Udp:
-                result = this.UdpConnected ? "Connected" : "Dissconnected";
-                break;
-            case ProtocolType.Tcp:
-                result = this.TcpConnected ? "Connected" : "Dissconnected";
-                break;
-            default:
-                result = "Unknown";
-                break;
-        }
+            ProtocolType.Udp => this.UdpConnected ? "Connected" : "Disconnected",
+            ProtocolType.Tcp => this.PendingDisconnect ? "PendingDisconnect" : this.TcpConnected ? "Connected" : "Disconnected",
+            _ => "Unknown"
+        };
         return result;
     }
     

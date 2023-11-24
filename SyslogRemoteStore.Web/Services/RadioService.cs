@@ -4,6 +4,7 @@ using System.Text;
 using SyslogRemoteStore.Web.Models;
 using SyslogRemoteStore.Web.Stores;
 using ProtocolType = SyslogRemoteStore.Web.Enums.ProtocolType;
+using SPType = System.Net.Sockets.ProtocolType;
 
 namespace SyslogRemoteStore.Web.Data;
 
@@ -56,30 +57,42 @@ public class RadioService
                 radio.Socket.Dispose();
                 radio.UdpConnected = false;
             }
+
             _asyncSocketudp.Dispose();
             _asyncSocketudp = null;
         }
-
         else if (_configStore.ListeningProtocolType == ProtocolType.Udp)
         {
             foreach (T6S3 radio in _collectionStore.Radios.Where(x =>
                          x.Socket.ProtocolType == System.Net.Sockets.ProtocolType.Tcp))
             {
-                radio.Socket.Dispose();
-                radio.TcpConnected = false;
+                radio.Socket.BeginDisconnect(false, ar => OnDisconnectCallback(ar, radio), null);
+                radio.PendingDisconnect = true;
             }
+
             _asyncSockettcp.Dispose();
         }
 
         BeginListeningAsync();
     }
 
+    private void OnDisconnectCallback(IAsyncResult ar, T6S3 radio)
+    {
+        radio.Socket.EndDisconnect(ar);
+        radio.PendingDisconnect = false;
+        radio.TcpConnected = false;
+    }
+
     public void CloseAllOpenConnections()
     {
         foreach (T6S3 _radio in _collectionStore.Radios)
         {
-            _radio.Socket.Dispose();
-            _radio.TcpConnected = false;
+            if (_radio.Socket.ProtocolType == SPType.Tcp)
+                _radio.Socket.BeginDisconnect(false, ar => OnDisconnectCallback(ar, _radio), null);
+            else
+                _radio.Socket.Dispose();
+
+            _radio.PendingDisconnect = true;
             _radio.UdpConnected = false;
         }
 
@@ -88,8 +101,6 @@ public class RadioService
         _asyncSockettcp.Dispose();
         _asyncSockettcp = null;
 
-
-        
         BeginListeningAsync();
     }
     
@@ -263,12 +274,5 @@ public class RadioService
         {
             Console.WriteLine($"{DateTime.Now} Receive error: " + ex.Message);
         }
-    }
-
-
-    public void Dispose()
-    {
-        _asyncSockettcp.Dispose();
-        _asyncSocketudp.Dispose();
     }
 }

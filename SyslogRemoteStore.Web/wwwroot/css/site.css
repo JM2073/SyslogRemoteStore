@@ -71,9 +71,13 @@ h1:focus {
 
     color: #008000;
 }
-.disconnected{
+.Disconnected{
 
     color: #ff0000;
+}
+.PendingDisconnect{
+
+    color: #ffa500;
 }
 .spinner-Con {
     top: 50%;

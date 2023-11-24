@@ -15,7 +15,7 @@ public class ConfigurationStore : BaseStore, INotifyPropertyChanged
     private string _debugHex = "#00008B";
     private string _infoHex = "#000000";
     private int _port = 514;
-    private string _ip = "192.168.40.100";
+    private string _ip = "127.0.0.1";
 
     public int Port
     {
