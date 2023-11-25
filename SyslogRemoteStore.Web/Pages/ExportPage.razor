@@ -15,7 +15,7 @@
 <html>
 <h3>ExportPage</h3>
 
-<button @onclick="ZipFiles">Zip Files</button>
+<button @onclick="DownloadFile">Zip Files</button>
 
 
 </html>
@@ -23,7 +23,7 @@
 @code
 {
 
-    private void ZipFiles()
+    private string ZipFiles()
     {
         List<string> filesToZip = new List<string>();
 
@@ -46,21 +46,21 @@
             File.Delete(file);
         }
 
-        //return zipFilePath;
+        return zipFilePath;
     }
 
 
-    /*private Stream GetFileStream()
+    private Stream GetFileStream()
     {
         byte[] binaryData = File.ReadAllBytes(ZipFiles());
 
         MemoryStream fileStream = new MemoryStream(binaryData);
         return fileStream;
-    }*/
+    }
     
     
 
-    /*private async Task DownloadFile()
+    private async Task DownloadFile()
     {
         try
         {
@@ -73,7 +73,7 @@
             Console.WriteLine($"Cannot do it :(");
         }
 
-    }*/
+    }
 
     }
    
