@@ -1,6 +1,7 @@
 ﻿@page "/RadioPage/{RadioId}"
 @inject IRadioViewModel vm
-@inject RadioFilterService fs
+@inject LogFilterService fs
+@inject FileCreationService fc
 @using SyslogRemoteStore.Web.Services
 
 <head>
@@ -207,7 +208,7 @@
 
         if (logs != null && string.IsNullOrWhiteSpace(fs.Message) == false)
         {
-            displayedLogs = fs.FilterLog(logs);
+            displayedLogs = fs.RadioFilterLog(logs);
 
         }
         else

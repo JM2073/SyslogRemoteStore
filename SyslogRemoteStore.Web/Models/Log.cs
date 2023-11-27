@@ -12,6 +12,7 @@ public class Log
         ParseMessage(message);
     }
 
+    public string FullMessage { get; set; }
     public string Message { get; set; }
     public bool Received { get; set; }
     public string SourceIp { get; set; }
@@ -34,6 +35,7 @@ public class Log
             int facility = priorityValue >> 3;
             int severity = priorityValue & 7;
 
+            FullMessage = message;
             Severity = GetSeverity(severity);
             Received = Convert.ToBoolean(int.Parse(match.Groups[2].Value));
             TimeStamp = match.Groups[3].Value;

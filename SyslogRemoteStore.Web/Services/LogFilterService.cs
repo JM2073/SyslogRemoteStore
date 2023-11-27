@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
+
 namespace SyslogRemoteStore.Web.Services
 {
     public class LogFilterService : INotifyPropertyChanged
@@ -17,6 +18,7 @@ namespace SyslogRemoteStore.Web.Services
 
         public string SourceIp { get; set; }
         public string Severity { get; set; }
+        public string Message { get; set; }
 
 
 
@@ -37,21 +39,39 @@ namespace SyslogRemoteStore.Web.Services
         public void SeverityWarning(bool value) => Warning = value;
 
 
-        public List<Log> FilterLog(List<Log> logs)
+        public List<Log> IpFilterLog(List<Log> logs)
+        {
+
+            List<Log> filteredLogs = logs;
+            
+            if (!string.IsNullOrEmpty(this.SourceIp))
+            {
+               filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
+               //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+
+            }
+
+
+
+            return filteredLogs;
+            
+        }
+
+        public List<Log> RadioFilterLog(List<Log> logs)
         {
 
             List<Log> filteredLogs = logs;
 
-            if (!string.IsNullOrEmpty(this.SourceIp))
+            if (!string.IsNullOrEmpty(this.Message))
             {
-                filteredLogs = filteredLogs.Where(l => l.SourceIp.Contains(this.SourceIp)).ToList();
+                filteredLogs = filteredLogs.Where(l => l.Message.Contains(this.Message, StringComparison.OrdinalIgnoreCase)).ToList();
                 //filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
 
             }
 
 
             return filteredLogs;
-            
+
         }
     }
 }

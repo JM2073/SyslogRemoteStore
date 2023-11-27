@@ -1,0 +1,93 @@
+﻿﻿@using System;
+@using SyslogRemoteStore.Web.Models
+@inject FileCreationService fc
+@inject FileZipService fz
+@inject IRadioViewModel vm
+@inject CollectionStore cs
+@inject IJSRuntime JS
+@using SyslogRemoteStore.Web.Services
+@using System.Collections.Specialized
+
+
+
+@page "/ExportPage"
+
+<html>
+<h3>ExportPage</h3>
+
+<button @onclick="ZipFiles">Zip Files</button>
+
+
+</html>
+
+@code
+{
+    private void ZipFiles()
+    {
+        List<string> filesToZip = new List<string>();
+
+        foreach (IGrouping<string, IT6S3> radioIpGroups in cs.Radios.GroupBy(x => x.GetFormatedIp()))
+        {
+
+            foreach (IT6S3 radio in radioIpGroups)
+            {
+                fc.CreateFile(radio.Logs, radio.GetFormatedIp()); //fc.CreateFile(radio.Logs, radio.GetFormatedIp(),radio.Port.ToString());
+                filesToZip.Add(fc.GetFileName(radio.GetFormatedIp()));
+            }
+        }
+
+
+        string zipFilePath = String.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "SyslogFiles.zip"); ;
+
+        fz.ZipFiles(zipFilePath, filesToZip);
+        foreach (string file in filesToZip)
+        {
+            File.Delete(file);
+        }
+
+        //return zipFilePath;
+    } 
+
+    /// <summary>
+    /// Ive tried to follow the code from the website i've linked, but
+    /// it kept erroing in this line "await JS.InvokeVoidAsync("downloadFileFromStream", ZipFiles(), streamRef);"
+    /// then throwing and exception because "downloadFileFromStream" isn't defined,
+    /// but it is defined in "jsindex" under wwroot.
+    /// 
+    /// As it stands, the "button" will create a zip file with the txt inside in the solution's directory 
+    /// (i'm not sure if that's the best prectice), but to make it functional with the following methods you'll 
+    /// need to  change the ZipFiles 'void' to a string and return zipFilePath
+    /// </summary>
+
+    /*private Stream GetFileStream()
+        {
+        byte[] binaryData = File.ReadAllBytes(ZipFiles());
+
+        MemoryStream fileStream = new MemoryStream(binaryData);
+        return fileStream;
+    }
+
+
+
+    private async Task DownloadFile()
+        {
+        try
+            {
+            Stream fileStream = GetFileStream();
+            using DotNetStreamReference streamRef = new DotNetStreamReference(stream: fileStream);
+            await JS.InvokeVoidAsync("downloadFileFromStream", ZipFiles(), streamRef);
+        }
+        catch(Exception ex)
+            {
+            Console.WriteLine($"Cannot Download file");
+    }
+
+        }
+
+    }*/
+}
+
+
+
+           
+ 

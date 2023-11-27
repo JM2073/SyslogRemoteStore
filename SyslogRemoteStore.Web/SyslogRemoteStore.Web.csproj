@@ -11,6 +11,7 @@
     <Content Remove="NewFolder\**" />
     <EmbeddedResource Remove="NewFolder\**" />
     <None Remove="NewFolder\**" />
+    <Compile Remove="Services\RadioFilterService.cs" />
     <Compile Update="ViewModels\ILogsViewModel.cs">
       <DependentUpon>LogsViewModel.cs</DependentUpon>
     </Compile>

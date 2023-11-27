@@ -134,6 +134,7 @@
             StateHasChanged(); 
             logs = vm.Radios.SelectMany(x => x.Logs).OrderBy(x => x.TimeStamp).ToList();
             filter();
+            
         }); 
 
         };
@@ -144,7 +145,7 @@
 
         if (logs!= null && string.IsNullOrWhiteSpace(fs.SourceIp) == false)
         {
-            displayedLogs = fs.FilterLog(logs);
+            displayedLogs = fs.IpFilterLog(logs);
 
         }
         else
