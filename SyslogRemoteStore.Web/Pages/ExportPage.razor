@@ -15,15 +15,14 @@
 <html>
 <h3>ExportPage</h3>
 
-<button @onclick="DownloadFile">Zip Files</button>
+<button @onclick="ZipFiles">Zip Files</button>
 
 
 </html>
 
 @code
 {
-
-    private string ZipFiles()
+    private void ZipFiles()
     {
         List<string> filesToZip = new List<string>();
 
@@ -46,38 +45,46 @@
             File.Delete(file);
         }
 
-        return zipFilePath;
-    }
+        //return zipFilePath;
+    } 
 
+    /// <summary>
+    /// Ive tried to follow the code from the website i've linked, but
+    /// it kept erroing in this line "await JS.InvokeVoidAsync("downloadFileFromStream", ZipFiles(), streamRef);"
+    /// then throwing and exception because "downloadFileFromStream" isn't defined,
+    /// but it is defined in "jsindex" under wwroot.
+    /// 
+    /// As it stands, the "button" will create a zip file with the txt inside in the solution's directory 
+    /// (i'm not sure if that's the best prectice), but to make it functional with the following methods you'll 
+    /// need to  change the ZipFiles 'void' to a string and return zipFilePath
+    /// </summary>
 
-    private Stream GetFileStream()
-    {
+    /*private Stream GetFileStream()
+        {
         byte[] binaryData = File.ReadAllBytes(ZipFiles());
 
         MemoryStream fileStream = new MemoryStream(binaryData);
         return fileStream;
     }
-    
-    
+
+
 
     private async Task DownloadFile()
-    {
-        try
         {
+        try
+            {
             Stream fileStream = GetFileStream();
             using DotNetStreamReference streamRef = new DotNetStreamReference(stream: fileStream);
             await JS.InvokeVoidAsync("downloadFileFromStream", ZipFiles(), streamRef);
         }
         catch(Exception ex)
-        {
-            Console.WriteLine($"Cannot do it :(");
+            {
+            Console.WriteLine($"Cannot Download file");
+    }
+
         }
 
-    }
-
-    }
-   
-    
+    }*/
 }
 
 
