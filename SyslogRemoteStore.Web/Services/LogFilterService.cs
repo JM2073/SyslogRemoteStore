@@ -15,11 +15,18 @@ namespace SyslogRemoteStore.Web.Services
         private bool _debug = false;
         private bool _warning = false;
         private string _message;
+        private string _source;
 
         public string Message
         {
             get => _message;
             set => SetField(ref _message, value);
+        }
+
+        public string Source
+        {
+            get => _source;
+            set => SetField(ref _source, value);
         }
 
         public bool Error
@@ -61,6 +68,11 @@ namespace SyslogRemoteStore.Web.Services
                 filteredLogs = filteredLogs.Where(l => l.Message.Contains(this.Message, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
+            if (!string.IsNullOrEmpty(this.Source))
+            {
+                filteredLogs = filteredLogs.Where(l => l.SourceItem.Contains(this.Source, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            
             return filteredLogs;
             
         }

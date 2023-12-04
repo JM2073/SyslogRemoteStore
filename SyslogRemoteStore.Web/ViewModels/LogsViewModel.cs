@@ -43,7 +43,14 @@ public class LogsViewModel : BaseViewModel, ILogsViewModel
 
     public void Delete()
     {
-        throw new NotImplementedException();
+        foreach (T6S3 radio in Radios)
+        {
+            int count = radio.Logs.Count;
+            for (int i = 0; i < count; i++)
+            {
+                radio.Logs.RemoveAt(0);
+            }
+        }
     }
 
 }

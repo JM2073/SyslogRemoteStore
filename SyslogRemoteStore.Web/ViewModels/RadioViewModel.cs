@@ -12,7 +12,7 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
     private readonly CollectionStore _collectionStore;
     private readonly IJSRuntime _js;
     private readonly ExsportService _exsportService = new ExsportService();
-    public RadioViewModel(ConfigurationStore configurationStore, CollectionStore collectionStore, JSRuntime js)
+    public RadioViewModel(ConfigurationStore configurationStore, CollectionStore collectionStore, IJSRuntime js)
     {
         _configurationStore = configurationStore;
         _collectionStore = collectionStore;
@@ -59,6 +59,10 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
 
     public void Delete()
     {
-        throw new NotImplementedException();
+        int count = Radio.Logs.Count;
+        for (int i = 0; i < count; i++)
+        {
+            Radio.Logs.RemoveAt(0);
+        }
     }
 }

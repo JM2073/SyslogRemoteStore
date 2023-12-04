@@ -5,8 +5,9 @@ namespace SyslogRemoteStore.Web.Models;
 
 public class Log
 {
-    public Log(string message)
+    public Log(string message, string source)
     {
+        SourceItem = source;
         ParseMessage(message);
     }
 

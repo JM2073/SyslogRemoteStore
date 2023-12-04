@@ -119,7 +119,7 @@ public class RadioService
                     _asyncSocketudp.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
 
 
-                    _asyncSocketudp.Bind(new IPEndPoint(IPAddress.Parse(ip), port));
+                    _asyncSocketudp.Bind(new IPEndPoint(IPAddress.Any, port));
                 }
 
                 byte[] buffer = new byte[250];
@@ -161,7 +161,8 @@ public class RadioService
                 byte[] buffer = (byte[])ar.AsyncState;
                 string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-                _t6S3.Logs.Add(new Log(message));
+                var formatedIp = IPAddress.Parse(senderIpAddress);
+                _t6S3.Logs.Add(new Log(message,formatedIp.IsIPv4MappedToIPv6 ? formatedIp.MapToIPv4().ToString() : formatedIp.MapToIPv6().ToString()));
 
                 buffer = new byte[1024];
                 _asyncSocketudp.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _remoteEndPoint,
@@ -253,7 +254,7 @@ public class RadioService
                     byte[] rxBuffer = (byte[])_async.AsyncState;
                     string request = Encoding.ASCII.GetString(rxBuffer, 0, bytesRead);
 
-                    t6S3.Logs.Add(new Log(request));
+                    t6S3.Logs.Add(new Log(request,t6S3.GetFormatedIp()));
 
                     t6S3.Socket.BeginReceive(rxBuffer, 0, rxBuffer.Length, 0, async => DequeueRequests(async, t6S3),
                         rxBuffer);
