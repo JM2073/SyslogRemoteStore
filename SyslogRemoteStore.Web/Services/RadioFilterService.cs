@@ -9,10 +9,10 @@ namespace SyslogRemoteStore.Web.Services
 {
     public class RadioFilterService : INotifyPropertyChanged
     {
-        private bool _error = true;
-        private bool _info = true;
-        private bool _debug = true;
-        private bool _warning = true;
+        private bool _error = false;
+        private bool _info = false;
+        private bool _debug = false;
+        private bool _warning = false;
         private string _message;
         public string Message
         {
@@ -63,7 +63,10 @@ namespace SyslogRemoteStore.Web.Services
 
             List<Log> filteredLogs = logs;
 
-            filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+            if (Error  || Info  || Debug  || Warning )
+            {
+                filteredLogs = filteredLogs.Where(l => (Error == true && l.Severity.Contains("error")) || (Info == true && l.Severity.Contains("info")) || (Debug == true && l.Severity.Contains("debug")) || (Warning == true && l.Severity.Contains("warning"))).ToList();
+            }
 
             if (!string.IsNullOrEmpty(this.Message))
             {

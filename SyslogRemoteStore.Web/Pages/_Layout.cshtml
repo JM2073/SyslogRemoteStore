@@ -40,30 +40,25 @@
 
  <script>
             setTimeout(()=>{
-
-
-
-                        var image = document.querySelector('#image')
-            image.addEventListener('click', ()=>{
-
-
-
-            if (document.querySelector('#container').classList.contains('cc-closed')){
-             let body = document.querySelector('#container');
-                body.classList.remove("cc-closed");
-                body.classList.add("cc");
-                 document.querySelector('aside').classList.remove("closed");
-            } else {
-              let body = document.querySelector('#container');
-           body.classList.remove("cc");
-            body.classList.add("cc-closed");
-            document.querySelector('#aside').classList.add("closed");
-            }
-        })
-
-
-
-            }, 1000)
+                var image = document.querySelector('#image')
+                
+                image.addEventListener('click', ()=>{
+                    if (document.querySelector('#container').classList.contains('cc-closed'))
+                    {
+                        let body = document.querySelector('#container');
+                        body.classList.remove("cc-closed");
+                        body.classList.add("cc");
+                        document.querySelector('aside').classList.remove("closed");
+                    } 
+                    else 
+                    {
+                        let body = document.querySelector('#container');
+                        body.classList.remove("cc");
+                        body.classList.add("cc-closed");
+                        document.querySelector('#aside').classList.add("closed");
+                    }
+                });
+            }, 10000);
 
   window.downloadFileFromStream = async (fileName, contentStreamReference) => {
     const arrayBuffer = await contentStreamReference.arrayBuffer();

@@ -39,7 +39,7 @@ public class Log
         
         TimeStamp = (startIndex != -1 && endIndex != -1)
             ? message.Substring(startIndex + 5, endIndex - startIndex - 5).Trim()
-            : string.Empty;
+            : DateTime.Now.ToString();
     }
 
     private string GetSeverity(int severity)
