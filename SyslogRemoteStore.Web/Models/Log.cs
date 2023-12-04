@@ -10,6 +10,7 @@ public class Log
         ParseMessage(message);
     }
 
+    public string FullMessage { get; set; }
     public string Message { get; set; }
     public string SourceItem { get; set; }
     public string Facilty { get; set; }
@@ -22,6 +23,9 @@ public class Log
 
         Message = result.Length > 1 ? result[1].Trim() : result[0].Trim();
 
+            FullMessage = message;
+     
+       
         int startIndex = message.IndexOf('<');
         int endIndex = message.IndexOf('>');
         string prioritySubstring = (startIndex != -1 && endIndex != -1) ? message.Substring(startIndex + 1, endIndex - startIndex - 1) : "0";
