@@ -7,21 +7,34 @@ namespace SyslogRemoteStore.Web.Services;
 
 public class ExsportService
 {
-    public MemoryStream ZipFiles(List<IT6S3> radios)
+    public MemoryStream ProcessZipFiles(T6S3 radio)
+    {
+        DateTime currentDateTime = DateTime.Now;
+        string dateTime = currentDateTime.ToString("yyyyMMddHHmmss");
+        string filename = string.Format($"{radio.Ip}_{dateTime}.zip");
+        
+        string filePath = CreateFile(radio.Logs, $"{radio.GetFormatedIp()}:{radio.Port}");
+        return ZipFiles(new List<string>{filePath}, filename);
+    }
+
+
+    public MemoryStream ProcessZipFiles(List<T6S3> radios)
     {
         List<string> filesToZip = new();
 
-        foreach (IGrouping<string, IT6S3> radioIpGroups in radios.GroupBy(x => x.GetFormatedIp()))
+        foreach (IGrouping<string, T6S3> radioIpGroups in radios.Where(x=>x.IsHidden == false).GroupBy(x => x.GetFormatedIp()))
+        foreach (T6S3 radio in radioIpGroups)
         {
-            foreach (IT6S3 radio in radioIpGroups)
-            {
-                string filePath = CreateFile(radio.Logs, $"{radio.GetFormatedIp()}:{radio.Port}");
-                filesToZip.Add(filePath);
-            }
+            string filePath = CreateFile(radio.Logs, $"{radio.GetFormatedIp()}:{radio.Port}");
+            filesToZip.Add(filePath);
         }
 
-        string FileName = "SyslogFiles.zip";
-        string zipFilePath = string.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, FileName);
+        return ZipFiles(filesToZip,"SyslogFiles.zip");
+    }
+
+    public MemoryStream ZipFiles(List<String> filesToZip, string fileName)
+    {
+        string zipFilePath = string.Format(@"{0}{1}", AppDomain.CurrentDomain.BaseDirectory, fileName);
 
 
         using (FileStream createZip = new(zipFilePath, FileMode.Create))
@@ -73,7 +86,6 @@ public class ExsportService
                     fs.Write(newline, 0, newline.Length);
                 }
             }
-
         }
         catch (Exception Exept)
         {

@@ -31,7 +31,7 @@ public class LogsViewModel : BaseViewModel, ILogsViewModel
     {
         try
         {
-            Stream fileStream = _exsportService.ZipFiles(_collectionStore.Radios.ToList());
+            Stream fileStream = _exsportService.ProcessZipFiles(_collectionStore.Radios.ToList());
             using DotNetStreamReference streamRef = new(fileStream);
             await _js.InvokeVoidAsync("downloadFileFromStream", "SyslogFiles.zip", streamRef);
         }

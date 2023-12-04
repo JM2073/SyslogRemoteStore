@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using SyslogRemoteStore.Web.Models;
+using SyslogRemoteStore.Web.Services;
 using SyslogRemoteStore.Web.Stores;
 
 namespace SyslogRemoteStore.Web.ViewModels;
@@ -8,12 +10,13 @@ namespace SyslogRemoteStore.Web.ViewModels;
 public class RadioViewModel : BaseViewModel, IRadioViewModel
 {
     private readonly CollectionStore _collectionStore;
-
-    public RadioViewModel(ConfigurationStore configurationStore, CollectionStore collectionStore)
+    private readonly IJSRuntime _js;
+    private readonly ExsportService _exsportService = new ExsportService();
+    public RadioViewModel(ConfigurationStore configurationStore, CollectionStore collectionStore, JSRuntime js)
     {
         _configurationStore = configurationStore;
         _collectionStore = collectionStore;
-        
+        _js = js;
     }
     public ConfigurationStore _configurationStore { get; }
 
@@ -38,5 +41,24 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
     public void HideRadio()
     {
         _collectionStore.Radios.Single(x => x.Id == Guid.Parse(_radioId)).IsHidden = true;
+    }
+    
+    public async void Export()
+    {
+        try
+        {
+            Stream fileStream = _exsportService.ProcessZipFiles(Radio);
+            using DotNetStreamReference streamRef = new(fileStream);
+            await _js.InvokeVoidAsync("downloadFileFromStream", "SyslogFiles.zip", streamRef);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Cannot Download file");
+        }
+    }
+
+    public void Delete()
+    {
+        throw new NotImplementedException();
     }
 }
