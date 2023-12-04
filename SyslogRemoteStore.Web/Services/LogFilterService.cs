@@ -73,6 +73,7 @@ namespace SyslogRemoteStore.Web.Services
             return filteredLogs;
 
         }
+        
     }
 }
 
