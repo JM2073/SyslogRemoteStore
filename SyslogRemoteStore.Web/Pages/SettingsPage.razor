@@ -127,7 +127,6 @@
 <div>
 
 
-
     <div class="col-md-12" style="display: flex">
         <div class="col-md-2"></div>
         <div class="col-md-8  justify-content-end">
@@ -208,7 +207,7 @@
 
             <div>
                 <div>
-                    <label class="Header">Radio Visibility </label>
+                    <label class="Header">Radio Management </label>
                 </div>
 
                 <div>
@@ -220,7 +219,7 @@
                             <th>Port</th>
                             <th>Radio Visible</th>
                             <th># of Logs</th>
-                            <th></th>
+                            <th>Functions</th>
                         </tr>
                         </thead>
 
@@ -255,6 +254,10 @@
                                     {
                                         <button class="btn btn-primary" @onclick="() => ToggleRadioVisibility(radio.Id, true)"> Hide Radio </button>
                                     }
+
+                                    <button id="ExportLogs" class="btn btn-primary" value="Hide Radio" @onclick="() => vm.ExportLogs(radio.Id)"> Export Logs </button>
+                                    <button id="DeleteLocalLogs" class="btn btn-primary" value="Hide Radio" @onclick="() => vm.DeleteLocalLogs(radio.Id)"> Delete Stored Logs </button>
+
                                 </td>
                             </tr>
                         }

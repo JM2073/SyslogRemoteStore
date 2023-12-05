@@ -43,13 +43,13 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
         _collectionStore.Radios.Single(x => x.Id == Guid.Parse(_radioId)).IsHidden = true;
     }
     
-    public async void Export()
+    public async void ExportLogs()
     {
         try
         {
             Stream fileStream = _exsportService.ProcessZipFiles(Radio);
             using DotNetStreamReference streamRef = new(fileStream);
-            await _js.InvokeVoidAsync("downloadFileFromStream", "SyslogFiles.zip", streamRef);
+            await _js.InvokeVoidAsync("downloadFileFromStream", "SyslogFile.zip", streamRef);
         }
         catch (Exception ex)
         {
@@ -57,7 +57,7 @@ public class RadioViewModel : BaseViewModel, IRadioViewModel
         }
     }
 
-    public void Delete()
+    public void DeleteLocalLogs()
     {
         int count = Radio.Logs.Count;
         for (int i = 0; i < count; i++)

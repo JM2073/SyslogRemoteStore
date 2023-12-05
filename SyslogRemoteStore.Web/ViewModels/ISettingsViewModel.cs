@@ -18,4 +18,6 @@ public interface ISettingsViewModel
     void Submit();
     void ToggleRadioVisibility(Guid radioId, bool value);
 
+    void ExportLogs(Guid radioId);
+    void DeleteLocalLogs(Guid radioId);
 }

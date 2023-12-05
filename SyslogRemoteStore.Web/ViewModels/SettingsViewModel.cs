@@ -1,8 +1,10 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.JSInterop;
 using SyslogRemoteStore.Web.Data;
 using SyslogRemoteStore.Web.Enums;
 using SyslogRemoteStore.Web.Models;
+using SyslogRemoteStore.Web.Services;
 using SyslogRemoteStore.Web.Stores;
 
 namespace SyslogRemoteStore.Web.ViewModels;
@@ -11,11 +13,14 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
 {
     private CollectionStore _collectionStore;
     private ConfigurationStore _configurationStore;
+    private readonly ExsportService _exsportService = new ExsportService();
+    private IJSRuntime _js;
 
-    public SettingsViewModel(CollectionStore collectionStore, ConfigurationStore configurationStore)
+    public SettingsViewModel(CollectionStore collectionStore, ConfigurationStore configurationStore, IJSRuntime js)
     {
         _collectionStore = collectionStore;
         _configurationStore = configurationStore;
+        _js = js;
 
         IpAddress = _configurationStore.Ip;
         Port = _configurationStore.Port;
@@ -76,4 +81,27 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
         _collectionStore.Radios.Single(x => x.Id == radioId).IsHidden = value;
     }
     
+    public async void ExportLogs(Guid radioId)
+    {
+        try
+        {
+            Stream fileStream = _exsportService.ProcessZipFiles(_collectionStore.Radios.Single(x=>x.Id == radioId));
+            using DotNetStreamReference streamRef = new(fileStream);
+            await _js.InvokeVoidAsync("downloadFileFromStream", "SyslogFile.zip", streamRef);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Cannot Download file");
+        }
+    }
+
+    public void DeleteLocalLogs(Guid radioId)
+    {
+        T6S3 radio = _collectionStore.Radios.Single(x => x.Id == radioId);
+        int count = radio.Logs.Count;
+        for (int i = 0; i < count; i++)
+        {
+            radio.Logs.RemoveAt(0);
+        }
+    }
 }

@@ -136,6 +136,13 @@ h1:focus {
     margin-right: 25px;
 }
 
+.buttonRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 25px;
+}
+
 .severityFilter input{
     margin: 5px;
 }
@@ -147,4 +154,15 @@ h1:focus {
 
 .form-check-label, .btn {
     margin-right: 10px;
+}
+
+.cButton {
+    display: inline-block;
+    margin: 5px;
+    background-color: black;
+    color: #fff;
+    padding: 2px 7px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }

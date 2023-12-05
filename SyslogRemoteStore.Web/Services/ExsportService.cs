@@ -11,9 +11,9 @@ public class ExsportService
     {
         DateTime currentDateTime = DateTime.Now;
         string dateTime = currentDateTime.ToString("yyyyMMddHHmmss");
-        string filename = string.Format($"{radio.Ip}_{dateTime}.zip");
+        string filename = string.Format($"SyslogFile.zip");
         
-        string filePath = CreateFile(radio.Logs, $"{radio.GetFormatedIp()}:{radio.Port}");
+        string filePath = CreateFile(radio.Logs, $"{radio.GetFormatedIp()}\ua789{radio.Port}");
         return ZipFiles(new List<string>{filePath}, filename);
     }
 
@@ -25,7 +25,7 @@ public class ExsportService
         foreach (IGrouping<string, T6S3> radioIpGroups in radios.Where(x=>x.IsHidden == false).GroupBy(x => x.GetFormatedIp()))
         foreach (T6S3 radio in radioIpGroups)
         {
-            string filePath = CreateFile(radio.Logs, $"{radio.GetFormatedIp()}:{radio.Port}");
+            string filePath = CreateFile(radio.Logs, $"{radio.GetFormatedIp()}\ua789{radio.Port}");
             filesToZip.Add(filePath);
         }
 

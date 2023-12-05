@@ -119,7 +119,7 @@ public class RadioService
                     _asyncSocketudp.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
 
 
-                    _asyncSocketudp.Bind(new IPEndPoint(IPAddress.Any, port));
+                    _asyncSocketudp.Bind(new IPEndPoint(IPAddress.Parse(ip), port));
                 }
 
                 byte[] buffer = new byte[250];

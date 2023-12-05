@@ -164,14 +164,25 @@
             Warning
         </label>
 
+
+    </div>
+
+
+    <div style="padding-top: 15px">
+    </div>
+
+
+    <div class="buttonRow">
         @if (vm.Radio.IsHidden)
         {
-            <button id="liveToastBtn" class="hideRadioBtn" value="Hide Radio" @onclick="() => ToggleRadioVisibility(false)"> Show Radio </button>
+            <button id="liveToastBtn" class="hideRadioBtn" value="show Radio" @onclick="() => ToggleRadioVisibility(false)"> Show Radio </button>
         }
         else
         {
             <button id="liveToastBtn" class="hideRadioBtn" value="Hide Radio" @onclick="() => ToggleRadioVisibility(true)"> Hide Radio </button>
         }
+        <button id="ExportLogs" class="hideRadioBtn" value="Hide Radio" @onclick="vm.ExportLogs"> Export Logs </button>
+        <button id="DeleteLocalLogs" class="hideRadioBtn" value="Hide Radio" @onclick="vm.DeleteLocalLogs"> Delete Stored Logs </button>
     </div>
 </div>
 

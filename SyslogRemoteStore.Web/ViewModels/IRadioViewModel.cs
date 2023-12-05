@@ -12,4 +12,6 @@ public interface IRadioViewModel
     void ToggleRadioVisibility(bool value);
 
     void HideRadio();
+    void ExportLogs();
+    void DeleteLocalLogs();
 }
