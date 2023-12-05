@@ -217,6 +217,7 @@
                             <th>Connection Status</th>
                             <th>IP</th>
                             <th>Port</th>
+                            <th>protocol Type</th>
                             <th>Radio Visible</th>
                             <th># of Logs</th>
                             <th>Functions</th>
@@ -228,10 +229,22 @@
                         {
                             <tr>
                                 <td style="text-align: center">
-                                    <span class="@ConnectionStatus(radio)">&#x2B24;</span>
+                                    @switch (radio.GetSocketStatus())
+                                    {
+                                        case "Connected":
+                                            <span class="Connected">&#x2B24; Connected</span>
+                                            break;
+                                        case "Disconnected":
+                                            <span class="Disconnected">&#x2B24; Disconnected</span>
+                                            break;
+                                        case "PendingDisconnect":
+                                            <span class="PendingDisconnect">&#x2B24; Pending Disconnect</span>
+                                            break;
+                                    }
                                 </td>
                                 <td>@radio.GetFormatedIp()</td>
                                 <td>@radio.Port</td>
+                                <td>@radio.Socket.ProtocolType.ToString()</td>
                                 <td style="text-align: center">
 
                                     @if (radio.IsHidden)
@@ -331,24 +344,6 @@
         {
             FormSubmit();
         }
-    }
-
-    private string ConnectionStatus(T6S3 radio)
-    {
-        string result = string.Empty;
-        switch (radio.Socket.ProtocolType)
-        {
-            case SPType.Udp:
-                result = radio.UdpConnected ? "connected" : "disconnected ";
-                break;
-            case SPType.Tcp:
-                result = radio.TcpConnected ? "connected" : "disconnected";
-                break;
-            default:
-                throw new Exception("strange Protocol Type");
-        }
-
-        return result;
     }
 
     private async Task HandleConfirmation(bool result)

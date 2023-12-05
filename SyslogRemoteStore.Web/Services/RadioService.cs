@@ -137,9 +137,9 @@ public class RadioService
     {
         try
         {
-            if (_configStore.ListeningProtocolType is ProtocolType.Udp or ProtocolType.Both && _asyncSocketudp.IsBound)
+            if (_configStore.ListeningProtocolType is ProtocolType.Udp or ProtocolType.Both)
             {
-                if (_asyncSocketudp == null)
+                if (_asyncSocketudp?.IsBound is null or false)
                 {
                     return;
                 }
@@ -219,8 +219,18 @@ public class RadioService
                 Socket clientSocket = _asyncSockettcp.EndAccept(_async);
                 IPEndPoint remoteEndPoint = (IPEndPoint)clientSocket.RemoteEndPoint;
 
-                T6S3 t6S3 = new(clientSocket, remoteEndPoint.Address.ToString(), remoteEndPoint.Port);
-                _collectionStore.Radios.Add(t6S3);
+               
+                string senderIpAddress = (_remoteEndPoint as IPEndPoint)?.Address.ToString() ?? string.Empty;
+                int senderPort = (_remoteEndPoint as IPEndPoint)?.Port ?? 0;
+
+                T6S3? t6S3 =
+                    _collectionStore.Radios.SingleOrDefault(x => x.Ip == senderIpAddress && x.Port == senderPort);
+
+                if (t6S3 is null)
+                {
+                    t6S3 = new T6S3(clientSocket, remoteEndPoint.Address.ToString(), remoteEndPoint.Port);
+                    _collectionStore.Radios.Add(t6S3);
+                }
 
                 byte[] rxBuffer = new byte[250];
                 t6S3.Socket.BeginReceive(rxBuffer, 0, rxBuffer.Length, 0, ar => DequeueRequests(ar, t6S3), rxBuffer);

@@ -126,7 +126,7 @@
                         @foreach (T6S3 radio in radioIpGroups)
                         {
                             <li>
-                                <span class="@(ConnectionStatus(radio))">&#x2B24;</span>
+                                <span class="@(radio.GetSocketStatus())">&#x2B24;</span>
                                 <a style="vertical-align: middle" href="/RadioPage/@radio.Id"> @(GetProtocalType(radio)) | @radio.Port</a>
                             </li>
                         }
@@ -171,25 +171,6 @@
             await InvokeAsync(() => { StateHasChanged(); });
         };
     }
-
-    private string ConnectionStatus(T6S3 radio)
-    {
-        string result = string.Empty;
-        switch (radio.Socket.ProtocolType)
-        {
-            case ProtocolType.Udp:
-                result = radio.UdpConnected ? "connected" : "disconnected";
-                break;
-            case ProtocolType.Tcp:
-                result = radio.TcpConnected ? "connected" : "disconnected";
-                break;
-            default:
-                throw new Exception("strange Protocol Type");
-        }
-
-        return result;
-    }
-
 
     private string GetProtocalType(T6S3 radio)
     {
